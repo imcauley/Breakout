@@ -32,49 +32,147 @@ L3:
 	move.l	(a7)+,d3
 	unlk	a6
 	rts
-_plot_bitmap_16:
-	link	a6,#-2
-	move.l	d3,-(a7)
-	;line	55
-	moveq	#0,d3
+_move_bitmap:
+	link	a6,#-68
+	movem.l	d3/d4/d5/d6,-(a7)
+	move.w	12(a6),d4
+	move.w	14(a6),d5
+	move.l	8(a6),d6
+	;line	58
 	bra	L6
 L5:
-	;line	57
-	move.w	14(a6),d0
+	;line	60
+	move.w	d5,d0
+	muls	#40,d0
+	add.w	#640,d0
+	move.w	d0,a0
+	add.l	a0,a0
+	add.l	d6,a0
+	move.w	d4,d0
+	asl.w	#4,d0
+	ext.l	d0
+	add.l	d0,d0
+	add.l	d0,a0
+	clr.l	d0
+	move.w	(a0),d0
+	lea	-64(a6),a0
+	ext.l	d3
+	move.l	d3,d1
+	asl.l	#2,d1
+	add.l	d1,a0
+	move.l	d0,(a0)
+	;line	61
+	moveq	#1,d0
+	add.w	d3,d0
+	move.w	d0,d3
+L6:
+	cmp.w	#16,d3
+	blt	L5
+L7:
+	;line	64
+	move.w	22(a6),-(a7)
+	move.l	18(a6),-(a7)
+	move.w	d5,-(a7)
+	move.w	d4,-(a7)
+	move.l	d6,-(a7)
+	jsr	_plot_bitmap_16
+	lea	14(a7),a7
+	;line	65
+	move.w	22(a6),-(a7)
+	pea	-64(a6)
+	move.w	d5,-(a7)
+	move.w	d4,-(a7)
+	move.l	d6,-(a7)
+	jsr	_plot_bitmap_16
+	movem.l	-84(a6),d3/d4/d5/d6
+	unlk	a6
+	rts
+_plot_bitmap_16:
+	link	a6,#-8
+	movem.l	d3/d4/d5/d6/d7,-(a7)
+	move.w	14(a6),d6
+	move.w	12(a6),d7
+	;line	91
+	move.w	d7,d0
+	ext.l	d0
+	divs	#16,d0
+	swap	d0
+	move.w	d0,d5
+	move.w	#65535,d0
+	moveq	#16,d1
+	sub.w	d5,d1
+	lsr.w	d1,d0
+	move.w	d0,-6(a6)
+	move.w	#65535,d3
+	;line	91
+	moveq	#0,d4
+	bra	L9
+L8:
+	;line	93
+	move.w	d4,a0
+	add.l	a0,a0
+	move.l	16(a6),d0
+	add.l	d0,a0
+	move.w	(a0),d3
+	;line	94
+	move.w	-6(a6),d0
+	and.w	d0,d3
+	;line	95
+	move.w	d3,d0
+	moveq	#16,d1
+	sub.w	d5,d1
+	asl.w	d1,d0
+	move.w	d0,d3
+	;line	97
+	move.w	d6,d0
 	muls	#40,d0
 	move.w	d0,a0
 	add.l	a0,a0
 	add.l	8(a6),a0
-	move.w	12(a6),d0
+	move.w	d7,d0
 	asr.w	#4,d0
 	ext.l	d0
 	add.l	d0,d0
 	add.l	d0,a0
-	move.w	d3,a1
+	move.w	d4,a1
 	add.l	a1,a1
 	move.l	16(a6),d0
 	add.l	d0,a1
 	move.w	(a1),d0
+	lsr.w	d5,d0
 	or.w	d0,(a0)
-	;line	58
-	add.l	#80,8(a6)
-L8:
-	addq.w	#1,d3
-L6:
-	cmp.w	20(a6),d3
-	bcs	L5
-L7:
-	move.l	(a7)+,d3
+	;line	98
+	move.w	d6,d0
+	muls	#40,d0
+	move.w	d0,a0
+	add.l	a0,a0
+	add.l	8(a6),a0
+	moveq	#16,d0
+	add.w	d7,d0
+	asr.w	#4,d0
+	ext.l	d0
+	add.l	d0,d0
+	add.l	d0,a0
+	or.w	d3,(a0)
+	;line	99
+	addq.w	#1,d6
+L11:
+	addq.w	#1,d4
+L9:
+	cmp.w	20(a6),d4
+	bcs	L8
+L10:
+	movem.l	(a7)+,d3/d4/d5/d6/d7
 	unlk	a6
 	rts
 _plot_bitmap_32:
 	link	a6,#-2
 	move.l	d3,-(a7)
-	;line	84
+	;line	126
 	moveq	#0,d3
-	bra	L10
-L9:
-	;line	86
+	bra	L13
+L12:
+	;line	128
 	move.w	14(a6),d0
 	muls	#20,d0
 	ext.l	d0
@@ -94,100 +192,153 @@ L9:
 	add.l	d0,a1
 	move.l	(a1),d0
 	or.l	d0,(a0)
-	;line	87
+	;line	129
 	add.l	#80,8(a6)
-L12:
+L15:
 	addq.w	#1,d3
-L10:
+L13:
 	cmp.w	20(a6),d3
-	bcs	L9
-L11:
+	bcs	L12
+L14:
 	move.l	(a7)+,d3
 	unlk	a6
 	rts
 _clear_screen:
 	link	a6,#-6
-	;line	109
+	;line	151
 	move.l	8(a6),-4(a6)
 	clr.w	-6(a6)
-	;line	109
-	bra	L14
-L13:
-	;line	110
+	;line	151
+	bra	L17
+L16:
+	;line	152
 	move.l	-4(a6),a0
 	addq.l	#2,-4(a6)
 	or.w	#65535,(a0)
-L14:
+L17:
 	move.w	-6(a6),d0
 	addq.w	#1,-6(a6)
 	cmp.w	#16000,d0
-	blt	L13
-L15:
+	blt	L16
+L18:
 	unlk	a6
 	rts
 _draw_hori_line:
-	link	a6,#-6
-	movem.l	d3/d4,-(a7)
-	move.l	8(a6),d3
-	;line	120
-	move.w	16(a6),d0
+	link	a6,#-8
+	movem.l	d3/d4/d5/d6/d7/a3/a4,-(a7)
+	move.w	12(a6),d4
+	move.l	8(a6),a3
+	moveq	#16,d7
+	move.w	16(a6),a4
+	;line	163
+	move.w	#65535,d6
+	move.w	#65535,d5
+	move.w	d4,d0
 	asr.w	#4,d0
-	move.w	d0,-4(a6)
-	move.w	16(a6),d0
-	ext.l	d0
-	divs	#16,d0
-	swap	d0
-	move.w	d0,-6(a6)
-	;line	120
+	move.w	d0,d3
+	move.w	d4,d0
+	add.w	a4,d0
+	asr.w	#4,d0
+	addq.w	#1,d0
+	move.w	d0,-8(a6)
+	;line	163
 	move.w	14(a6),d0
 	muls	#40,d0
-	move.w	d0,a0
-	add.l	a0,a0
-	add.l	d3,a0
-	move.w	12(a6),d0
-	asr.w	#4,d0
 	ext.l	d0
 	add.l	d0,d0
-	add.l	d0,a0
-	move.w	-6(a6),d0
-	or.w	d0,(a0)
-	;line	121
-	addq.l	#2,d3
-	;line	123
-	moveq	#0,d4
-	bra	L17
-L16:
-	;line	125
-	move.w	14(a6),d0
-	muls	#40,d0
-	move.w	d0,a0
-	add.l	a0,a0
-	add.l	d3,a0
-	move.w	12(a6),d0
-	asr.w	#4,d0
-	ext.l	d0
-	add.l	d0,d0
-	add.l	d0,a0
-	or.w	#65535,(a0)
-	;line	126
-	addq.l	#2,d3
+	add.l	d0,a3
+	;line	165
+	tst.w	d4
+	beq	L20
+	tst.w	d7
+	beq	L20
+	moveq	#1,d0
+	bra	L21
+L20:
+	moveq	#0,d0
+L21:
+	tst.w	d0
+	beq	L19
+	;line	167
+	move.w	d6,d0
+	move.w	d4,d1
+	ext.l	d1
+	divs	d7,d1
+	swap	d1
+	lsr.w	d1,d0
+	move.w	d0,d6
+	;line	168
+	move.w	d6,d0
+	not.w	d0
+	move.w	d0,d6
 L19:
-	addq.w	#1,d4
-L17:
-	cmp.w	-4(a6),d4
-	blt	L16
-L18:
-	movem.l	(a7)+,d3/d4
+	;line	171
+	move.w	d4,d0
+	add.w	a4,d0
+	tst.w	d0
+	beq	L23
+	tst.w	d7
+	beq	L23
+	moveq	#1,d0
+	bra	L24
+L23:
+	moveq	#0,d0
+L24:
+	tst.w	d0
+	beq	L22
+	;line	173
+	move.w	d5,d0
+	move.w	d7,d1
+	move.w	d4,d2
+	add.w	a4,d2
+	ext.l	d2
+	divs	d7,d2
+	swap	d2
+	sub.w	d2,d1
+	asl.w	d1,d0
+	move.w	d0,d5
+	;line	174
+	move.w	d5,d0
+	not.w	d0
+	move.w	d0,d5
+L22:
+	;line	177
+	ext.l	d3
+	move.l	d3,d0
+	add.l	d0,d0
+	and.w	d6,0(a3,d0.l)
+	;line	178
+	addq.w	#1,d3
+	;line	180
+	bra	L26
+L25:
+	;line	182
+	ext.l	d3
+	move.l	d3,d0
+	add.l	d0,d0
+	and.w	#0,0(a3,d0.l)
+	;line	183
+	addq.w	#1,d3
+L26:
+	cmp.w	-8(a6),d3
+	blt	L25
+L27:
+	;line	186
+	ext.l	d3
+	move.l	d3,d0
+	add.l	d0,d0
+	and.w	d5,0(a3,d0.l)
+	movem.l	(a7)+,d3/d4/d5/d6/d7/a3/a4
 	unlk	a6
 	rts
 _draw_vert_line:
 	link	a6,#-2
 	move.l	d3,-(a7)
-	;line	136
+	;line	194
 	moveq	#0,d3
-	bra	L21
-L20:
-	;line	138
+	bra	L29
+L28:
+	;line	196
 	move.w	14(a6),d0
 	muls	#40,d0
 	move.w	d0,a0
@@ -205,20 +356,20 @@ L20:
 	sub.w	d2,d1
 	asl.w	d1,d0
 	or.w	d0,(a0)
-	;line	139
+	;line	197
 	add.l	#80,8(a6)
-L23:
+L31:
 	addq.w	#1,d3
-L21:
+L29:
 	cmp.w	16(a6),d3
-	blt	L20
-L22:
+	blt	L28
+L30:
 	move.l	(a7)+,d3
 	unlk	a6
 	rts
 _plot_pixel:
 	link	a6,#0
-	;line	146
+	;line	204
 	move.w	14(a6),d0
 	muls	#40,d0
 	move.w	d0,a0
@@ -229,37 +380,41 @@ _plot_pixel:
 	ext.l	d0
 	add.l	d0,d0
 	add.l	d0,a0
-	moveq	#1,d0
-	moveq	#15,d1
-	move.w	12(a6),d2
-	and.w	#15,d2
-	sub.w	d2,d1
-	asl.w	d1,d0
-	or.w	d0,(a0)
+	move.w	#32768,d0
+	tst.w	12(a6)
+	beq	L32
+	moveq	#1,d1
+	bra	L33
+L32:
+	moveq	#0,d1
+L33:
+	lsr.w	d1,d0
+	not.w	d0
+	and.w	d0,(a0)
 	unlk	a6
 	rts
 _draw_rect:
 	link	a6,#-2
 	move.l	d3,-(a7)
-	;line	153
+	;line	212
 	moveq	#0,d3
-	bra	L25
-L24:
-	;line	155
+	bra	L35
+L34:
+	;line	214
 	move.w	16(a6),-(a7)
 	move.w	14(a6),-(a7)
 	move.w	12(a6),-(a7)
 	move.l	8(a6),-(a7)
 	jsr	_draw_hori_line
 	lea	10(a7),a7
-	;line	156
+	;line	215
 	addq.w	#1,14(a6)
-L27:
+L37:
 	addq.w	#1,d3
-L25:
+L35:
 	cmp.w	18(a6),d3
-	blt	L24
-L26:
+	blt	L34
+L36:
 	move.l	-6(a6),d3
 	unlk	a6
 	rts
@@ -270,4 +425,5 @@ L26:
 	globl	_draw_rect
 	globl	_plot_bitmap_16
 	globl	_plot_bitmap_32
+	globl	_move_bitmap
 	globl	_plot_bitmap_8

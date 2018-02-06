@@ -48,15 +48,57 @@ Outputs: Draws the image to the screen.
 Limitations/Known bugs: N/A
 =============================================================================*/
 
-void plot_bitmap_16(UINT16 *base, int x, int y, const UINT16 *bitmap, unsigned int height)
+void move_bitmap(UINT16 *base, int x1, int y1, int x2, UINT16 *bitmap,
+			int height)
+{
+     UINT32 saved[16];
+     int position;
+     int i;
+
+     while(i < 16)
+     {
+	saved[i] = *(base + ((y1 + 16) * 40) + (x1 << 4));
+	i = i + 1;
+     }
+
+     plot_bitmap_16(base, x1, y1, bitmap, height);
+     plot_bitmap_16(base, x1, y1, saved, height);			 
+    /*
+     while(x1 < x2)
+     {
+
+	
+	position = ((y1*40) + (x1 >> 4));
+
+	for(i = 0; i < 16; i++)
+     	{
+     		saved[i] = *(base + position + (i*40));
+     	}
+
+        x1 = x1 + 1;
+     }
+    */
+}
+void plot_bitmap_16(UINT16 *base, int x, int y, const UINT16 *bitmap, 
+			unsigned int height)
 {
     int i;
-    
+    UINT16 offset = x % 16;
+
+    UINT16 extra_mask = 0xFFFF >> (16 - offset);
+    UINT16 extra = 0xFFFF;
+   
     for (i = 0; i < height; i++)
     {
-        *(base + y * 40 + (x >> 4)) |= bitmap[i];
-        base += 40;
+        extra = bitmap[i];
+	extra &= extra_mask;
+	extra = extra << (16 - offset);
+
+        *(base + y * 40 + (x >> 4)) |= (bitmap[i] >> offset);
+	*((base + y * 40 + ((x + 16) >> 4))) |= extra;
+        y++;
     }
+
 }
 
 /*=== plot_bitmap_32 ===========================================================
@@ -112,21 +154,37 @@ void clear_screen(UINT16 *base)
 
 void draw_hori_line(UINT16 *base, int x, int y, int length)
 {
-    int i;
-    
-    int full_lines = length / 16;
-    int partial = length % 16;
-    
-    *(base + y * 40 + (x >> 4)) |= partial;
-    base++;
-    
-    for (i = 0; i < full_lines; i++)
+    UINT16 start = 0xFFFF;
+    UINT16 end = 0xFFFF;
+
+    int start_word = x / 16;
+    int end_word = ((x + length) / 16) + 1;
+
+    base += (y * 40);
+
+    if((x && 16) != 0)
     {
-        *(base + y * 40 + (x >> 4)) |= 0xFFFF;
-        base++;
+	start = start >> (x % 16);
+	start = ~start;
+    }    
+ 
+    if(((x + length) && 16) != 0)
+    {
+	end = end << (16 - ((x + length) % 16));
+        end = ~end;
+    }
+
+    *(base + start_word) &= start;
+    start_word++;
+
+    while(start_word < end_word)
+    {     
+	*(base + start_word) &= 0x0000;
+        start_word++;
     }
     
-    
+    *(base + start_word) &= end;
+        
 }
 
 void draw_vert_line(UINT16 *base, int x, int y, int length)
@@ -143,7 +201,8 @@ void draw_vert_line(UINT16 *base, int x, int y, int length)
 
 void plot_pixel(UINT16 *base, int x, int y)
 {
-    *(base + y * 40 + (x >> 4)) |= 1 << (15 - (x & 15));
+    *(base + (y * 40) + (x >> 4)) &= ~(0x8000 >> (x && 16));
+
 }
 
 void draw_rect(UINT16 *base, int x, int y, int length, int height)
