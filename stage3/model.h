@@ -1,21 +1,21 @@
 #define BRICK_ROWS 5
 #define BRICK_COLS 20
 
-typedef struct Position
-{
-    unsigned int x, y;
-} Position;
+typedef int bool;
+
+#define True 1
+#define False 0
 
 typedef struct Brick
 {
-    Position pos;
+    unsigned int x, y;
     bool broken;
     unsigned int width, height;
 } Brick;
 
 typedef struct Ball
 {
-    Position pos;
+    unsigned int x, y;
     unsigned int x_speed, y_speed;
     int x_direction, y_direction;       /* -1 for up/left, 1 for right/down */
     unsigned int width, height;
@@ -23,7 +23,7 @@ typedef struct Ball
 
 typedef struct Paddle
 {
-    Position pos;
+	unsigned int x, y;
     unsigned int speed;
     int direction;
     unsigned int width, height;
@@ -31,25 +31,25 @@ typedef struct Paddle
 
 typedef struct Board
 {
-    Position pos;                       /* Where the board starts */
+	unsigned int x, y;
     unsigned int width, height;
 } Board;
 
 typedef struct Score
 {
-    Position pos;
-    char score[3];                      /* to store 4 digit score */
+    unsigned int x, y;
+    char score[4];                      /* to store 4 digit score */
 } Score;
 
 typedef struct Lives
 {
-    Position pos;
-    char lives[2];                      /* maybe just use 3 X's for lives? */
+    unsigned int x, y;
+    char lives[3];                      /* maybe just use 3 X's for lives? */
 } Lives;
 
 typedef struct Header
 {
-    Position pos;                       /* where dividing line is drawn */
+    unsigned int x, y;                      /* where dividing line is drawn */
 } Header;
 
 typedef struct Model
@@ -62,5 +62,3 @@ typedef struct Model
     Lives lives;
     Header header;
 } Model;
-
-
