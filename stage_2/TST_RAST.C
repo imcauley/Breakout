@@ -36,7 +36,6 @@ int main()
 
 	plot_bitmap_16(base,35,64,pacman,16);
 
-    move_bitmap(base,16,100,80,pacman,16);
 	/*
     int x;
     int y;

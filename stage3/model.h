@@ -63,16 +63,4 @@ typedef struct Model
     Header header;
 } Model;
 
-Model testSnapshot = 
-{
-    {
-        {{0, 40}, false, 32, 16},
-        {{16, 40}, false, 32, 16}
-    },                                 /* bricks */
-    {{320,200}, 10,10, 1, 1, 8, 8},    /* ball */
-    {{320,379}, 10, 1, 60, 20},        /* paddle */
-    {{0,40}, 640, 360},                /* board */
-    {{560, 5}, "0958"},                /* score */
-    {{500, 5}, "XXX"},                 /* lives */
-    {{0,39}}                           /* header */
-}
+
