@@ -62,3 +62,8 @@ typedef struct Model
     Lives lives;
     Header header;
 } Model;
+
+void move_ball(Ball *ball, Brick *bricks);
+bool ball_collides(Ball *ball, Brick *bricks, Paddle *paddle);
+void move_paddle(Paddle *paddle);
+void launch_ball(Paddle *paddle, Ball *ball);
