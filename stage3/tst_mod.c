@@ -13,7 +13,7 @@ int main()
     /* successful paddle move */	
 
     tester.paddle.x = 0;
-    tester.paddle.y = 0;
+    tester.paddle.y = 350;
     tester.paddle.speed = 1;
     tester.paddle.direction = 1;
     tester.paddle.width = 60;
@@ -36,14 +36,14 @@ int main()
 	
 	/* paddle hits right wall */
 	tester.paddle.x = 580;
-    tester.paddle.y = 0;
+    tester.paddle.y = 350;
     tester.paddle.speed = 1;
     tester.paddle.direction = 2;
     tester.paddle.width = 60;
     tester.paddle.height = 40;
 
     move_paddle(&(tester.paddle));
-    printf("paddle x should be 640: %i \n", tester.paddle.x);
+    printf("paddle x should be 580: %i \n", tester.paddle.x);
 
 
     /* normal ball movement */
@@ -56,9 +56,41 @@ int main()
 	tester.ball.width = 16;
 	tester.ball.height = 16;
 	
-	move_ball(&(tester.ball), tester.bricks)
+	move_ball(&tester.ball, &tester.bricks, &tester.paddle);
 	printf("ball x should be 62: %i \n", tester.ball.x);
 	printf("ball y should be 62: %i \n", tester.ball.y);
+	
+	
+	/* colliding with wall */
+	tester.ball.x = 1;
+	tester.ball.y = 10;
+	tester.ball.x_speed = 2;
+	tester.ball.y_speed = 2;
+	tester.ball.x_direction = -1;
+	tester.ball.y_direction = 1;
+	tester.ball.width = 16;
+	tester.ball.height = 16;
+	
+	move_ball(&tester.ball, &tester.bricks, &tester.paddle);
+	printf("ball x speed should be 1: %i \n", tester.ball.x_speed);
+	printf("ball y speed should be 1: %i \n", tester.ball.y_speed);
+	
+	/* colliding with paddle */
+	tester.paddle.x = 20;
+    tester.paddle.y = 350;
+	
+	tester.ball.x = 36;
+	tester.ball.y = 344;
+	tester.ball.x_speed = 2;
+	tester.ball.y_speed = 2;
+	tester.ball.x_direction = 1;
+	tester.ball.y_direction = 1;
+	tester.ball.width = 16;
+	tester.ball.height = 16;
+	
+	move_ball(&tester.ball, &tester.bricks, &tester.paddle);
+	printf("ball x speed should be 1: %i \n", tester.ball.x_speed);
+	printf("ball y speed should be -1: %i \n", tester.ball.y_speed);
 	
     return 0;
 }

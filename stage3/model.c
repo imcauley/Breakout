@@ -1,7 +1,7 @@
 #include <stdlib.h>
 #include "model.h"
 
-void move_ball(Ball *ball, Brick *bricks, Paddle *paddle)
+void move_ball(Ball *ball, Brick bricks[], Paddle *paddle)
 {
         ball->x += ball->x_speed * ball->x_direction;
         ball->y += ball->y_speed * ball->y_direction;
@@ -70,25 +70,29 @@ bool ball_collides(Ball *ball, Brick *bricks, Paddle *paddle)
                 }
             }
         }*/
-    }
+    
     
     return False;
 }
 
 void move_paddle(Paddle *paddle)
 {
-    paddle->x += paddle->speed * paddle->direction;
-    if (paddle_collides(paddle))
-        move_paddle(paddle);
+	paddle->x += (paddle->speed * paddle->direction);
+    paddle_collides(paddle);
 }
 
 bool paddle_collides(Paddle *paddle)
 {
-    if (paddle->x <= 0 || paddle->x + paddle->width >= 640)       /* collision with side walls */
+    if ((paddle->x) <= 0)       /* collision with side walls */
     {
-        paddle->x_direction *= -1;
+        paddle->x = 0;
         return True;
     }
+	else if ((paddle->x + paddle->width) >= 640)
+	{
+		paddle->x = 640 - paddle->width;
+		return True;
+	}
     return False;
 }
         
