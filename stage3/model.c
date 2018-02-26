@@ -1,4 +1,5 @@
 #include <stdlib.h>
+#include <stdio.h>
 #include "model.h"
 
 void move_ball(Ball *ball, Brick bricks[], Paddle *paddle)
@@ -18,12 +19,15 @@ bool ball_collides(Ball *ball, Brick *bricks, Paddle *paddle)
     int x;
     int y;
     
-    if (ball->y  <= paddle->y && paddle->x <= ball->x <= paddle->x + paddle->width)     /* collision with paddle */
-    {    
-        ball->y_direction = -1;
-        return True;
+    if (ball->y  <= paddle->y)
+    {
+		if((ball->x >= paddle->x) && (ball->x <= (paddle->x + paddle->width))) 
+		{
+			ball->y_direction = -1;
+			return True;
+		}
     }
-    
+	
     if (ball->x <= 0 || ball->x + ball->width >= 640)       /* collision with side walls */
     {
         ball->x_direction *= -1;
@@ -35,43 +39,7 @@ bool ball_collides(Ball *ball, Brick *bricks, Paddle *paddle)
         ball->y_direction *= -1;
         return True;
     }
-    
-    /*if ((ball->y) <= ((bricks + y*BRICK_COLS + x)->height * BRICK_ROWS))
-    {
-        for (x = 0; x < BRICK_ROWS; x++)
-        {
-            for (y = 0; y < BRICK_COLS; y++)
-            {
-                if ((bricks + y*BRICK_COLS + x)->broken == False)
-                {
-                    if (ball->y + ball->height == (bricks + y*BRICK_COLS + x)->y)           collision with top of a brick 
-                    {
-                        ball->y_direction *= -1;
-                        return True;
-                    }
-                    
-                    if (ball->y == (bricks + y*BRICK_COLS + x)->y + (bricks + y*BRICK_COLS + x)->height)  collision with bottom of a brick 
-                    {
-                        ball->y_direction *= -1;
-                        return True;
-                    }   
-                    
-                    if (ball->x + ball->width == (bricks + y*BRICK_COLS + x)->x)            collision with left of a brick 
-                   
-                        ball->x_direction *= -1;
-                        return True;
-                    }
-                    
-                    if (ball->x == (bricks + y*BRICK_COLS + x)->x + (bricks + y*BRICK_COLS + x)->width)    collision with right of a brick 
-                    {
-                        ball->x_direction *= -1;
-                        return True;
-                    }
-                }
-            }
-        }*/
-    
-    
+	
     return False;
 }
 
@@ -85,12 +53,12 @@ bool paddle_collides(Paddle *paddle)
 {
     if ((paddle->x) <= 0)       /* collision with side walls */
     {
-        paddle->x = 0;
+        (paddle->x) = 0;
         return True;
     }
 	else if ((paddle->x + paddle->width) >= 640)
 	{
-		paddle->x = 640 - paddle->width;
+		paddle->x = (640 - paddle->width);
 		return True;
 	}
     return False;

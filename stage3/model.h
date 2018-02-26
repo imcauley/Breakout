@@ -15,7 +15,7 @@ typedef struct Brick
 
 typedef struct Ball
 {
-    unsigned int x, y;
+    int x, y;
     unsigned int x_speed, y_speed;
     int x_direction, y_direction;       /* -1 for up/left, 1 for right/down */
     unsigned int width, height;
@@ -23,8 +23,8 @@ typedef struct Ball
 
 typedef struct Paddle
 {
-	unsigned int x, y;
-    unsigned int speed;
+	int x, y;
+    int speed;
     int direction;
     unsigned int width, height;
 } Paddle;
