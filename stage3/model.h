@@ -8,7 +8,7 @@ typedef int bool;
 
 typedef struct Brick
 {
-    unsigned int x, y;
+    int x, y;
     bool broken;
     unsigned int width, height;
 } Brick;
