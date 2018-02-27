@@ -11,10 +11,12 @@ typedef unsigned long UINT32;
 
 
 void draw_hori_line(UINT16 *base, int x, int y, int length);
+void clear_hori_line(UINT16 *base, int x, int y, int length);
 void draw_vert_line(UINT16 *base, int x, int y, int length);
 void plot_pixel(UINT16 *base, int x, int y);
 void clear_screen(UINT16 *base);
 void draw_rect(UINT16 *base, int x, int y, int length, int height);
+void clear_rect(UINT16 *base, int x, int y, int length, int height);
 void plot_bitmap_16(UINT16 *base, int x, int y, const UINT16 *bitmap, unsigned int height);
 void plot_bitmap_32(UINT32 *base, int x, int y, const UINT32 *bitmap, unsigned int height);
 void move_bitmap(UINT16 *base, int x1, int y1, int x2, UINT16 *bitmap,
@@ -77,7 +79,7 @@ void plot_bitmap_32(UINT32 *base, int x, int y, const UINT32 *bitmap, unsigned i
 
     for (i = 0; i < height; i++)
     {
-        *(base + y * 20 + (x >> 5)) |= bitmap[i];
+        *(base + y * 20 + (x >> 5)) &= bitmap[i];
         base += 20;
     }
 }
@@ -126,6 +128,41 @@ void draw_hori_line(UINT16 *base, int x, int y, int length)
 
 }
 
+void clear_hori_line(UINT16 *base, int x, int y, int length)
+{
+    UINT16 start = 0xFFFF;
+    UINT16 end = 0xFFFF;
+
+    int start_word = x / 16;
+    int end_word = ((x + length) / 16) + 1;
+
+    base += (y * 40);
+
+    if((x && 16) != 0)
+    {
+        start = start >> (x % 16);
+    }
+
+    if(((x + length) && 16) != 0)
+    {
+        end = end << (16 - ((x + length) % 16));
+    }
+
+    *(base + start_word) |= start;
+    start_word++;
+
+    while(start_word < end_word)
+    {
+	*(base + start_word) |= 0xFFFF;
+        start_word++;
+    }
+
+    if(length > 8)
+    {
+        *(base + start_word) |= end;
+    }
+}
+
 void draw_vert_line(UINT16 *base, int x, int y, int length)
 {
     int i;
@@ -141,7 +178,6 @@ void draw_vert_line(UINT16 *base, int x, int y, int length)
 void plot_pixel(UINT16 *base, int x, int y)
 {
     *(base + (y * 40) + (x >> 4)) &= ~(0x8000 >> (x && 16));
-
 }
 
 void draw_rect(UINT16 *base, int x, int y, int length, int height)
@@ -151,6 +187,17 @@ void draw_rect(UINT16 *base, int x, int y, int length, int height)
     for (i = 0; i < height; i++)
     {
         draw_hori_line(base, x, y, length);
+        y++;
+    }
+}
+
+void clear_rect(UINT16 *base, int x, int y, int length, int height)
+{
+    int i;
+
+    for (i = 0; i < height; i++)
+    {
+        clear_hori_line(base, x, y, length);
         y++;
     }
 }

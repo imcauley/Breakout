@@ -4,9 +4,12 @@
 #define SCREEN_WIDTH 640
 #define SCREEN_HEIGHT 400
 #define BRICK_HEIGHT 16
+#define BRICK_WIDTH 32
 
 int main()
 {
+    int r;
+    int c;
     UINT16 *base = (UINT16 *) Physbase();
     UINT32 *base2 = (UINT32 *) Physbase();
 
@@ -28,19 +31,10 @@ int main()
 		0x1ff8,
 		0x0ff0
 	};
-	
-    plot_pixel(base, 0, 0);
-    plot_pixel(base, 1, 1);
-    
-	plot_bitmap_16(base,32,32,pacman,16);
 
-	plot_bitmap_16(base,35,64,pacman,16);
 
-	/*
-    int x;
-    int y;
     
-    long brick_bitmap[BRICK_HEIGHT] =
+    UINT32 brick_bitmap[BRICK_HEIGHT] =
     {
         0xFFFFFFFF,
         0x80000001,
@@ -59,16 +53,35 @@ int main()
         0x80000001,
         0xFFFFFFFF
     };
+ 
 
     clear_screen(base);
     
-	for(x = 0; x < 640; x += 32)
+    r = 0;
+    for(r = 0; r < 5; r++)
     {
-        for(y = 0; y < 80; y += 16)
+        c = 0;
+        for(c = 0; c < 20; c++)
         {
-            plot_bitmap_32(base2, x, y, brick_bitmap, BRICK_HEIGHT);
+            plot_bitmap_32(base2, (c*BRICK_WIDTH), (r*BRICK_HEIGHT), brick_bitmap, 16);
         }
     }
-    */
+
+    draw_rect(base, 20, 334, 64,16);
+    draw_rect(base, 12, 350, 64,16);
+    clear_rect(base, 12, 350, 64, 16);
+    draw_rect(base,40,200, 8,8);
+    r = 0;
+    c = 350;
+    while(r < (SCREEN_WIDTH - 8))
+    {   
+        draw_rect(base,r,c, 8,8);
+        Vsync();
+        clear_rect(base,r,c, 8,8);
+
+        r+=5;
+        c--;
+    }
+    
 	return 0;
 }
