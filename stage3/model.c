@@ -6,13 +6,11 @@ void move_ball(Ball *ball, Brick *bricks, Paddle *paddle)
 {
         ball->x += ball->x_speed * ball->x_direction;
         ball->y += ball->y_speed * ball->y_direction;
-        
-        if (ball_collides(ball, bricks, paddle))
-                move_ball(ball, bricks, paddle);         /* collision occurred, this will move ball back 
-                                                            with direction reversed */
+               
+        ball_collides(ball, bricks, paddle);
 }
 
-bool ball_collides(Ball *ball, Brick *bricks, Paddle *paddle)
+bool ball_collides(Ball *ball, Brick bricks[BRICK_ROWS][BRICK_COLS], Paddle *paddle)
 {
     int x;
     int y;
@@ -38,34 +36,81 @@ bool ball_collides(Ball *ball, Brick *bricks, Paddle *paddle)
         return True;
     }
     
-    if (ball->y <= 120)                                     /* ball is in brick area, start checking for collisions */
+    if (ball->y <= 120)                                   
     {
-        if ((bricks + (ball->y)*BRICK_COLS + ball->x)->broken == False)
+        unsigned int x_pos = ball-> x / 32;
+        unsigned int y_pos = ball-> y / 16;
+        
+        if (bricks[x_pos][y_pos].broken == False)
         {
-            (bricks + (ball->y)*BRICK_COLS + ball->x)->broken == True;
+            bricks[x_pos][y_pos].broken = True;
+            
+            if (ball->y <= bricks[x_pos][y_pos].y + bricks[x_pos][y_pos].height ||
+                ball->y + ball->height >= bricks[x_pos][y_pos].y) 
+                ball->y_direction *= -1;
+            else
+                ball->x_direction *= -1;
             return True;
         }
     }
-	
+    
+    /*if ((ball->y) <= 120)
+    {
+        for (x = 0; x < BRICK_ROWS; x++)
+        {
+            for (y = 0; y < BRICK_COLS; y++)
+            {
+                if (bricks[x][y].broken == False)
+                {
+                    if (ball->y + ball->height == (bricks[x][y].y))       
+                    {
+                        bricks[x][y].broken = True;
+                        ball->y_direction *= -1;
+                        return True;
+                    }
+                    
+                    if (ball->y == (bricks[x][y].y + (bricks[x][y].height)))  
+                    {
+                        bricks[x][y].broken = True;
+                        ball->y_direction *= -1;
+                        return True;
+                    }   
+                    
+                    if (ball->x + ball->width == (bricks[x][y].x))        
+                    {
+                        bricks[x][y].broken = True;
+                        ball->x_direction *= -1;
+                        return True;
+                    }
+                    
+                    if (ball->x == (bricks[x][y].x + (bricks[x][y].width)))   
+                    {
+                        bricks[x][y].broken = True;
+                        ball->x_direction *= -1;
+                        return True;
+                    }
+                }
+            }
+        }
+    }*/
+    
     return False;
 }
-
 void move_paddle(Paddle *paddle)
 {
 	paddle->x += (paddle->speed * paddle->direction);
-    if (paddle_collides(paddle))
-        move_paddle(paddle);
+    paddle_collides(paddle);
 }
 
 bool paddle_collides(Paddle *paddle)
 {
-    if ((paddle->x) <= 0)       /* collision with side walls */
+    if ((paddle->x) < 0)       /* collision with side walls */
     {
         (paddle->x) = 0;
         return True;
     }
     
-	else if ((paddle->x + paddle->width) >= 640)
+	else if ((paddle->x + paddle->width) > 640)
 	{
 		paddle->x = (640 - paddle->width);
 		return True;
