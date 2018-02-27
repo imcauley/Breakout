@@ -9,6 +9,7 @@
 int main()
 {
     Model tester;
+    int c,r,total = 0;
  
     /* successful paddle move */	
 
@@ -92,5 +93,41 @@ int main()
 	move_ball(&tester.ball, &tester.bricks, &tester.paddle);
 	printf("ball y direction should be -1: %i \n", tester.ball.y_direction);
 
+    /* number of bricks */
+    total = 0;
+    c = 0;
+    r = 0;
+    while(c < BRICK_COLS)
+    {
+        r = 0;
+        while(r < BRICK_ROWS)
+        {
+            (tester.bricks[r][c]).broken = False;
+            r++;
+            total++;
+        }
+        c++;
+    }
+    printf("number of bricks should be 100: %i\n", total);
+    
+    /* destroy brick from bottom */
+    (tester.bricks[0][0]).broken = False;
+    (tester.bricks[0][0]).x = 0;
+    (tester.bricks[0][0]).y = 0;
+    (tester.bricks[0][0]).width = 32;
+    (tester.bricks[0][0]).height = 16;
+    
+    tester.ball.x = 0;
+	tester.ball.y = 18;
+	tester.ball.x_speed = 0;
+	tester.ball.y_speed = 3;
+	tester.ball.x_direction = 1;
+	tester.ball.y_direction = -1;
+	tester.ball.width = 16;
+	tester.ball.height = 16;
+    
+    move_ball(&tester.ball, tester.bricks, &tester.paddle);
+    printf("brick broken should be 1: %i\n", tester.bricks[0][0].broken);
+    printf("ball y direction should be 1: %i\n", tester.ball.y_direction);
     return 0;
 }
