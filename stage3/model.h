@@ -63,7 +63,7 @@ typedef struct Model
     Header header;
 } Model;
 
-void move_ball(Ball *ball, Brick bricks[], Paddle *paddle);
+void move_ball(Ball *ball, Brick *bricks, Paddle *paddle);
 bool ball_collides(Ball *ball, Brick *bricks, Paddle *paddle);
 bool paddle_collides(Paddle *paddle);
 void move_paddle(Paddle *paddle);

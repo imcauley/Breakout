@@ -2,16 +2,14 @@
 #include <stdio.h>
 #include "model.h"
 
-void move_ball(Ball *ball, Brick bricks[], Paddle *paddle)
+void move_ball(Ball *ball, Brick *bricks, Paddle *paddle)
 {
         ball->x += ball->x_speed * ball->x_direction;
         ball->y += ball->y_speed * ball->y_direction;
         
         if (ball_collides(ball, bricks, paddle))
-        {
                 move_ball(ball, bricks, paddle);         /* collision occurred, this will move ball back 
                                                             with direction reversed */
-        }
 }
 
 bool ball_collides(Ball *ball, Brick *bricks, Paddle *paddle)
@@ -39,6 +37,15 @@ bool ball_collides(Ball *ball, Brick *bricks, Paddle *paddle)
         ball->y_direction *= -1;
         return True;
     }
+    
+    if (ball->y <= 120)                                     /* ball is in brick area, start checking for collisions */
+    {
+        if ((bricks + (ball->y)*BRICK_COLS + ball->x)->broken == False)
+        {
+            (bricks + (ball->y)*BRICK_COLS + ball->x)->broken == True;
+            return True;
+        }
+    }
 	
     return False;
 }
@@ -46,7 +53,8 @@ bool ball_collides(Ball *ball, Brick *bricks, Paddle *paddle)
 void move_paddle(Paddle *paddle)
 {
 	paddle->x += (paddle->speed * paddle->direction);
-    paddle_collides(paddle);
+    if (paddle_collides(paddle))
+        move_paddle(paddle);
 }
 
 bool paddle_collides(Paddle *paddle)
@@ -56,6 +64,7 @@ bool paddle_collides(Paddle *paddle)
         (paddle->x) = 0;
         return True;
     }
+    
 	else if ((paddle->x + paddle->width) >= 640)
 	{
 		paddle->x = (640 - paddle->width);
