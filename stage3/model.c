@@ -2,6 +2,26 @@
 #include <stdio.h>
 #include "model.h"
 
+#define BRICK_ROWS 5
+#define BRICK_COLS 20
+
+void create_bricks(Brick bricks[BRICK_ROWS][BRICK_COLS])
+{
+	int r,c = 0;
+	
+	for(r=0;r < BRICK_ROWS;r++)
+	{
+		for(c=0;c < BRICK_COLS; c++)
+		{
+			(bricks[r][c]).x = (r * 20);
+			(bricks[r][c]).y = c * BRICK_ROWS;
+			(bricks[r][c]).broken = False;
+			(bricks[r][c]).width = 32;
+			(bricks[r][c]).height = 16;
+		}
+	}
+}
+
 void move_ball(Ball *ball, Brick *bricks, Paddle *paddle)
 {
         ball->x += ball->x_speed * ball->x_direction;

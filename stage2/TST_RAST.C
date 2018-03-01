@@ -10,29 +10,9 @@ int main()
 {
     int r;
     int c;
+    UINT8 *base0 = (UINT8 *) Physbase();
     UINT16 *base = (UINT16 *) Physbase();
     UINT32 *base2 = (UINT32 *) Physbase();
-
-	UINT16 pacman[16] = {
-		0x0ff0,
-		0x1ff8,
-		0x3f9c,
-		0x7f9e,
-		0xffff,
-		0xfffe,
-		0xfff8,
-		0xffe0,
-		0xffe0,
-		0xfff8,
-		0xfffe,
-		0xffff,
-		0x7ffe,
-		0x3ffc,
-		0x1ff8,
-		0x0ff0
-	};
-
-
     
     UINT32 brick_bitmap[BRICK_HEIGHT] =
     {
@@ -65,25 +45,24 @@ int main()
         c = 0;
         for(c = 0; c < 20; c++)
         {
-            plot_bitmap_32(base2, (c*BRICK_WIDTH), (r*BRICK_HEIGHT), brick_bitmap, 16);
+            plot_bitmap_32(base2, (c*BRICK_WIDTH), ((r*BRICK_HEIGHT) + 40), brick_bitmap, 16);
         }
     }
-
-    draw_rect(base, 20, 334, 64,16);
-    draw_rect(base, 12, 350, 64,16);
-    clear_rect(base, 12, 350, 64, 16);
-    draw_rect(base,40,200, 8,8);
-    r = 0;
-    c = 350;
-    while(r < (SCREEN_WIDTH - 8))
+    
+    for(r = 0; r < 576; r += 7)
     {   
-        draw_rect(base,r,c, 8,8);
+        draw_64rect(base2, r, 300, 16, False);
         Vsync();
-        clear_rect(base,r,c, 8,8);
-
-        r+=5;
-        c--;
+        draw_64rect(base2, r, 300, 16, True);
     }
+    
+    for(r = 0; r < 632; r += 10)
+    {
+        draw_8rect(base0, r, 250, 8, False);
+        Vsync();
+        draw_8rect(base0, r, 250, 8, True);
+    }
+    
     
 	return 0;
 }

@@ -226,12 +226,12 @@ typedef struct Header
 typedef struct Model
 {
     Brick bricks[5 ][20 ];
-    Ball ball;
-    Paddle paddle;
-    Board board;
-    Score score;
-    Lives lives;
-    Header header;
+    Ball *ball;
+    Paddle *paddle;
+    Board *board;
+    Score *score;
+    Lives *lives;
+    Header *header;
 } Model;
 
 void move_ball(Ball *ball, Brick *bricks, Paddle *paddle);
@@ -239,8 +239,29 @@ bool ball_collides(Ball *ball, Brick bricks[5 ][20 ], Paddle *paddle);
 bool paddle_collides(Paddle *paddle);
 void move_paddle(Paddle *paddle);
 void launch_ball(Paddle *paddle, Ball *ball);
+void create_bricks(Brick bricks[5 ][20 ]);
 # 3 "model.c" 2
 
+
+
+
+
+void create_bricks(Brick bricks[5 ][20 ])
+{
+	int r,c = 0;
+
+	for(r=0;r < 5 ;r++)
+	{
+		for(c=0;c < 20 ; c++)
+		{
+			(bricks[r][c]).x = (r * 20);
+			(bricks[r][c]).y = c * 5 ;
+			(bricks[r][c]).broken = 0 ;
+			(bricks[r][c]).width = 32;
+			(bricks[r][c]).height = 16;
+		}
+	}
+}
 
 void move_ball(Ball *ball, Brick *bricks, Paddle *paddle)
 {
@@ -293,7 +314,7 @@ bool ball_collides(Ball *ball, Brick bricks[5 ][20 ], Paddle *paddle)
             return 1 ;
         }
     }
-# 97 "model.c"
+# 117 "model.c"
     return 0 ;
 }
 void move_paddle(Paddle *paddle)
