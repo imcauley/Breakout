@@ -169,14 +169,17 @@ extern	FILE	_iob[];
  int	_filbuf	(FILE *) ;
 # 2 "model.c" 2
 # 1 "./model.h" 1
+# 1 "./../stage2/types.h" 1
 
 
+
+typedef unsigned char UINT8;
+typedef unsigned int  UINT16;
+typedef unsigned long UINT32;
 
 typedef int bool;
-
-
-
-
+# 1 "./model.h" 2
+# 7 "./model.h"
 typedef struct Brick
 {
     int x, y;
@@ -226,12 +229,12 @@ typedef struct Header
 typedef struct Model
 {
     Brick bricks[5 ][20 ];
-    Ball *ball;
-    Paddle *paddle;
-    Board *board;
-    Score *score;
-    Lives *lives;
-    Header *header;
+    Ball ball;
+    Paddle paddle;
+    Board board;
+    Score score;
+    Lives lives;
+    Header header;
 } Model;
 
 void move_ball(Ball *ball, Brick *bricks, Paddle *paddle);

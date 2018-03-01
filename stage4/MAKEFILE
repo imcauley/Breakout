@@ -1,0 +1,11 @@
+tst: render.o raster.o model.o
+	cc68x -g raster.o render.o model.o -o tst
+
+render.o: render.c render.h
+	cc68x -g -c render.c render.o
+
+model.o: model.c model.h
+	cc68x -g -c ..\stage3\model.c model.o
+
+raster.o: raster.c raster.h
+	cc68x -g -c ..\stage3\raster.c raster.o

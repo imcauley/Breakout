@@ -1,10 +1,8 @@
+#include "../stage2/types.h"
+
 #define BRICK_ROWS 5
 #define BRICK_COLS 20
 
-typedef int bool;
-
-#define True 1
-#define False 0
 
 typedef struct Brick
 {
@@ -55,12 +53,12 @@ typedef struct Header
 typedef struct Model
 {
     Brick bricks[BRICK_ROWS][BRICK_COLS];
-    Ball *ball;
-    Paddle *paddle;
-    Board *board;
-    Score *score;
-    Lives *lives;
-    Header *header;
+    Ball ball;
+    Paddle paddle;
+    Board board;
+    Score score;
+    Lives lives;
+    Header header;
 } Model;
 
 void move_ball(Ball *ball, Brick *bricks, Paddle *paddle);
