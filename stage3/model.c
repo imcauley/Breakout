@@ -140,11 +140,16 @@ bool paddle_collides(Paddle *paddle)
         
 void launch_ball(Paddle *paddle, Ball *ball)
 {
-    int random = rand() % 2;
-    ball->x = paddle->x + (1.0/2.0) * paddle->width;
-    ball->y = paddle->y + ball->height;
-    ball->x_speed = 10;
-    ball->y_speed = 10;
-    ball->y_direction = 1;
-    ball->x_direction = random;
+    if (ball->launch == True && ball->launched == False)
+    {
+        int random = rand() % 2;
+        ball->x = paddle->x + (1.0/2.0) * paddle->width;
+        ball->y = paddle->y + ball->height;
+        ball->x_speed = 10;
+        ball->y_speed = 10;
+        ball->y_direction = 1;
+        ball->x_direction = random;
+        ball->launch = False;
+        ball->launched = True;
+    }
 }

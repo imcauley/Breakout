@@ -17,6 +17,8 @@ typedef struct Ball
     unsigned int x_speed, y_speed;
     int x_direction, y_direction;       /* -1 for up/left, 1 for right/down */
     unsigned int width, height;
+    bool launch;
+    bool launched;
 } Ball;
 
 typedef struct Paddle
