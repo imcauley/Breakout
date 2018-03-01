@@ -55,12 +55,12 @@ typedef struct Header
 typedef struct Model
 {
     Brick bricks[BRICK_ROWS][BRICK_COLS];
-    Ball ball;
-    Paddle paddle;
-    Board board;
-    Score score;
-    Lives lives;
-    Header header;
+    Ball *ball;
+    Paddle *paddle;
+    Board *board;
+    Score *score;
+    Lives *lives;
+    Header *header;
 } Model;
 
 void move_ball(Ball *ball, Brick *bricks, Paddle *paddle);
@@ -68,3 +68,4 @@ bool ball_collides(Ball *ball, Brick bricks[BRICK_ROWS][BRICK_COLS], Paddle *pad
 bool paddle_collides(Paddle *paddle);
 void move_paddle(Paddle *paddle);
 void launch_ball(Paddle *paddle, Ball *ball);
+void create_bricks(Brick bricks[BRICK_ROWS][BRICK_COLS]);

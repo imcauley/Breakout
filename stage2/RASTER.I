@@ -7,20 +7,20 @@
 typedef unsigned char UINT8;
 typedef unsigned int  UINT16;
 typedef unsigned long UINT32;
+
+typedef int bool;
 # 4 "./raster.h" 2
 
 
 void draw_hori_line(UINT16 *base, int x, int y, int length);
-void clear_hori_line(UINT16 *base, int x, int y, int length);
 void draw_vert_line(UINT16 *base, int x, int y, int length);
 void plot_pixel(UINT16 *base, int x, int y);
 void clear_screen(UINT16 *base);
 void draw_rect(UINT16 *base, int x, int y, int length, int height);
-void clear_rect(UINT16 *base, int x, int y, int length, int height);
 void plot_bitmap_16(UINT16 *base, int x, int y, const UINT16 *bitmap, unsigned int height);
 void plot_bitmap_32(UINT32 *base, int x, int y, const UINT32 *bitmap, unsigned int height);
-void move_bitmap(UINT16 *base, int x1, int y1, int x2, UINT16 *bitmap,
-			int height);
+void draw_64rect(UINT32 *base, int x, int y, int height, bool clear);
+void draw_8rect(UINT8 *base, int x, int y, int height, bool clear);
 # 1 "raster.c" 2
 # 23 "raster.c"
 void plot_bitmap_8(UINT8 *base, int x, int y, const UINT8 *bitmap, unsigned int height)
@@ -34,23 +34,6 @@ void plot_bitmap_8(UINT8 *base, int x, int y, const UINT8 *bitmap, unsigned int 
     }
 }
 # 51 "raster.c"
-void move_bitmap(UINT16 *base, int x1, int y1, int x2, UINT16 *bitmap,
-			int height)
-{
-     UINT32 saved[16];
-     int position;
-     int i;
-
-     while(i < 16)
-     {
-	saved[i] = *(base + ((y1 + 16) * 40) + (x1 << 4));
-	i = i + 1;
-     }
-
-     plot_bitmap_16(base, x1, y1, bitmap, height);
-     plot_bitmap_16(base, x1, y1, saved, height);
-# 81 "raster.c"
-}
 void plot_bitmap_16(UINT16 *base, int x, int y, const UINT16 *bitmap,
 			unsigned int height)
 {
@@ -72,7 +55,7 @@ void plot_bitmap_16(UINT16 *base, int x, int y, const UINT16 *bitmap,
     }
 
 }
-# 122 "raster.c"
+# 91 "raster.c"
 void plot_bitmap_32(UINT32 *base, int x, int y, const UINT32 *bitmap, unsigned int height)
 {
     int i;
@@ -83,7 +66,7 @@ void plot_bitmap_32(UINT32 *base, int x, int y, const UINT32 *bitmap, unsigned i
         base += 20;
     }
 }
-# 146 "raster.c"
+# 115 "raster.c"
 void clear_screen(UINT16 *base)
 {
     UINT16 *temp = base;
@@ -128,41 +111,6 @@ void draw_hori_line(UINT16 *base, int x, int y, int length)
 
 }
 
-void clear_hori_line(UINT16 *base, int x, int y, int length)
-{
-    UINT16 start = 0xFFFF;
-    UINT16 end = 0xFFFF;
-
-    int start_word = x / 16;
-    int end_word = ((x + length) / 16) + 1;
-
-    base += (y * 40);
-
-    if((x && 16) != 0)
-    {
-        start = start >> (x % 16);
-    }
-
-    if(((x + length) && 16) != 0)
-    {
-        end = end << (16 - ((x + length) % 16));
-    }
-
-    *(base + start_word) |= start;
-    start_word++;
-
-    while(start_word < end_word)
-    {
-	*(base + start_word) |= 0xFFFF;
-        start_word++;
-    }
-
-    if(length > 8)
-    {
-        *(base + start_word) |= end;
-    }
-}
-
 void draw_vert_line(UINT16 *base, int x, int y, int length)
 {
     int i;
@@ -191,13 +139,80 @@ void draw_rect(UINT16 *base, int x, int y, int length, int height)
     }
 }
 
-void clear_rect(UINT16 *base, int x, int y, int length, int height)
+void draw_64rect(UINT32 *base, int x, int y, int height, bool clear)
 {
-    int i;
+    int r;
+    int offset = (x & 31);
+    int c = (x >> 5);
 
-    for (i = 0; i < height; i++)
+    UINT32 start = 0xFFFFFFFF >> offset;
+    UINT32 mid = 0xFFFFFFFF;
+    UINT32 end = 0xFFFFFFFF << (32 - offset);
+
+    if(!clear)
     {
-        clear_hori_line(base, x, y, length);
-        y++;
+        start = ~start;
+        mid = ~mid;
+        end = ~end;
+
+        r = 0;
+        while(r < height)
+        {
+            *(base + (y * 20) + c) = start;
+            *(base + (y * 20) + (c + 1)) = mid;
+            *(base + (y * 20) + (c + 2)) = end;
+            y++;
+            r++;
+        }
+    }
+    else
+    {
+        r = 0;
+        while(r < height)
+        {
+            *(base + (y * 20) + c) |= start;
+            *(base + (y * 20) + (c + 1)) |= mid;
+            *(base + (y * 20) + (c + 2)) |= end;
+            y++;
+            r++;
+        }
+    }
+}
+
+void draw_8rect(UINT8 *base, int x, int y, int height, bool clear)
+{
+    int r;
+    int offset = (x & 7);
+    int c = (x >> 3);
+
+    UINT8 start = 0xFF >> offset;
+    UINT8 end = 0xFF << (8 - offset);
+
+    if(!clear)
+    {
+        start = ~start;
+        end = ~end;
+
+        r = 0;
+        while(r < height)
+        {
+            *(base + (y * 80) + c) = start;
+            *(base + (y * 80) + (c+ 1)) = end;
+            y++;
+            r++;
+        }
+
+    }
+    else
+    {
+        r = 0;
+        while(r < height)
+        {
+            *(base + (y * 80) + c) |= start;
+            *(base + (y * 80) + (c+ 1)) |= end;
+            y++;
+            r++;
+        }
+
     }
 }
