@@ -13,6 +13,8 @@ void render(Model *game)
 	UINT16 *base16 = (UINT16 *) Physbase();
 	UINT32 *base32 = (UINT32 *) Physbase();
 	
+	
+	clear_screen(base16);
 	render_paddle(base32, &((*game).paddle));
 	render_ball(base8, &((*game).ball));
 }
@@ -25,17 +27,9 @@ void start_render(Model *game)
 	
 	clear_screen(base16);
 	render_bricks(base32, (*game).bricks);
+	render_paddle(base32, &((*game).paddle));
+	render_ball(base8, &((*game).ball));
 	
-	plot_char(base8, 2, 16, 35);
-	plot_char(base8, 3, 16, 19);
-	plot_char(base8, 4, 16, 31);
-	plot_char(base8, 5, 16, 34);
-	plot_char(base8, 6, 16, 21);
-	
-	plot_char(base8, 8, 16, 0);
-	plot_char(base8, 9, 16, 0);
-	plot_char(base8, 10, 16, 0);
-	plot_char(base8, 11, 16, 0);
 }
 
 void render_clear(Model *game)
@@ -126,5 +120,17 @@ void remove_brick(UINT32 *base, int row, int col)
 	plot_bitmap_32(base, (col*BRICK_WIDTH), ((row*BRICK_HEIGHT) + BOARD_START), 
                     clear_bitmap, 16);
 }
-void render_hud(Header *header, Lives *lives, Score *score)
-{}
+
+void render_hud(UINT8 *base8, Header *header, Lives *lives, Score *score)
+{
+	plot_char(base8, 2, 16, 35);
+	plot_char(base8, 3, 16, 19);
+	plot_char(base8, 4, 16, 31);
+	plot_char(base8, 5, 16, 34);
+	plot_char(base8, 6, 16, 21);
+	
+	plot_char(base8, 8, 16, 0);
+	plot_char(base8, 9, 16, 0);
+	plot_char(base8, 10, 16, 0);
+	plot_char(base8, 11, 16, 0);
+}

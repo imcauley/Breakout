@@ -9,7 +9,6 @@ int main()
 	int r;
 	
 	create_bricks(tester.bricks);
-	start_render(&tester);
 	
 	tester.ball.x = 200;
 	tester.ball.y = 200;
@@ -21,9 +20,10 @@ int main()
 	
 	for(r = 0; r < 400; r += 7)
 	{
+		Vsync();
 		tester.paddle.x = r;
 		render(&tester);
-		render_clear(&tester);
 	}
+	
 	return 0;
 }
