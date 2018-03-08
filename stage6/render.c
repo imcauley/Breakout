@@ -7,15 +7,27 @@
 #define SCREEN_WIDTH 640
 #define SCREEN_HEIGHT 400
 
-void render(Model *game)
+
+
+void render(Model *game, Model *snap)
 {
 	UINT8 *base8 = (UINT8 *) Physbase();
-	UINT16 *base16 = (UINT16 *) Physbase();
 	UINT32 *base32 = (UINT32 *) Physbase();
+	int col, row;
 	
-	clear_screen(base16);
+	render_clear(snap);
 	render_paddle(base32, &((*game).paddle));
 	render_ball(base8, &((*game).ball));
+	for(row = 0; row < BRICK_ROWS; row++)
+	{
+		for(col =0; col < BRICK_COLS; col++)
+		{
+			if(((*game).bricks[row][col].broken) && !((*snap).bricks[row][col].broken))
+			{
+				remove_brick(base32, row, col);
+			}
+		}
+	}
 }
 
 void start_render(Model *game)
@@ -24,7 +36,7 @@ void start_render(Model *game)
 	UINT16 *base16 = (UINT16 *) Physbase();
 	UINT32 *base32 = (UINT32 *) Physbase();
 	
-	clear_screen(base16);
+	clear_screen(base32);
 	render_bricks(base32, (*game).bricks);
 	render_paddle(base32, &((*game).paddle));
 	render_ball(base8, &((*game).ball));

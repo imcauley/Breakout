@@ -3,6 +3,7 @@
 #define BRICK_ROWS 5
 #define BRICK_COLS 20
 
+/* SIZE OF ENTIRE STRUCT: 1060 */
 
 typedef struct Brick
 {
@@ -62,6 +63,14 @@ typedef struct Model
     Lives lives;
     Header header;
 } Model;
+
+typedef struct Snapshot
+{
+	int ball_x;
+	int ball_y;
+	int paddle_x;
+	int paddle_y;
+}Snapshot;
 
 void move_ball(Ball *ball, Brick *bricks, Paddle *paddle);
 bool ball_collides(Ball *ball, Brick bricks[BRICK_ROWS][BRICK_COLS], Paddle *paddle);

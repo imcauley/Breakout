@@ -6,7 +6,7 @@
 void draw_hori_line(UINT16 *base, int x, int y, int length);
 void draw_vert_line(UINT16 *base, int x, int y, int length);
 void plot_pixel(UINT16 *base, int x, int y);
-void clear_screen(UINT16 *base);
+void clear_screen(UINT32 *base);
 void draw_rect(UINT16 *base, int x, int y, int length, int height);
 void plot_char(UINT8 *base, int x, int y, int character);
 void plot_bitmap_16(UINT16 *base, int x, int y, const UINT16 *bitmap, unsigned int height);

@@ -199,13 +199,13 @@ Outputs:
 Limitations/Known bugs: N/A
 =============================================================================*/
 
-void clear_screen(UINT16 *base)
+void clear_screen(UINT32 *base)
 {
-    UINT16 *temp = base;
-    int x = 0;
-    
-    while (x++ < 16000)
-        *(temp++) |= 0xFFFF;
+	int x = 0;
+	while(x++ < 8000)
+	{
+		*(base++) = 0xFFFFFFFF;
+	}
 }
 
 void draw_hori_line(UINT16 *base, int x, int y, int length)
