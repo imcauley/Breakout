@@ -16,3 +16,8 @@ bool key_pressed()
 {
 	return Cconos();
 }
+
+int main()
+{
+	get_input();
+}

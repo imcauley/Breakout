@@ -1,5 +1,8 @@
-game: render.o raster.o model.o input.o breakout.o
-	cc68x -g raster.o render.o model.o breakout.o -o game
+game: render.o raster.o model.o input.o breakout.o events.o
+	cc68x -g raster.o render.o model.o breakout.o events.o -o game
+	
+events.o: events.c
+	cc68x -g -c events.c
 
 input.o: input.c
 	cc68x -g -c input.c

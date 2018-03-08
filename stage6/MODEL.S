@@ -315,7 +315,7 @@ L20:
 	bra	L11
 L17:
 L16:
-	;line	130
+	;line	90
 	moveq	#0,d0
 L11:
 	movem.l	(a7)+,d3/d4/d5/d6/a3/a4/a5
@@ -325,11 +325,11 @@ _move_paddle:
 	link	a6,#0
 	move.l	a3,-(a7)
 	move.l	8(a6),a3
-	;line	134
+	;line	94
 	move.w	4(a3),d0
 	muls	6(a3),d0
 	add.w	d0,(a3)
-	;line	135
+	;line	95
 	move.l	a3,-(a7)
 	jsr	_paddle_collides
 	move.l	-4(a6),a3
@@ -339,31 +339,31 @@ _paddle_collides:
 	link	a6,#0
 	move.l	a3,-(a7)
 	move.l	8(a6),a3
-	;line	140
+	;line	100
 	tst.w	(a3)
 	bge	L21
-	;line	142
+	;line	102
 	clr.w	(a3)
-	;line	143
+	;line	103
 	moveq	#1,d0
 	bra	L22
 	bra	L23
 L21:
-	;line	146
+	;line	106
 	move.w	8(a3),d0
 	add.w	(a3),d0
 	cmp.w	#640,d0
 	bls	L24
-	;line	148
+	;line	108
 	move.w	#640,d0
 	sub.w	8(a3),d0
 	move.w	d0,(a3)
-	;line	149
+	;line	109
 	moveq	#1,d0
 	bra	L22
 L24:
 L23:
-	;line	151
+	;line	111
 	moveq	#0,d0
 L22:
 	move.l	(a7)+,a3
@@ -376,18 +376,18 @@ _launch_ball:
 	movem.l	a3/a4,-(a7)
 	move.l	12(a6),a3
 	move.l	8(a6),a4
-	;line	156
+	;line	116
 	cmp.w	#1,16(a3)
 	bne	L25
 	tst.w	18(a3)
 	bne	L25
-	;line	159
+	;line	119
 	jsr	_rand
 	ext.l	d0
 	divs	#2,d0
 	swap	d0
 	move.w	d0,-2(a6)
-	;line	159
+	;line	119
 	move.w	(a4),d0
 	ext.l	d0
 	move.l	d0,-(a7)
@@ -409,21 +409,21 @@ _launch_ball:
 	pea	-34(a6)
 	jsr	.Xdftol
 	move.w	d0,(a3)
-	;line	160
+	;line	120
 	move.w	2(a4),d0
 	add.w	14(a3),d0
 	move.w	d0,2(a3)
-	;line	161
+	;line	121
 	move.w	#10,4(a3)
-	;line	162
+	;line	122
 	move.w	#10,6(a3)
-	;line	163
+	;line	123
 	move.w	#1,10(a3)
-	;line	164
+	;line	124
 	move.w	-2(a6),8(a3)
-	;line	165
+	;line	125
 	clr.w	16(a3)
-	;line	166
+	;line	126
 	move.w	#1,18(a3)
 L25:
 	movem.l	-42(a6),a3/a4
