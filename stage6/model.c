@@ -87,46 +87,6 @@ bool ball_collides(Ball *ball, Brick bricks[BRICK_ROWS][BRICK_COLS], Paddle *pad
         }
     }
     
-    /*if ((ball->y) <= 120)
-    {
-        for (x = 0; x < BRICK_ROWS; x++)
-        {
-            for (y = 0; y < BRICK_COLS; y++)
-            {
-                if (bricks[x][y].broken == False)
-                {
-                    if (ball->y + ball->height == (bricks[x][y].y))       
-                    {
-                        bricks[x][y].broken = True;
-                        ball->y_direction *= -1;
-                        return True;
-                    }
-                    
-                    if (ball->y == (bricks[x][y].y + (bricks[x][y].height)))  
-                    {
-                        bricks[x][y].broken = True;
-                        ball->y_direction *= -1;
-                        return True;
-                    }   
-                    
-                    if (ball->x + ball->width == (bricks[x][y].x))        
-                    {
-                        bricks[x][y].broken = True;
-                        ball->x_direction *= -1;
-                        return True;
-                    }
-                    
-                    if (ball->x == (bricks[x][y].x + (bricks[x][y].width)))   
-                    {
-                        bricks[x][y].broken = True;
-                        ball->x_direction *= -1;
-                        return True;
-                    }
-                }
-            }
-        }
-    }*/
-    
     return False;
 }
 void move_paddle(Paddle *paddle)
