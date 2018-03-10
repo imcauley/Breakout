@@ -13,5 +13,11 @@ long get_input()
 
 bool key_pressed()
 {
-	return Cconos();
+	long input = Cconis();
+	if(input == 0)
+	{
+		return False;
+	}
+	else
+		return True;
 }

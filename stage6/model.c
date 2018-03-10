@@ -12,7 +12,7 @@ void start_game(Model *game)
 	(*game).paddle.y = 380;
 	(*game).paddle.height = 16;
 	(*game).paddle.speed = 3;
-	
+
 	(*game).ball.x = 0;
 	(*game).ball.y = 370;
 	(*game).ball.height = 8;
@@ -21,7 +21,7 @@ void start_game(Model *game)
 void create_bricks(Brick bricks[BRICK_ROWS][BRICK_COLS])
 {
 	int r,c = 0;
-	
+
 	for(r=0;r < BRICK_ROWS;r++)
 	{
 		for(c=0;c < BRICK_COLS; c++)
@@ -35,11 +35,11 @@ void create_bricks(Brick bricks[BRICK_ROWS][BRICK_COLS])
 	}
 }
 
-void move_ball(Ball *ball, Brick *bricks, Paddle *paddle)
+void move_ball(Ball *ball, Brick bricks[][], Paddle *paddle)
 {
         ball->x += ball->x_speed * ball->x_direction;
         ball->y += ball->y_speed * ball->y_direction;
-               
+
         ball_collides(ball, bricks, paddle);
 }
 
@@ -47,52 +47,51 @@ bool ball_collides(Ball *ball, Brick bricks[BRICK_ROWS][BRICK_COLS], Paddle *pad
 {
     int x;
     int y;
-    
+
     if (ball->y  <= paddle->y)
     {
-		if((ball->x >= paddle->x) && (ball->x <= (paddle->x + paddle->width))) 
+		if((ball->x >= paddle->x) && (ball->x <= (paddle->x + paddle->width)))
 		{
 			ball->y_direction = -1;
 			return True;
 		}
     }
-	
+
     if (ball->x <= 0 || ball->x + ball->width >= 640)       /* collision with side walls */
     {
         ball->x_direction *= -1;
         return True;
     }
-    
+
     if (ball->y <= 0 || ball->y + ball->height >= 400)      /* collision with top/bottom walls */
     {
         ball->y_direction *= -1;
         return True;
     }
-    
-    if (ball->y <= 120)                                   
+
+    if (ball->y <= 120)
     {
         unsigned int x_pos = ball-> x / 32;
         unsigned int y_pos = ball-> y / 16;
-        
+
         if (bricks[x_pos][y_pos].broken == False)
         {
             bricks[x_pos][y_pos].broken = True;
-            
+
             if (ball->y <= bricks[x_pos][y_pos].y + bricks[x_pos][y_pos].height ||
-                ball->y + ball->height >= bricks[x_pos][y_pos].y) 
+                ball->y + ball->height >= bricks[x_pos][y_pos].y)
                 ball->y_direction *= -1;
             else
                 ball->x_direction *= -1;
             return True;
         }
     }
-    
+
     return False;
 }
 void move_paddle(Paddle *paddle)
 {
 	paddle->x += (paddle->speed * paddle->direction);
-    paddle_collides(paddle);
 }
 
 bool paddle_collides(Paddle *paddle)
@@ -102,7 +101,7 @@ bool paddle_collides(Paddle *paddle)
         (paddle->x) = 0;
         return True;
     }
-    
+
 	else if ((paddle->x + paddle->width) > 640)
 	{
 		paddle->x = (640 - paddle->width);
@@ -110,7 +109,7 @@ bool paddle_collides(Paddle *paddle)
 	}
     return False;
 }
-        
+
 void launch_ball(Paddle *paddle, Ball *ball)
 {
     if (ball->launch == True && ball->launched == False)

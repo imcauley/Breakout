@@ -12,5 +12,5 @@ void render_hud(UINT8 *base, Header *header, Lives *lives, Score *score);
 void remove_brick(UINT32 *base, int row, int col);
 void start_render(Model *game);
 void render_clear(Model *game);
-
+void simple_render(UINT8 *base8, UINT32 *base32, Model *game);
 #endif
