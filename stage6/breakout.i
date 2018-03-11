@@ -471,13 +471,7 @@ UINT8 *get_base(UINT8 buffer[])
 {
 	UINT8 *base;
 	int difference;
-
 	base = buffer;
-
-	difference = (int) buffer;
-  difference %= 256;
-	difference = 256 - difference;
-	base += difference;
 	return base;
 }
 
@@ -485,34 +479,27 @@ UINT32 *get_base32(UINT8 buffer[])
 {
 	UINT32 *base;
 	int difference;
-
 	base = (UINT32 *) buffer;
-
-	difference = (int) buffer;
-  difference %= 256;
-	difference = 256 - difference;
-	base += difference;
 	return base;
 }
-# 76 "breakout.c"
+# 55 "breakout.c"
 int main()
 {
-	UINT8 *base8 = (UINT8 *) (void*)_trap_14_w((short)0x2) ;
-	UINT16 *base16 = (UINT16 *) (void*)_trap_14_w((short)0x2) ;
-	UINT32 *base32 = (UINT32 *) (void*)_trap_14_w((short)0x2) ;
+	UINT8 *buffer1_8 = (UINT8 *) (void*)_trap_14_w((short)0x2) ;
+	UINT32 *buffer1_32 = (UINT32 *) (void*)_trap_14_w((short)0x2) ;
 
-	UINT8 *base8_2 = get_base(buffer2);
-	UINT32 *base32_2 = get_base32(buffer2);
+	UINT8 *buffer2_8 = get_base(buffer2);
+	UINT32 *buffer2_32 = get_base32(buffer2);
+
+	UINT8 *render_base_8 = buffer1_8;
+	UINT32 *render_base_32 = buffer1_32;
 
 	long input = 0;
 	unsigned long timeThen, timeNow, timeElapsed = 0;
+	bool swap = 0;
+
 	Model game;
 	start_game(&game);
-	game.paddle.speed = 10;
-
-
-	simple_render(base8, base32, &game);
-	game.paddle.direction = 1;
 
 
 	while(input != 0x00100071)
@@ -532,11 +519,29 @@ int main()
 			timeThen = timeNow;
 		}
 
-		simple_render(base8, base32, &game);
+		simple_render(render_base_8, render_base_32, &game);
 		(void)_trap_14_w((short)0x25) ;
+
+		if(swap == 1 )
+		{
+			render_base_8 = buffer2_8;
+			render_base_32 = buffer2_32;
+			(void)_trap_14_wllw((short)0x5,(long)(-1),(long)buffer1_8,(short)(-1)) ;
+			swap = 0 ;
+		}
+		else
+		{
+			render_base_8 = buffer1_8;
+			render_base_32 = buffer1_32;
+			(void)_trap_14_wllw((short)0x5,(long)(-1),(long)buffer2_8,(short)(-1)) ;
+			swap = 1 ;
+		}
+
 
 
 	}
+
+	(void)_trap_14_wllw((short)0x5,(long)(-1),(long)buffer1_8,(short)(-1)) ;
 
 	return 0;
 }

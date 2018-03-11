@@ -5,7 +5,7 @@
 #include <stdio.h>
 #include <string.h>
 
-UINT8 buffer2[38256];
+UINT8 buffer2[32256];
 
 unsigned long get_time()
 {
@@ -23,13 +23,7 @@ UINT8 *get_base(UINT8 buffer[])
 {
 	UINT8 *base;
 	int difference;
-
 	base = buffer;
-
-	difference = (int) buffer;
-  difference %= 256;
-	difference = 256 - difference;
-	base += difference;
 	return base;
 }
 
@@ -37,60 +31,28 @@ UINT32 *get_base32(UINT8 buffer[])
 {
 	UINT32 *base;
 	int difference;
-
 	base = (UINT32 *) buffer;
-
-	difference = (int) buffer;
-  difference %= 256;
-	difference = 256 - difference;
-	base += difference;
 	return base;
 }
-/*
-	bool swap
 
-	while(!gameOver)
-	{
-		asynch_events
-		if(clock_tick)
-		{
-			synch_events
-		}
-
-
-		Vsync()
-		render()
-		if(swap) --swaps to the back buffer
-		{
-			set_screen(screen1)
-			base = screen2
-		}
-		else
-		{
-			set_screen(screen2)
-			base = screen1
-		}
-	}
-*/
 
 int main()
 {
-	UINT8 *base8 = (UINT8 *) Physbase();
-	UINT16 *base16 = (UINT16 *) Physbase();
-	UINT32 *base32 = (UINT32 *) Physbase();
+	UINT8 *buffer1_8 = (UINT8 *) Physbase();
+	UINT32 *buffer1_32 = (UINT32 *) Physbase();
 
-	UINT8 *base8_2 = get_base(buffer2);
-	UINT32 *base32_2 = get_base32(buffer2);
+	UINT8 *buffer2_8 = get_base(buffer2);
+	UINT32 *buffer2_32 = get_base32(buffer2);
+
+	UINT8 *render_base_8 = buffer1_8;
+	UINT32 *render_base_32 = buffer1_32;
 
 	long input = 0;
 	unsigned long timeThen, timeNow, timeElapsed = 0;
+	bool swap = 0;
+
 	Model game;
 	start_game(&game);
-	game.paddle.speed = 10;
-	/*etscreen(-1, base8_2, -1);*/
-
-	simple_render(base8, base32, &game);
-	game.paddle.direction = 1;
 
 
 	while(input != 0x00100071)
@@ -110,11 +72,29 @@ int main()
 			timeThen = timeNow;
 		}
 
-		simple_render(base8, base32, &game);
+		simple_render(render_base_8, render_base_32, &game);
 		Vsync();
+
+		if(swap == True)
+		{
+			render_base_8 = buffer2_8;
+			render_base_32 = buffer2_32;
+			Setscreen(-1,buffer1_8,-1);
+			swap = False;
+		}
+		else
+		{
+			render_base_8 = buffer1_8;
+			render_base_32 = buffer1_32;
+			Setscreen(-1,buffer2_8,-1);
+			swap = True;
+		}
+
 
 
 	}
+
+	Setscreen(-1,buffer1_8,-1);
 
 	return 0;
 }
