@@ -80,7 +80,7 @@ L6:
 	unlk	a6
 	rts
 _main:
-	link	a6,#-1102
+	link	a6,#-1106
 	movem.l	d3/d4/d5/d6/d7/a3/a4/a5,-(a7)
 	moveq	#-1,d4
 	lea	__trap_14_wllw,a3
@@ -104,7 +104,7 @@ _main:
 	clr.l	-40(a6)
 	moveq	#0,d5
 	;line	50
-	pea	-1102(a6)
+	pea	-1106(a6)
 	jsr	_start_game
 	addq.l	#4,a7
 	;line	52
@@ -133,8 +133,8 @@ L7:
 	move.l	d0,d6
 	;line	61
 	move.l	d6,-(a7)
-	pea	-102(a6)
-	pea	-82(a6)
+	pea	-106(a6)
+	pea	-86(a6)
 	jsr	_asynch_events
 	lea	12(a7),a7
 L10:
@@ -142,9 +142,9 @@ L10:
 	tst.l	-40(a6)
 	bls	L11
 	;line	66
-	pea	-1102(a6)
-	pea	-102(a6)
-	pea	-82(a6)
+	pea	-1106(a6)
+	pea	-106(a6)
+	pea	-86(a6)
 	jsr	_synch_events
 	lea	12(a7),a7
 	;line	67
@@ -182,26 +182,30 @@ L12:
 	moveq	#1,d5
 L13:
 	;line	84
-	pea	-1102(a6)
+	pea	-1106(a6)
 	move.l	d7,-(a7)
 	move.l	a4,-(a7)
 	jsr	_simple_render
 	lea	12(a7),a7
 L11:
+	;line	86
+	pea	-66(a6)
+	jsr	_add_score
+	addq.l	#4,a7
 L8:
 	cmp.l	#1048689,d6
 	bne	L7
 L9:
-	;line	88
+	;line	89
 	move.w	d4,-(a7)
 	move.l	a5,-(a7)
 	move.l	d4,-(a7)
 	move.w	#5,-(a7)
 	jsr	(a3)
-	;line	90
+	;line	91
 	moveq	#0,d0
 L14:
-	movem.l	-1134(a6),d3/d4/d5/d6/d7/a3/a4/a5
+	movem.l	-1138(a6),d3/d4/d5/d6/d7/a3/a4/a5
 	unlk	a6
 	rts
 	globl	_get_input

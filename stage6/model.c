@@ -16,6 +16,11 @@ void start_game(Model *game)
 	(*game).ball.x = 0;
 	(*game).ball.y = 370;
 	(*game).ball.height = 8;
+	
+	(*game).score.score[0] = 0;
+	(*game).score.score[1] = 0;
+	(*game).score.score[2] = 0;
+	(*game).score.score[3] = 0;
 }
 
 void create_bricks(Brick bricks[BRICK_ROWS][BRICK_COLS])
@@ -65,7 +70,7 @@ bool ball_collides_bottom(Ball *ball, Brick bricks[BRICK_ROWS][BRICK_COLS], Padd
 		return False;
 }
 
-char ball_collides_bricks(Ball *ball, Brick bricks[BRICK_ROWS][BRICK_COLS], Paddle *paddle)
+char ball_collides_bricks(Ball *ball, Brick bricks[BRICK_ROWS][BRICK_COLS], Paddle *paddle, Score *score)
 {
     if (ball->y <= 120)
     {
@@ -75,6 +80,8 @@ char ball_collides_bricks(Ball *ball, Brick bricks[BRICK_ROWS][BRICK_COLS], Padd
         if (bricks[x_pos][y_pos].broken == False)
         {
             bricks[x_pos][y_pos].broken = True;
+			
+			add_score(score);
 
             if (ball->y <= bricks[x_pos][y_pos].y + bricks[x_pos][y_pos].height ||
                 ball->y + ball->height >= bricks[x_pos][y_pos].y)
@@ -121,4 +128,21 @@ void launch_ball(Paddle *paddle, Ball *ball)
         ball->launch = False;
         ball->launched = True;
     }
+}
+
+void add_score(Score *score)
+{
+	int x;
+	for(x = 0; x < 4; x++)
+	{
+		if(score->score[x] == 9)
+		{
+			score->score[x] = 0;
+		}
+		else
+		{
+			(score->score[x])++;
+			break;
+		}
+	}
 }

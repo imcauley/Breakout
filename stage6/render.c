@@ -150,8 +150,8 @@ void render_hud(UINT8 *base8, Header *header, Lives *lives, Score *score)
 	plot_char(base8, 5, 16, 34);
 	plot_char(base8, 6, 16, 21);
 
-	plot_char(base8, 8, 16, 0);
-	plot_char(base8, 9, 16, 0);
-	plot_char(base8, 10, 16, 0);
-	plot_char(base8, 11, 16, 0);
+	plot_char(base8, 8, 16, (score->score[3]));
+	plot_char(base8, 9, 16, (score->score[2]));
+	plot_char(base8, 10, 16, (score->score[1]));
+	plot_char(base8, 11, 16, (score->score[0]));
 }

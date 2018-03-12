@@ -83,6 +83,7 @@ int main()
 			
 			simple_render(render_base_8, render_base_32, &game);
 		}
+		add_score(&(game.score));
 		
 	}
 	Setscreen(-1,buffer1_8,-1);

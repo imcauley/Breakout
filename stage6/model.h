@@ -38,7 +38,7 @@ typedef struct Board
 typedef struct Score
 {
     unsigned int x, y;
-    char score[4];                      /* to store 4 digit score */
+    int score[4];                      /* to store 4 digit score */
 } Score;
 
 typedef struct Lives
@@ -67,9 +67,10 @@ void move_ball(Ball *ball, Brick bricks[][], Paddle *paddle);
 bool ball_collides_walls(Ball *ball, Brick bricks[BRICK_ROWS][BRICK_COLS], Paddle *paddle);
 bool ball_collides_top(Ball *ball, Brick bricks[BRICK_ROWS][BRICK_COLS], Paddle *paddle);
 bool ball_collides_bottom(Ball *ball, Brick bricks[BRICK_ROWS][BRICK_COLS], Paddle *paddle);
-char ball_collides_bricks(Ball *ball, Brick bricks[BRICK_ROWS][BRICK_COLS], Paddle *paddle);
+char ball_collides_bricks(Ball *ball, Brick bricks[BRICK_ROWS][BRICK_COLS], Paddle *paddle, Score *score);
 bool paddle_collides(Paddle *paddle);
 void move_paddle(Paddle *paddle);
 void launch_ball(Paddle *paddle, Ball *ball);
 void create_bricks(Brick bricks[BRICK_ROWS][BRICK_COLS]);
 void start_game(Model *game);
+void add_score(Score *score);

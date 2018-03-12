@@ -62,7 +62,7 @@ typedef struct Board
 typedef struct Score
 {
     unsigned int x, y;
-    char score[4];
+    int score[4];
 } Score;
 
 typedef struct Lives
@@ -91,12 +91,13 @@ void move_ball(Ball *ball, Brick bricks[][], Paddle *paddle);
 bool ball_collides_walls(Ball *ball, Brick bricks[5 ][20 ], Paddle *paddle);
 bool ball_collides_top(Ball *ball, Brick bricks[5 ][20 ], Paddle *paddle);
 bool ball_collides_bottom(Ball *ball, Brick bricks[5 ][20 ], Paddle *paddle);
-char ball_collides_bricks(Ball *ball, Brick bricks[5 ][20 ], Paddle *paddle);
+char ball_collides_bricks(Ball *ball, Brick bricks[5 ][20 ], Paddle *paddle, Score *score);
 bool paddle_collides(Paddle *paddle);
 void move_paddle(Paddle *paddle);
 void launch_ball(Paddle *paddle, Ball *ball);
 void create_bricks(Brick bricks[5 ][20 ]);
 void start_game(Model *game);
+void add_score(Score *score);
 # 5 "./render.h" 2
 
 
@@ -534,6 +535,7 @@ int main()
 
 			simple_render(render_base_8, render_base_32, &game);
 		}
+		add_score(&(game.score));
 
 	}
 	(void)_trap_14_wllw((short)0x5,(long)(-1),(long)buffer1_8,(short)(-1)) ;
