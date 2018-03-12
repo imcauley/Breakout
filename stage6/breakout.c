@@ -5,7 +5,7 @@
 #include <stdio.h>
 #include <string.h>
 
-UINT8 buffer2[32256];
+UINT8 buffer2[32500];
 
 unsigned long get_time()
 {
@@ -22,19 +22,13 @@ unsigned long get_time()
 UINT8 *get_base(UINT8 buffer[])
 {
 	UINT8 *base;
-	int difference;
+	unsigned int difference;
 	base = buffer;
-	return base;
+	difference = (int) base;
+	difference %= 0x100;
+	difference = 0x100 - difference;
+	return base + difference;
 }
-
-UINT32 *get_base32(UINT8 buffer[])
-{
-	UINT32 *base;
-	int difference;
-	base = (UINT32 *) buffer;
-	return base;
-}
-
 
 int main()
 {
@@ -42,19 +36,20 @@ int main()
 	UINT32 *buffer1_32 = (UINT32 *) Physbase();
 
 	UINT8 *buffer2_8 = get_base(buffer2);
-	UINT32 *buffer2_32 = get_base32(buffer2);
+	UINT32 *buffer2_32 = (UINT32 *) buffer2_8;
 
-	UINT8 *render_base_8 = buffer1_8;
-	UINT32 *render_base_32 = buffer1_32;
+	UINT8 *render_base_8 = buffer2_8;
+	UINT32 *render_base_32 = buffer2_32;
 
 	long input = 0;
 	unsigned long timeThen, timeNow, timeElapsed = 0;
 	bool swap = 0;
 
+	
 	Model game;
 	start_game(&game);
 
-
+	Setscreen(-1,buffer2_8,-1);
 	while(input != 0x00100071)
 	{
 		timeNow = get_time();
@@ -70,30 +65,26 @@ int main()
 		{
 			synch_events(&(game.paddle), &(game.ball), game.bricks);
 			timeThen = timeNow;
+			
+			if(swap == True)
+			{
+				render_base_8 = buffer2_8;
+				render_base_32 = buffer2_32;
+				Setscreen(-1,buffer1_8,-1);
+				swap = False;
+			}
+			else
+			{
+				render_base_8 = buffer1_8;
+				render_base_32 = buffer1_32;
+				Setscreen(-1,buffer2_8,-1);
+				swap = True;
+			}
+			
+			simple_render(render_base_8, render_base_32, &game);
 		}
-
-		simple_render(render_base_8, render_base_32, &game);
-		Vsync();
-
-		if(swap == True)
-		{
-			render_base_8 = buffer2_8;
-			render_base_32 = buffer2_32;
-			Setscreen(-1,buffer1_8,-1);
-			swap = False;
-		}
-		else
-		{
-			render_base_8 = buffer1_8;
-			render_base_32 = buffer1_32;
-			Setscreen(-1,buffer2_8,-1);
-			swap = True;
-		}
-
-
-
+		
 	}
-
 	Setscreen(-1,buffer1_8,-1);
 
 	return 0;
