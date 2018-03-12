@@ -272,16 +272,16 @@ _ball_collides_bricks:
 	asr.w	#5,d0
 	move.w	d0,d4
 	move.w	2(a3),d0
+	sub.w	#40,d0
 	asr.w	#4,d0
 	move.w	d0,d3
 	;line	99
 	move.w	d4,d0
-	mulu	#10,d0
+	muls	#10,d0
 	move.l	d0,a0
 	move.l	a0,-(a7)
-	clr.l	d0
-	move.w	d3,d0
-	move.l	d0,-(a7)
+	ext.l	d3
+	move.l	d3,-(a7)
 	move.l	d5,-(a7)
 	jsr	.Xlmul
 	add.l	a4,d0
@@ -291,12 +291,11 @@ _ball_collides_bricks:
 	bne	L23
 	;line	101
 	move.w	d4,d0
-	mulu	#10,d0
+	muls	#10,d0
 	move.l	d0,a0
 	move.l	a0,-(a7)
-	clr.l	d0
-	move.w	d3,d0
-	move.l	d0,-(a7)
+	ext.l	d3
+	move.l	d3,-(a7)
 	move.l	d5,-(a7)
 	jsr	.Xlmul
 	add.l	a4,d0
@@ -309,12 +308,11 @@ _ball_collides_bricks:
 	addq.l	#4,a7
 	;line	105
 	move.w	d4,d0
-	mulu	#10,d0
+	muls	#10,d0
 	move.l	d0,a0
 	move.l	a0,-(a7)
-	clr.l	d0
-	move.w	d3,d0
-	move.l	d0,-(a7)
+	ext.l	d3
+	move.l	d3,-(a7)
 	move.l	d5,-(a7)
 	jsr	.Xlmul
 	add.l	a4,d0
@@ -322,13 +320,12 @@ _ball_collides_bricks:
 	add.l	d0,a0
 	move.w	2(a0),d0
 	move.w	d4,d1
-	mulu	#10,d1
+	muls	#10,d1
 	move.l	d1,a0
 	move.l	d0,-(a7)
 	move.l	a0,-(a7)
-	clr.l	d1
-	move.w	d3,d1
-	move.l	d1,-(a7)
+	ext.l	d3
+	move.l	d3,-(a7)
 	move.l	d5,-(a7)
 	jsr	.Xlmul
 	move.l	d0,d1
@@ -341,12 +338,11 @@ _ball_collides_bricks:
 	cmp.w	d0,d1
 	bls	L25
 	move.w	d4,d0
-	mulu	#10,d0
+	muls	#10,d0
 	move.l	d0,a0
 	move.l	a0,-(a7)
-	clr.l	d0
-	move.w	d3,d0
-	move.l	d0,-(a7)
+	ext.l	d3
+	move.l	d3,-(a7)
 	move.l	d5,-(a7)
 	jsr	.Xlmul
 	add.l	a4,d0

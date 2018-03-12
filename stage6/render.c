@@ -111,7 +111,7 @@ void render_bricks(UINT32 *base, Brick bricks[BRICK_ROWS][BRICK_COLS])
             }
 			else
 			{
-				remove_brick(base, r. c);
+				remove_brick(base, r, c);
 			}
         }
     }

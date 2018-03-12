@@ -93,8 +93,8 @@ char ball_collides_bricks(Ball *ball, Brick bricks[BRICK_ROWS][BRICK_COLS], Padd
 {
     if (ball->y <= 120)
     {
-        unsigned int x_pos = ball-> x / 32;
-        unsigned int y_pos = ball-> y / 16;
+        int x_pos = ball-> x / 32;
+        int y_pos = (ball->y - 40)/ 16;
 
         if (bricks[y_pos][x_pos].broken == False)
         {

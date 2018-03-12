@@ -375,6 +375,10 @@ void render_bricks(UINT32 *base, Brick bricks[5 ][20 ])
                 plot_bitmap_32(base, (c*32 ), ((r*16 ) + 40 ),
                     brick_bitmap, 16 );
             }
+			else
+			{
+				remove_brick(base, r, c);
+			}
         }
     }
 
