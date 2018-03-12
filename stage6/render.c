@@ -110,6 +110,10 @@ void render_bricks(UINT32 *base, Brick bricks[BRICK_ROWS][BRICK_COLS])
                 plot_bitmap_32(base, (c*BRICK_WIDTH), ((r*BRICK_HEIGHT) + BOARD_START),
                     brick_bitmap, BRICK_HEIGHT);
             }
+			else
+			{
+				remove_brick(base, r. c);
+			}
         }
     }
 
