@@ -8,14 +8,21 @@
 void start_game(Model *game)
 {
 	create_bricks((*game).bricks);
-	(*game).paddle.x = 0;
+	(*game).paddle.x = 200;
 	(*game).paddle.y = 380;
 	(*game).paddle.height = 16;
 	(*game).paddle.speed = 3;
+	(*game).paddle.direction = 1;
+	(*game).paddle.width = 64;
 
-	(*game).ball.x = 0;
+	(*game).ball.x = 200;
 	(*game).ball.y = 370;
 	(*game).ball.height = 8;
+	(*game).ball.width = 8;
+	(*game).ball.x_speed = 2;
+	(*game).ball.y_speed = 2;
+	(*game).ball.x_direction = 1;
+	(*game).ball.y_direction = 1;
 }
 
 void create_bricks(Brick bricks[BRICK_ROWS][BRICK_COLS])
