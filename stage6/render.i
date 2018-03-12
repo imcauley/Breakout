@@ -258,6 +258,7 @@ void move_paddle(Paddle *paddle);
 void launch_ball(Paddle *paddle, Ball *ball);
 void create_bricks(Brick bricks[5 ][20 ]);
 void start_game(Model *game);
+bool ball_collides_paddle(Ball *ball, Brick bricks[5 ][20 ], Paddle *paddle);
 # 5 "./render.h" 2
 
 
@@ -290,7 +291,18 @@ void render(Model *game, Model *snap)
 	render_clear(snap);
 	render_paddle(base32, &((*game).paddle));
 	render_ball(base8, &((*game).ball));
-# 41 "render.c"
+
+	for(row = 0; row < 5 ; row++)
+	{
+		for(col =0; col < 20 ; col++)
+		{
+			if(((*game).bricks[row][col].broken) && !((*snap).bricks[row][col].broken))
+			{
+				remove_brick(base32, row, col);
+			}
+		}
+	}
+
 }
 
 void start_render(Model *game)

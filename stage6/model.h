@@ -73,3 +73,4 @@ void move_paddle(Paddle *paddle);
 void launch_ball(Paddle *paddle, Ball *ball);
 void create_bricks(Brick bricks[BRICK_ROWS][BRICK_COLS]);
 void start_game(Model *game);
+bool ball_collides_paddle(Ball *ball, Brick bricks[BRICK_ROWS][BRICK_COLS], Paddle *paddle);

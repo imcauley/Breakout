@@ -26,7 +26,7 @@ void render(Model *game, Model *snap)
 	render_clear(snap);
 	render_paddle(base32, &((*game).paddle));
 	render_ball(base8, &((*game).ball));
-	/*
+	
 	for(row = 0; row < BRICK_ROWS; row++)
 	{
 		for(col =0; col < BRICK_COLS; col++)
@@ -37,7 +37,7 @@ void render(Model *game, Model *snap)
 			}
 		}
 	}
-	*/
+	
 }
 
 void start_render(Model *game)

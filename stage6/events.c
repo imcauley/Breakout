@@ -38,11 +38,12 @@ void condition_events(Paddle *paddle, Ball *ball, Brick bricks[][])
 		move_paddle(paddle);
 	}
 	
-	else if (ball_collides_bottom(ball, bricks, paddle))
+	else if (ball_collides_paddle(ball, bricks, paddle))
+		ball->y_direction *= -1;
+	
+	/*else if (ball_collides_bottom(ball, bricks, paddle))
 	{
 		ball->y_direction *= -1;
-		/*update_lives()
-		ball->launched = False;*/
 	}
 	
     else if (ball_collides_walls(ball, bricks, paddle))
@@ -58,5 +59,5 @@ void condition_events(Paddle *paddle, Ball *ball, Brick bricks[][])
 	else if (block_collision == 'y')
 	{
 		ball->y_direction *= -1;
-	}
+	}*/
 }

@@ -72,6 +72,15 @@ bool ball_collides_bottom(Ball *ball, Brick bricks[BRICK_ROWS][BRICK_COLS], Padd
 		return False;
 }
 
+bool ball_collides_paddle(Ball *ball, Brick bricks[BRICK_ROWS][BRICK_COLS], Paddle *paddle)
+{
+	if (ball->y + ball->height <= paddle->y && (ball->x + ball->width) >= paddle->x
+													     && ball->x <= (paddle->x + paddle->width))
+		return True;
+	else
+		return False;
+}
+
 char ball_collides_bricks(Ball *ball, Brick bricks[BRICK_ROWS][BRICK_COLS], Paddle *paddle)
 {
     if (ball->y <= 120)
