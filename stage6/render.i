@@ -291,7 +291,18 @@ void render(Model *game, Model *snap)
 	render_clear(snap);
 	render_paddle(base32, &((*game).paddle));
 	render_ball(base8, &((*game).ball));
-# 41 "render.c"
+
+	for(row = 0; row < 5 ; row++)
+	{
+		for(col =0; col < 20 ; col++)
+		{
+			if(((*game).bricks[row][col].broken) && !((*snap).bricks[row][col].broken))
+			{
+				remove_brick(base32, row, col);
+			}
+		}
+	}
+
 }
 
 void start_render(Model *game)
@@ -329,7 +340,7 @@ void render_ball(UINT8 *base, Ball *ball)
 	draw_8rect(base, ball->x, ball->y, ball->height, 0 );
 }
 
-void render_bricks(UINT32 *base, Brick bricks[][])
+void render_bricks(UINT32 *base, Brick bricks[5 ][20 ])
 {
 
     int r, c;
@@ -359,7 +370,7 @@ void render_bricks(UINT32 *base, Brick bricks[][])
     {
         for(c = 0; c < 20 ; c++)
         {
-            if(1 )
+            if(!(bricks[r][c]).broken)
             {
                 plot_bitmap_32(base, (c*32 ), ((r*16 ) + 40 ),
                     brick_bitmap, 16 );

@@ -38,26 +38,25 @@ void condition_events(Paddle *paddle, Ball *ball, Brick bricks[][], Score *score
 		move_paddle(paddle);
 	}
 	
-	if (ball_collides_bottom(ball, bricks, paddle))
-	{
-		/*update_lives()*/
-		ball->launched = False;
-	}
-	
-    if (ball_collides_walls(ball, bricks, paddle))
-		ball->x_direction *= -1;
-	
-	if (ball_collides_top(ball, bricks, paddle))
-		ball->y_direction *= -1;
-	
-	if (block_collision == 'x')
-	{
-		ball->x_direction *= -1;
-		/*update_score()*/
-	}
-	if (block_collision == 'y')
+	else if (ball_collides_bottom(ball, bricks, paddle))
 	{
 		ball->y_direction *= -1;
-		/*update_score()*/
+		/*update_lives()
+		ball->launched = False;*/
+	}
+	
+    else if (ball_collides_walls(ball, bricks, paddle))
+		ball->x_direction *= -1;
+	
+	else if (ball_collides_top(ball, bricks, paddle))
+		ball->y_direction *= -1;
+	
+	else if (block_collision == 'x')
+	{
+		ball->x_direction *= -1;
+	}
+	else if (block_collision == 'y')
+	{
+		ball->y_direction *= -1;
 	}
 }

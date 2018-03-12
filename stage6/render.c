@@ -26,7 +26,7 @@ void render(Model *game, Model *snap)
 	render_clear(snap);
 	render_paddle(base32, &((*game).paddle));
 	render_ball(base8, &((*game).ball));
-	/*
+	
 	for(row = 0; row < BRICK_ROWS; row++)
 	{
 		for(col =0; col < BRICK_COLS; col++)
@@ -37,7 +37,7 @@ void render(Model *game, Model *snap)
 			}
 		}
 	}
-	*/
+
 }
 
 void start_render(Model *game)
@@ -75,7 +75,7 @@ void render_ball(UINT8 *base, Ball *ball)
 	draw_8rect(base, ball->x, ball->y, ball->height, False);
 }
 
-void render_bricks(UINT32 *base, Brick bricks[][])
+void render_bricks(UINT32 *base, Brick bricks[BRICK_ROWS][BRICK_COLS])
 {
 
     int r, c;
@@ -105,7 +105,7 @@ void render_bricks(UINT32 *base, Brick bricks[][])
     {
         for(c = 0; c < BRICK_COLS; c++)
         {
-            if(True)
+            if(!(bricks[r][c]).broken)
             {
                 plot_bitmap_32(base, (c*BRICK_WIDTH), ((r*BRICK_HEIGHT) + BOARD_START),
                     brick_bitmap, BRICK_HEIGHT);

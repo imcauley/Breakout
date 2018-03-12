@@ -396,7 +396,7 @@ bool key_pressed()
 # 1 "./events.h" 1
 void asynch_events(Paddle *paddle, Ball *ball, long input);
 void synch_events(Paddle *paddle, Ball *ball, Brick bricks[][]);
-void condition_events(Paddle *paddle, Ball *ball, Brick *bricks);
+void condition_events(Paddle *paddle, Ball *ball, Brick bricks[][], Score *score);
 # 3 "breakout.c" 2
 # 1 "C:/c68/include/osbind.h" 1
 # 4 "breakout.c" 2
@@ -516,6 +516,7 @@ int main()
 		if (timeElapsed > 0)
 		{
 			synch_events(&(game.paddle), &(game.ball), game.bricks);
+			condition_events(&(game.paddle), &(game.ball), game.bricks, &(game.score));
 			timeThen = timeNow;
 
 			if(swap == 1 )
@@ -532,10 +533,9 @@ int main()
 				(void)_trap_14_wllw((short)0x5,(long)(-1),(long)buffer2_8,(short)(-1)) ;
 				swap = 1 ;
 			}
-
 			simple_render(render_base_8, render_base_32, &game);
+			(void)_trap_14_w((short)0x25) ;
 		}
-		add_score(&(game.score));
 
 	}
 	(void)_trap_14_wllw((short)0x5,(long)(-1),(long)buffer1_8,(short)(-1)) ;

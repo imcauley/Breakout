@@ -64,6 +64,7 @@ int main()
 		if (timeElapsed > 0)
 		{
 			synch_events(&(game.paddle), &(game.ball), game.bricks);
+			condition_events(&(game.paddle), &(game.ball), game.bricks, &(game.score));
 			timeThen = timeNow;
 			
 			if(swap == True)
@@ -80,10 +81,9 @@ int main()
 				Setscreen(-1,buffer2_8,-1);
 				swap = True;
 			}
-			
 			simple_render(render_base_8, render_base_32, &game);
+			Vsync();
 		}
-		add_score(&(game.score));
 		
 	}
 	Setscreen(-1,buffer1_8,-1);

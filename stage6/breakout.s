@@ -148,37 +148,44 @@ L10:
 	jsr	_synch_events
 	lea	12(a7),a7
 	;line	67
+	pea	-66(a6)
+	pea	-1106(a6)
+	pea	-106(a6)
+	pea	-86(a6)
+	jsr	_condition_events
+	lea	16(a7),a7
+	;line	68
 	move.l	-36(a6),-32(a6)
-	;line	69
+	;line	70
 	cmp.w	#1,d5
 	bne	L12
-	;line	71
-	move.l	d3,a4
 	;line	72
-	move.l	-16(a6),d7
+	move.l	d3,a4
 	;line	73
+	move.l	-16(a6),d7
+	;line	74
 	move.w	d4,-(a7)
 	move.l	a5,-(a7)
 	move.l	d4,-(a7)
 	move.w	#5,-(a7)
 	jsr	(a3)
 	lea	12(a7),a7
-	;line	74
+	;line	75
 	moveq	#0,d5
 	bra	L13
 L12:
-	;line	78
-	move.l	a5,a4
 	;line	79
-	move.l	-8(a6),d7
+	move.l	a5,a4
 	;line	80
+	move.l	-8(a6),d7
+	;line	81
 	move.w	d4,-(a7)
 	move.l	d3,-(a7)
 	move.l	d4,-(a7)
 	move.w	#5,-(a7)
 	jsr	(a3)
 	lea	12(a7),a7
-	;line	81
+	;line	82
 	moveq	#1,d5
 L13:
 	;line	84
@@ -187,11 +194,11 @@ L13:
 	move.l	a4,-(a7)
 	jsr	_simple_render
 	lea	12(a7),a7
+	;line	85
+	move.w	#37,-(a7)
+	jsr	__trap_14_w
+	addq.l	#2,a7
 L11:
-	;line	86
-	pea	-66(a6)
-	jsr	_add_score
-	addq.l	#4,a7
 L8:
 	cmp.l	#1048689,d6
 	bne	L7
