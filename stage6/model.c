@@ -39,36 +39,34 @@ void move_ball(Ball *ball, Brick bricks[][], Paddle *paddle)
 {
         ball->x += ball->x_speed * ball->x_direction;
         ball->y += ball->y_speed * ball->y_direction;
-
-        ball_collides(ball, bricks, paddle);
 }
 
-bool ball_collides(Ball *ball, Brick bricks[BRICK_ROWS][BRICK_COLS], Paddle *paddle)
+bool ball_collides_walls(Ball *ball, Brick bricks[BRICK_ROWS][BRICK_COLS], Paddle *paddle)
 {
-    int x;
-    int y;
-
-    if (ball->y  <= paddle->y)
-    {
-		if((ball->x >= paddle->x) && (ball->x <= (paddle->x + paddle->width)))
-		{
-			ball->y_direction = -1;
-			return True;
-		}
-    }
-
-    if (ball->x <= 0 || ball->x + ball->width >= 640)       /* collision with side walls */
-    {
-        ball->x_direction *= -1;
+	if (ball->x <= 0 || ball->x + ball->width >= 640)
         return True;
-    }
+	else
+		return False;
+}
 
-    if (ball->y <= 0 || ball->y + ball->height >= 400)      /* collision with top/bottom walls */
-    {
-        ball->y_direction *= -1;
+bool ball_collides_top(Ball *ball, Brick bricks[BRICK_ROWS][BRICK_COLS], Paddle *paddle)
+{
+    if (ball->y <= 0)
         return True;
-    }
+	else
+		return False;
+}
 
+bool ball_collides_bottom(Ball *ball, Brick bricks[BRICK_ROWS][BRICK_COLS], Paddle *paddle)
+{
+    if (ball->y + ball->height >= 400)      /* collision with top/bottom walls */
+		return True;
+	else
+		return False;
+}
+
+char ball_collides_bricks(Ball *ball, Brick bricks[BRICK_ROWS][BRICK_COLS], Paddle *paddle)
+{
     if (ball->y <= 120)
     {
         unsigned int x_pos = ball-> x / 32;
@@ -80,14 +78,13 @@ bool ball_collides(Ball *ball, Brick bricks[BRICK_ROWS][BRICK_COLS], Paddle *pad
 
             if (ball->y <= bricks[x_pos][y_pos].y + bricks[x_pos][y_pos].height ||
                 ball->y + ball->height >= bricks[x_pos][y_pos].y)
-                ball->y_direction *= -1;
+                return 'y';
             else
-                ball->x_direction *= -1;
-            return True;
+                return 'x';
         }
     }
 
-    return False;
+    return '0';
 }
 void move_paddle(Paddle *paddle)
 {

@@ -3,30 +3,61 @@
 #include <stdio.h>
 
 #define RETURN	0x001C000DL
+#define LEFT 	0x004b0000L
+#define RIGHT	0x004d0000L
+#define SPACE	0x00390020L
 
 void asynch_events(Paddle *paddle, Ball *ball, long input)
 {
-  if (input == 0x004b0000)
-    paddle->direction = -3;
+	if (input == LEFT)
+		paddle->direction = -1;
 
-  else if (input == 0x004d0000)
-    paddle->direction = 3;
+	else if (input == RIGHT)
+		paddle->direction = 1;
 
-
-
-    if (input == 0x00390020)
+	if (input == SPACE)
         ball->launch = True;
 }
 
 void synch_events(Paddle *paddle, Ball *ball, Brick bricks[][])
 {
-    /*launch_ball(paddle,ball);*/
-    /*move_ball(ball, bricks, paddle);*/
+    launch_ball(paddle,ball);
+    move_ball(ball, bricks, paddle);
     move_paddle(paddle);
     paddle->direction = 0;
 }
 
 void condition_events(Paddle *paddle, Ball *ball, Brick bricks[][])
 {
-    ball_collides(ball,bricks,paddle);
+	char block_collision;
+	block_collision = ball_collides_bricks(ball, bricks, paddle);     /* x or y for collisions */
+	
+	if (paddle_collides(paddle))
+    {
+		paddle->direction *= -1;
+		move_paddle(paddle);
+	}
+	
+	if (ball_collides_bottom(ball, bricks, paddle))
+	{
+		/*update_lives()*/
+		ball->launched = False;
+	}
+	
+    if (ball_collides_walls(ball, bricks, paddle))
+		ball->x_direction *= -1;
+	
+	if (ball_collides_top(ball, bricks, paddle))
+		ball->y_direction *= -1;
+	
+	if (block_collision == 'x')
+	{
+		ball->x_direction *= -1;
+		/*update_score()*/
+	}
+	if (block_collision == 'y')
+	{
+		ball->y_direction *= -1;
+		/*update_score()*/
+	}
 }

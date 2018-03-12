@@ -1,9 +1,9 @@
 # 1 "render.c" 1
-# 1 "b:/c68/include/osbind.h" 1
-# 1 "b:/c68/include/compiler.h" 1
-# 9 "b:/c68/include/osbind.h" 2
-# 1 "b:/c68/include/ostruct.h" 1
-# 22 "b:/c68/include/ostruct.h"
+# 1 "C:/c68/include/osbind.h" 1
+# 1 "C:/c68/include/compiler.h" 1
+# 9 "C:/c68/include/osbind.h" 2
+# 1 "C:/c68/include/ostruct.h" 1
+# 22 "C:/c68/include/ostruct.h"
 typedef struct {
     long b_free;
     long b_total;
@@ -24,7 +24,7 @@ typedef struct
         unsigned char actuallen;
         char    buffer[255];
 } _CCONLINE;
-# 48 "b:/c68/include/ostruct.h"
+# 48 "C:/c68/include/ostruct.h"
 typedef struct _dta {
     char 	    dta_buf[21];
     char            dta_attribute;
@@ -33,7 +33,7 @@ typedef struct _dta {
     long            dta_size;
     char            dta_name[14];
 } _DTA;
-# 98 "b:/c68/include/ostruct.h"
+# 98 "C:/c68/include/ostruct.h"
 typedef struct {
   short recsiz;
   short clsiz;
@@ -62,7 +62,7 @@ typedef struct {
     _MD *mp_used;
     _MD *mp_rover;
 } _MPB;
-# 141 "b:/c68/include/ostruct.h"
+# 141 "C:/c68/include/ostruct.h"
 typedef struct {
     char    *ibuf;
     short   ibufsiz;
@@ -121,8 +121,8 @@ typedef struct
         int     pb_prport;
         void    *pb_mask;
 } _PBDEF;
-# 17 "b:/c68/include/osbind.h" 2
-# 33 "b:/c68/include/osbind.h"
+# 17 "C:/c68/include/osbind.h" 2
+# 33 "C:/c68/include/osbind.h"
  long _trap_1_w		(short) ;
  long _trap_1_ww	(short,short) ;
  long _trap_1_wl	(short,long) ;
@@ -155,7 +155,7 @@ typedef struct
  long _trap_14_wwwwl	(short,short,short,short,long) ;
  long _trap_14_wwwl	(short,short,short,long) ;
  long _trap_14_wlwlw	(short,long,short,long,short) ;
-# 103 "b:/c68/include/osbind.h"
+# 103 "C:/c68/include/osbind.h"
  long _trap_1_ 	(short,...) ;
  long _trap_14_ 	(short,...) ;
  long _trap_13_ 	(short,...) ;
@@ -248,8 +248,11 @@ typedef struct Model
     Header header;
 } Model;
 
-void move_ball(Ball *ball, Brick *bricks, Paddle *paddle);
-bool ball_collides(Ball *ball, Brick bricks[5 ][20 ], Paddle *paddle);
+void move_ball(Ball *ball, Brick bricks[][], Paddle *paddle);
+bool ball_collides_walls(Ball *ball, Brick bricks[5 ][20 ], Paddle *paddle);
+bool ball_collides_top(Ball *ball, Brick bricks[5 ][20 ], Paddle *paddle);
+bool ball_collides_bottom(Ball *ball, Brick bricks[5 ][20 ], Paddle *paddle);
+char ball_collides_bricks(Ball *ball, Brick bricks[5 ][20 ], Paddle *paddle);
 bool paddle_collides(Paddle *paddle);
 void move_paddle(Paddle *paddle);
 void launch_ball(Paddle *paddle, Ball *ball);
