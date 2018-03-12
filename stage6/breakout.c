@@ -64,7 +64,7 @@ int main()
 		if (timeElapsed > 0)
 		{
 			synch_events(&(game.paddle), &(game.ball), game.bricks);
-			condition_events(&(game.paddle), &(game.ball), game.bricks);
+			condition_events(&(game.paddle), &(game.ball), game.bricks, &(game.score));
 			timeThen = timeNow;
 			
 			if(swap == True)

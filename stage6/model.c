@@ -18,6 +18,12 @@ void start_game(Model *game)
 	(*game).ball.x = 200;
 	(*game).ball.y = 370;
 	(*game).ball.height = 8;
+	
+	(*game).score.score[0] = 0;
+	(*game).score.score[1] = 0;
+	(*game).score.score[2] = 0;
+	(*game).score.score[3] = 0;
+	
 	(*game).ball.width = 8;
 	(*game).ball.x_speed = 2;
 	(*game).ball.y_speed = 2;
@@ -58,7 +64,7 @@ bool ball_collides_walls(Ball *ball, Brick bricks[BRICK_ROWS][BRICK_COLS], Paddl
 
 bool ball_collides_top(Ball *ball, Brick bricks[BRICK_ROWS][BRICK_COLS], Paddle *paddle)
 {
-    if (ball->y <= 0)
+    if (ball->y <= 40)
         return True;
 	else
 		return False;
@@ -72,28 +78,32 @@ bool ball_collides_bottom(Ball *ball, Brick bricks[BRICK_ROWS][BRICK_COLS], Padd
 		return False;
 }
 
+
 bool ball_collides_paddle(Ball *ball, Brick bricks[BRICK_ROWS][BRICK_COLS], Paddle *paddle)
 {
-	if (ball->y + ball->height <= paddle->y && (ball->x + ball->width) >= paddle->x
+	if (ball->y + ball->height >= paddle->y && (ball->x + ball->width) >= paddle->x
 													     && ball->x <= (paddle->x + paddle->width))
 		return True;
 	else
 		return False;
 }
 
-char ball_collides_bricks(Ball *ball, Brick bricks[BRICK_ROWS][BRICK_COLS], Paddle *paddle)
+
+char ball_collides_bricks(Ball *ball, Brick bricks[BRICK_ROWS][BRICK_COLS], Paddle *paddle, Score *score)
 {
     if (ball->y <= 120)
     {
         unsigned int x_pos = ball-> x / 32;
         unsigned int y_pos = ball-> y / 16;
 
-        if (bricks[x_pos][y_pos].broken == False)
+        if (bricks[y_pos][x_pos].broken == False)
         {
-            bricks[x_pos][y_pos].broken = True;
+            bricks[y_pos][x_pos].broken = True;
+			
+			add_score(score);
 
-            if (ball->y <= bricks[x_pos][y_pos].y + bricks[x_pos][y_pos].height ||
-                ball->y + ball->height >= bricks[x_pos][y_pos].y)
+            if (ball->y <= bricks[y_pos][x_pos].y + bricks[y_pos][x_pos].height ||
+                ball->y + ball->height >= bricks[y_pos][x_pos].y)
                 return 'y';
             else
                 return 'x';
@@ -137,4 +147,21 @@ void launch_ball(Paddle *paddle, Ball *ball)
         ball->launch = False;
         ball->launched = True;
     }
+}
+
+void add_score(Score *score)
+{
+	int x;
+	for(x = 0; x < 4; x++)
+	{
+		if(score->score[x] == 9)
+		{
+			score->score[x] = 0;
+		}
+		else
+		{
+			(score->score[x])++;
+			break;
+		}
+	}
 }

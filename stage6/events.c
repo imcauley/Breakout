@@ -27,10 +27,10 @@ void synch_events(Paddle *paddle, Ball *ball, Brick bricks[][])
     paddle->direction = 0;
 }
 
-void condition_events(Paddle *paddle, Ball *ball, Brick bricks[][])
+void condition_events(Paddle *paddle, Ball *ball, Brick bricks[][], Score *score)
 {
 	char block_collision;
-	block_collision = ball_collides_bricks(ball, bricks, paddle);     /* x or y for collisions */
+	block_collision = ball_collides_bricks(ball, bricks, paddle, score);     /* x or y for collisions */
 	
 	if (paddle_collides(paddle))
     {
@@ -41,7 +41,7 @@ void condition_events(Paddle *paddle, Ball *ball, Brick bricks[][])
 	else if (ball_collides_paddle(ball, bricks, paddle))
 		ball->y_direction *= -1;
 	
-	/*else if (ball_collides_bottom(ball, bricks, paddle))
+	else if (ball_collides_bottom(ball, bricks, paddle))
 	{
 		ball->y_direction *= -1;
 	}
@@ -59,5 +59,5 @@ void condition_events(Paddle *paddle, Ball *ball, Brick bricks[][])
 	else if (block_collision == 'y')
 	{
 		ball->y_direction *= -1;
-	}*/
+	}
 }

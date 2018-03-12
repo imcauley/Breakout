@@ -223,7 +223,7 @@ typedef struct Board
 typedef struct Score
 {
     unsigned int x, y;
-    char score[4];
+    int score[4];
 } Score;
 
 typedef struct Lives
@@ -252,13 +252,14 @@ void move_ball(Ball *ball, Brick bricks[][], Paddle *paddle);
 bool ball_collides_walls(Ball *ball, Brick bricks[5 ][20 ], Paddle *paddle);
 bool ball_collides_top(Ball *ball, Brick bricks[5 ][20 ], Paddle *paddle);
 bool ball_collides_bottom(Ball *ball, Brick bricks[5 ][20 ], Paddle *paddle);
-char ball_collides_bricks(Ball *ball, Brick bricks[5 ][20 ], Paddle *paddle);
+char ball_collides_bricks(Ball *ball, Brick bricks[5 ][20 ], Paddle *paddle, Score *score);
 bool paddle_collides(Paddle *paddle);
 void move_paddle(Paddle *paddle);
 void launch_ball(Paddle *paddle, Ball *ball);
 void create_bricks(Brick bricks[5 ][20 ]);
 void start_game(Model *game);
 bool ball_collides_paddle(Ball *ball, Brick bricks[5 ][20 ], Paddle *paddle);
+void add_score(Score *score);
 # 5 "./render.h" 2
 
 
@@ -302,7 +303,6 @@ void render(Model *game, Model *snap)
 			}
 		}
 	}
-
 }
 
 void start_render(Model *game)
@@ -340,7 +340,7 @@ void render_ball(UINT8 *base, Ball *ball)
 	draw_8rect(base, ball->x, ball->y, ball->height, 0 );
 }
 
-void render_bricks(UINT32 *base, Brick bricks[][])
+void render_bricks(UINT32 *base, Brick bricks[5 ][20 ])
 {
 
     int r, c;
@@ -370,7 +370,7 @@ void render_bricks(UINT32 *base, Brick bricks[][])
     {
         for(c = 0; c < 20 ; c++)
         {
-            if(1 )
+            if(!(bricks[r][c]).broken)
             {
                 plot_bitmap_32(base, (c*32 ), ((r*16 ) + 40 ),
                     brick_bitmap, 16 );
@@ -415,8 +415,8 @@ void render_hud(UINT8 *base8, Header *header, Lives *lives, Score *score)
 	plot_char(base8, 5, 16, 34);
 	plot_char(base8, 6, 16, 21);
 
-	plot_char(base8, 8, 16, 0);
-	plot_char(base8, 9, 16, 0);
-	plot_char(base8, 10, 16, 0);
-	plot_char(base8, 11, 16, 0);
+	plot_char(base8, 8, 16, (score->score[3]));
+	plot_char(base8, 9, 16, (score->score[2]));
+	plot_char(base8, 10, 16, (score->score[1]));
+	plot_char(base8, 11, 16, (score->score[0]));
 }

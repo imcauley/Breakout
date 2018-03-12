@@ -62,7 +62,7 @@ typedef struct Board
 typedef struct Score
 {
     unsigned int x, y;
-    char score[4];
+    int score[4];
 } Score;
 
 typedef struct Lives
@@ -91,13 +91,14 @@ void move_ball(Ball *ball, Brick bricks[][], Paddle *paddle);
 bool ball_collides_walls(Ball *ball, Brick bricks[5 ][20 ], Paddle *paddle);
 bool ball_collides_top(Ball *ball, Brick bricks[5 ][20 ], Paddle *paddle);
 bool ball_collides_bottom(Ball *ball, Brick bricks[5 ][20 ], Paddle *paddle);
-char ball_collides_bricks(Ball *ball, Brick bricks[5 ][20 ], Paddle *paddle);
+char ball_collides_bricks(Ball *ball, Brick bricks[5 ][20 ], Paddle *paddle, Score *score);
 bool paddle_collides(Paddle *paddle);
 void move_paddle(Paddle *paddle);
 void launch_ball(Paddle *paddle, Ball *ball);
 void create_bricks(Brick bricks[5 ][20 ]);
 void start_game(Model *game);
 bool ball_collides_paddle(Ball *ball, Brick bricks[5 ][20 ], Paddle *paddle);
+void add_score(Score *score);
 # 5 "./render.h" 2
 
 
@@ -396,7 +397,7 @@ bool key_pressed()
 # 1 "./events.h" 1
 void asynch_events(Paddle *paddle, Ball *ball, long input);
 void synch_events(Paddle *paddle, Ball *ball, Brick bricks[][]);
-void condition_events(Paddle *paddle, Ball *ball, Brick bricks[][]);
+void condition_events(Paddle *paddle, Ball *ball, Brick bricks[][], Score *score);
 # 3 "breakout.c" 2
 # 1 "C:/c68/include/osbind.h" 1
 # 4 "breakout.c" 2
@@ -516,7 +517,7 @@ int main()
 		if (timeElapsed > 0)
 		{
 			synch_events(&(game.paddle), &(game.ball), game.bricks);
-			condition_events(&(game.paddle), &(game.ball), game.bricks);
+			condition_events(&(game.paddle), &(game.ball), game.bricks, &(game.score));
 			timeThen = timeNow;
 
 			if(swap == 1 )
