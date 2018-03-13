@@ -15,10 +15,11 @@ void asynch_events(Paddle *paddle, Ball *ball, long input)
 	else if (input == RIGHT)
 		paddle->direction = 1;
 
-	if (input == SPACE)
-        ball->launch = True;
+	move_paddle(paddle);
+	/*if (input == SPACE)
+        ball->launch = True;*/
 }
-
+/*
 void synch_events(Paddle *paddle, Ball *ball, Brick bricks[][])
 {
     launch_ball(paddle,ball);
@@ -26,7 +27,7 @@ void synch_events(Paddle *paddle, Ball *ball, Brick bricks[][])
     move_paddle(paddle);
     paddle->direction = 0;
 }
-
+*/
 void condition_events(Paddle *paddle, Ball *ball, Brick bricks[][], Score *score)
 {
 	char block_collision;

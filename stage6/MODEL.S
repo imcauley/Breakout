@@ -266,7 +266,7 @@ _ball_collides_bricks:
 	move.l	#200,d5
 	;line	94
 	cmp.w	#120,2(a3)
-	bgt	L22
+	bge	L22
 	;line	99
 	move.w	(a3),d0
 	asr.w	#5,d0
@@ -306,7 +306,7 @@ _ball_collides_bricks:
 	move.l	20(a6),-(a7)
 	jsr	_add_score
 	addq.l	#4,a7
-	;line	105
+	;line	107
 	move.w	d4,d0
 	muls	#10,d0
 	move.l	d0,a0
@@ -353,18 +353,18 @@ _ball_collides_bricks:
 	cmp.w	2(a0),d0
 	bcs	L24
 L25:
-	;line	107
+	;line	109
 	moveq	#121,d0
 	bra	L26
 	bra	L27
 L24:
-	;line	109
+	;line	111
 	moveq	#120,d0
 	bra	L26
 L27:
 L23:
 L22:
-	;line	113
+	;line	115
 	moveq	#48,d0
 L26:
 	movem.l	-24(a6),d3/d4/d5/a3/a4
@@ -374,7 +374,7 @@ _move_paddle:
 	link	a6,#0
 	move.l	a3,-(a7)
 	move.l	8(a6),a3
-	;line	117
+	;line	119
 	move.w	4(a3),d0
 	muls	6(a3),d0
 	add.w	d0,(a3)
@@ -385,31 +385,31 @@ _paddle_collides:
 	link	a6,#0
 	move.l	a3,-(a7)
 	move.l	8(a6),a3
-	;line	122
+	;line	124
 	tst.w	(a3)
 	bge	L28
-	;line	124
+	;line	126
 	clr.w	(a3)
-	;line	125
+	;line	127
 	moveq	#1,d0
 	bra	L29
 	bra	L30
 L28:
-	;line	128
+	;line	130
 	move.w	8(a3),d0
 	add.w	(a3),d0
 	cmp.w	#640,d0
 	bls	L31
-	;line	130
+	;line	132
 	move.w	#640,d0
 	sub.w	8(a3),d0
 	move.w	d0,(a3)
-	;line	131
+	;line	133
 	moveq	#1,d0
 	bra	L29
 L31:
 L30:
-	;line	133
+	;line	135
 	moveq	#0,d0
 L29:
 	move.l	(a7)+,a3
@@ -422,18 +422,18 @@ _launch_ball:
 	movem.l	a3/a4,-(a7)
 	move.l	12(a6),a3
 	move.l	8(a6),a4
-	;line	138
+	;line	140
 	cmp.w	#1,16(a3)
 	bne	L32
 	tst.w	18(a3)
 	bne	L32
-	;line	141
+	;line	143
 	jsr	_rand
 	ext.l	d0
 	divs	#2,d0
 	swap	d0
 	move.w	d0,-2(a6)
-	;line	141
+	;line	143
 	move.w	(a4),d0
 	ext.l	d0
 	move.l	d0,-(a7)
@@ -455,21 +455,21 @@ _launch_ball:
 	pea	-34(a6)
 	jsr	.Xdftol
 	move.w	d0,(a3)
-	;line	142
+	;line	144
 	move.w	2(a4),d0
 	add.w	14(a3),d0
 	move.w	d0,2(a3)
-	;line	143
-	move.w	#10,4(a3)
-	;line	144
-	move.w	#10,6(a3)
 	;line	145
-	move.w	#1,10(a3)
+	move.w	#10,4(a3)
 	;line	146
-	move.w	-2(a6),8(a3)
+	move.w	#10,6(a3)
 	;line	147
-	clr.w	16(a3)
+	move.w	#1,10(a3)
 	;line	148
+	move.w	-2(a6),8(a3)
+	;line	149
+	clr.w	16(a3)
+	;line	150
 	move.w	#1,18(a3)
 L32:
 	movem.l	-42(a6),a3/a4
@@ -479,31 +479,31 @@ _add_score:
 	link	a6,#-2
 	movem.l	d3/a3,-(a7)
 	move.l	8(a6),a3
-	;line	155
+	;line	157
 	moveq	#0,d3
 	bra	L35
 L34:
-	;line	157
+	;line	159
 	move.w	d3,a0
 	add.l	a0,a0
 	add.l	a3,a0
 	cmp.w	#9,4(a0)
 	bne	L38
-	;line	159
+	;line	161
 	move.w	d3,a0
 	add.l	a0,a0
 	add.l	a3,a0
 	clr.w	4(a0)
 	bra	L39
 L38:
-	;line	163
+	;line	165
 	move.w	d3,a0
 	add.l	a0,a0
 	moveq	#4,d0
 	add.l	a3,d0
 	add.l	d0,a0
 	addq.w	#1,(a0)
-	;line	164
+	;line	166
 	bra	L36
 L39:
 L37:

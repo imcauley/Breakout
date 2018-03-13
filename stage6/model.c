@@ -91,7 +91,7 @@ bool ball_collides_paddle(Ball *ball, Brick bricks[BRICK_ROWS][BRICK_COLS], Padd
 
 char ball_collides_bricks(Ball *ball, Brick bricks[BRICK_ROWS][BRICK_COLS], Paddle *paddle, Score *score)
 {
-    if (ball->y <= 120)
+    if (ball->y < 120)
     {
         int x_pos = ball-> x / 32;
         int y_pos = (ball->y - 40)/ 16;
@@ -99,12 +99,12 @@ char ball_collides_bricks(Ball *ball, Brick bricks[BRICK_ROWS][BRICK_COLS], Padd
         if (bricks[y_pos][x_pos].broken == False)
         {
             bricks[y_pos][x_pos].broken = True;
-			
 			add_score(score);
-
+			
             if (ball->y <= bricks[y_pos][x_pos].y + bricks[y_pos][x_pos].height ||
                 ball->y + ball->height >= bricks[y_pos][x_pos].y)
                 return 'y';
+				
             else
                 return 'x';
         }

@@ -495,31 +495,23 @@ int main()
 	UINT32 *render_base_32 = buffer2_32;
 
 	long input = 0;
-	unsigned long timeThen, timeNow, timeElapsed = 0;
-	bool swap = 0;
+	unsigned long timeThen, timeNow, timeElapsed = get_time();
+	bool swap = 0 ;
 
 
 	Model game;
 	start_game(&game);
+	simple_render(buffer1_8, buffer1_32, &game);
 
-	(void)_trap_14_wllw((short)0x5,(long)(-1),(long)buffer2_8,(short)(-1)) ;
 	while(input != 0x00100071)
 	{
-		timeNow = get_time();
-		timeElapsed = timeNow - timeThen;
 
 		if(key_pressed() == 1 )
 		{
 			input = get_input();
 			asynch_events(&game.paddle, &game.ball, input);
-		}
-
-		if (timeElapsed > 0)
-		{
-			synch_events(&(game.paddle), &(game.ball), game.bricks);
-			condition_events(&(game.paddle), &(game.ball), game.bricks, &(game.score));
-			timeThen = timeNow;
-
+			simple_render(render_base_8, render_base_32, &game);
+			(void)_trap_14_w((short)0x25) ;
 			if(swap == 1 )
 			{
 				render_base_8 = buffer2_8;
@@ -534,12 +526,11 @@ int main()
 				(void)_trap_14_wllw((short)0x5,(long)(-1),(long)buffer2_8,(short)(-1)) ;
 				swap = 1 ;
 			}
-			simple_render(render_base_8, render_base_32, &game);
-			(void)_trap_14_w((short)0x25) ;
 		}
-
+# 104 "breakout.c"
 	}
 	(void)_trap_14_wllw((short)0x5,(long)(-1),(long)buffer1_8,(short)(-1)) ;
+	(void)_trap_14_w((short)0x25) ;
 
 	return 0;
 }

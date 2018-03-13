@@ -82,136 +82,113 @@ L6:
 _main:
 	link	a6,#-1106
 	movem.l	d3/d4/d5/d6/d7/a3/a4/a5,-(a7)
-	moveq	#-1,d4
-	lea	__trap_14_wllw,a3
+	lea	__trap_14_w,a3
 	;line	50
 	move.w	#2,-(a7)
-	jsr	__trap_14_w
+	jsr	(a3)
 	addq.l	#2,a7
-	move.l	d0,a5
+	move.l	d0,d4
 	move.w	#2,-(a7)
-	jsr	__trap_14_w
+	jsr	(a3)
 	addq.l	#2,a7
 	move.l	d0,-8(a6)
 	pea	_buffer2
 	jsr	_get_base
 	addq.l	#4,a7
 	move.l	d0,d3
-	move.l	d3,-16(a6)
+	move.l	d3,a5
 	move.l	d3,a4
-	move.l	-16(a6),d7
+	move.l	a5,d7
 	moveq	#0,d6
-	clr.l	-40(a6)
+	jsr	_get_time
+	move.l	d0,-40(a6)
 	moveq	#0,d5
 	;line	50
 	pea	-1106(a6)
 	jsr	_start_game
 	addq.l	#4,a7
-	;line	52
-	move.w	d4,-(a7)
-	move.l	d3,-(a7)
+	;line	51
+	pea	-1106(a6)
+	move.l	-8(a6),-(a7)
 	move.l	d4,-(a7)
-	move.w	#5,-(a7)
-	jsr	(a3)
+	jsr	_simple_render
 	lea	12(a7),a7
 	;line	53
 	bra	L8
 L7:
-	;line	55
-	jsr	_get_time
-	move.l	d0,-36(a6)
 	;line	56
-	move.l	-36(a6),d0
-	sub.l	-32(a6),d0
-	move.l	d0,-40(a6)
-	;line	58
 	jsr	_key_pressed
 	cmp.w	#1,d0
 	bne	L10
-	;line	60
+	;line	58
 	jsr	_get_input
 	move.l	d0,d6
-	;line	61
+	;line	59
 	move.l	d6,-(a7)
 	pea	-106(a6)
 	pea	-86(a6)
 	jsr	_asynch_events
 	lea	12(a7),a7
-L10:
-	;line	64
-	tst.l	-40(a6)
-	bls	L11
-	;line	66
-	pea	-1106(a6)
-	pea	-106(a6)
-	pea	-86(a6)
-	jsr	_synch_events
-	lea	12(a7),a7
-	;line	67
-	pea	-66(a6)
-	pea	-1106(a6)
-	pea	-106(a6)
-	pea	-86(a6)
-	jsr	_condition_events
-	lea	16(a7),a7
-	;line	68
-	move.l	-36(a6),-32(a6)
-	;line	70
-	cmp.w	#1,d5
-	bne	L12
-	;line	72
-	move.l	d3,a4
-	;line	73
-	move.l	-16(a6),d7
-	;line	74
-	move.w	d4,-(a7)
-	move.l	a5,-(a7)
-	move.l	d4,-(a7)
-	move.w	#5,-(a7)
-	jsr	(a3)
-	lea	12(a7),a7
-	;line	75
-	moveq	#0,d5
-	bra	L13
-L12:
-	;line	79
-	move.l	a5,a4
-	;line	80
-	move.l	-8(a6),d7
-	;line	81
-	move.w	d4,-(a7)
-	move.l	d3,-(a7)
-	move.l	d4,-(a7)
-	move.w	#5,-(a7)
-	jsr	(a3)
-	lea	12(a7),a7
-	;line	82
-	moveq	#1,d5
-L13:
-	;line	84
+	;line	60
 	pea	-1106(a6)
 	move.l	d7,-(a7)
 	move.l	a4,-(a7)
 	jsr	_simple_render
 	lea	12(a7),a7
-	;line	85
+	;line	61
 	move.w	#37,-(a7)
-	jsr	__trap_14_w
+	jsr	(a3)
 	addq.l	#2,a7
+	;line	62
+	cmp.w	#1,d5
+	bne	L11
+	;line	64
+	move.l	d3,a4
+	;line	65
+	move.l	a5,d7
+	;line	66
+	move.w	#-1,-(a7)
+	move.l	d4,-(a7)
+	pea	-1
+	move.w	#5,-(a7)
+	jsr	__trap_14_wllw
+	lea	12(a7),a7
+	;line	67
+	moveq	#0,d5
+	bra	L12
 L11:
+	;line	71
+	move.l	d4,a4
+	;line	72
+	move.l	-8(a6),d7
+	;line	73
+	move.w	#-1,-(a7)
+	move.l	d3,-(a7)
+	pea	-1
+	move.w	#5,-(a7)
+	jsr	__trap_14_wllw
+	lea	12(a7),a7
+	;line	74
+	moveq	#1,d5
+L12:
+L10:
 L8:
 	cmp.l	#1048689,d6
 	bne	L7
 L9:
-	;line	89
-	move.w	d4,-(a7)
-	move.l	a5,-(a7)
+	;line	105
+	move.w	#-1,-(a7)
 	move.l	d4,-(a7)
+	pea	-1
 	move.w	#5,-(a7)
+	jsr	__trap_14_wllw
+	lea	12(a7),a7
+	;line	106
+	move.w	#37,-(a7)
 	jsr	(a3)
-	;line	91
+	;line	108
 	moveq	#0,d0
-L14:
+L13:
 	movem.l	-1138(a6),d3/d4/d5/d6/d7/a3/a4/a5
 	unlk	a6
 	rts
