@@ -11,7 +11,7 @@ void start_game(Model *game)
 	(*game).paddle.x = 200;
 	(*game).paddle.y = 380;
 	(*game).paddle.height = 16;
-	(*game).paddle.speed = 3;
+	(*game).paddle.speed = 20;
 	(*game).paddle.direction = 1;
 	(*game).paddle.width = 64;
 
@@ -25,10 +25,14 @@ void start_game(Model *game)
 	(*game).score.score[3] = 0;
 	
 	(*game).ball.width = 8;
-	(*game).ball.x_speed = 2;
-	(*game).ball.y_speed = 2;
+	(*game).ball.x_speed = 10;
+	(*game).ball.y_speed = 10;
 	(*game).ball.x_direction = 1;
 	(*game).ball.y_direction = 1;
+	
+	(*game).lives.lives[0] = True;
+	(*game).lives.lives[1] = True;
+	(*game).lives.lives[2] = True;
 }
 
 void create_bricks(Brick bricks[BRICK_ROWS][BRICK_COLS])

@@ -44,7 +44,7 @@ typedef struct Score
 typedef struct Lives
 {
     unsigned int x, y;
-    char lives[3];                      /* maybe just use 3 X's for lives? */
+    bool lives[3];                      /* maybe just use 3 X's for lives? */
 } Lives;
 
 typedef struct Header

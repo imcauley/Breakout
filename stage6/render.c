@@ -17,46 +17,21 @@ void simple_render(UINT8 *base8, UINT32 *base32, Model *game)
 	render_hud(base8, &((*game).header), &((*game).lives), &((*game).score));
 }
 
-void render(Model *game, Model *snap)
+void render(UINT8 *base8, UINT32 *base32, Model *game)
 {
-	UINT8 *base8 = (UINT8 *) Physbase();
-	UINT32 *base32 = (UINT32 *) Physbase();
-	int col, row;
-
-	render_clear(snap);
 	render_paddle(base32, &((*game).paddle));
 	render_ball(base8, &((*game).ball));
-	
-	for(row = 0; row < BRICK_ROWS; row++)
-	{
-		for(col =0; col < BRICK_COLS; col++)
-		{
-			if(((*game).bricks[row][col].broken) && !((*snap).bricks[row][col].broken))
-			{
-				remove_brick(base32, row, col);
-			}
-		}
-	}
+	render_hud(base8, &((*game).header), &((*game).lives), &((*game).score));
 }
 
-void start_render(Model *game)
+void start_render(UINT32 *base32, Model *game)
 {
-	UINT8 *base8 = (UINT8 *) Physbase();
-	UINT16 *base16 = (UINT16 *) Physbase();
-	UINT32 *base32 = (UINT32 *) Physbase();
-
 	clear_screen(base32);
 	render_bricks(base32, (*game).bricks);
-	render_paddle(base32, &((*game).paddle));
-	render_ball(base8, &((*game).ball));
-
 }
 
-void render_clear(Model *game)
+void render_clear(UINT8 *base8, UINT32 *base32, Model *game)
 {
-	UINT8 *base8 = (UINT8 *) Physbase();
-	UINT32 *base32 = (UINT32 *) Physbase();
-
 	Paddle *paddle = &(game->paddle);
 	Ball *ball = &(game->ball);
 
@@ -157,4 +132,23 @@ void render_hud(UINT8 *base8, Header *header, Lives *lives, Score *score)
 	plot_char(base8, 9, 16, (score->score[2]));
 	plot_char(base8, 10, 16, (score->score[1]));
 	plot_char(base8, 11, 16, (score->score[0]));
+	
+	plot_char(base8, 65, 16, 28);
+	plot_char(base8, 66, 16, 25);
+	plot_char(base8, 67, 16, 38);
+	plot_char(base8, 68, 16, 21);
+	plot_char(base8, 69, 16, 35);
+	
+	if(lives->lives[0] == True)
+	{
+		plot_char(base8, 71, 16, 40);
+	}
+	if(lives->lives[1] == True)
+	{
+		plot_char(base8, 72, 16, 40);
+	}
+	if(lives->lives[2] == True)
+	{
+		plot_char(base8, 73, 16, 40);
+	}
 }

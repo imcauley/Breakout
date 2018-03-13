@@ -5,7 +5,8 @@
 #include <stdio.h>
 #include <string.h>
 
-UINT8 buffer2[32500];
+UINT8 buffer2[32256];
+UINT8 background[32256];
 
 unsigned long get_time()
 {
@@ -40,7 +41,13 @@ int main()
 
 	UINT8 *render_base_8 = buffer2_8;
 	UINT32 *render_base_32 = buffer2_32;
-
+	
+	UINT8 *background_8 = get_base(background);
+	UINT32 *background_32 = (UINT32 *) background_8;
+	int x,y = -1;
+	
+	Brick current[5][20];
+	
 	long input = 0;
 	unsigned long timeThen, timeNow, timeElapsed = get_time();
 	bool swap = False;
@@ -48,11 +55,17 @@ int main()
 	
 	Model game;
 	start_game(&game);
+	
+	memcpy(current, game.bricks, sizeof(current));
+
+	start_render(background_32, &game);
 	simple_render(buffer1_8, buffer1_32, &game);
 
+	printf("\033f");
+	fflush(stdout);
+	
 	while(input != 0x00100071)
 	{
-
 		if(key_pressed() == True)
 		{
 			input = get_input();
@@ -62,12 +75,26 @@ int main()
 		timeNow = get_time();
 		timeElapsed = timeNow - timeThen;
 		if (timeElapsed > 0)
-		{
+		{			
 			synch_events(&(game.paddle), &(game.ball), game.bricks);
 			condition_events(&(game.paddle), &(game.ball), game.bricks, &(game.score));
 			timeThen = timeNow;
+	
+			for(x = 0; x < 5; x++)
+			{
+				for(y = 0; y < 20; y++)
+				{
+					if(current[x][y].broken != ((game.bricks)[x][y]).broken)
+					{
+						remove_brick(background_32, x, y);
+					}
+				}
+			}
+			memcpy(current, game.bricks, sizeof(current));
+
+			memcpy(render_base_8, background_8, 32000);
+			render(render_base_8, render_base_32, &game);
 			
-			simple_render(render_base_8, render_base_32, &game);
 			if(swap == True)
 			{
 				render_base_8 = buffer2_8;
@@ -88,6 +115,8 @@ int main()
 	}
 	Setscreen(-1,buffer1_8,-1);
 	Vsync();
+	printf("\033e");
+	fflush(stdout);
 
 	return 0;
 }
