@@ -179,12 +179,13 @@ L12:
 	jsr	_synch_events
 	lea	12(a7),a7
 	;line	80
+	pea	-1068(a6)
 	pea	-1080(a6)
 	move.l	d5,-(a7)
 	pea	-1120(a6)
 	pea	-1100(a6)
 	jsr	_condition_events
-	lea	16(a7),a7
+	lea	20(a7),a7
 	;line	81
 	move.l	-1048(a6),-1044(a6)
 	;line	83

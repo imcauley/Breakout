@@ -29,6 +29,10 @@ void start_game(Model *game)
 	(*game).ball.y_speed = 10;
 	(*game).ball.x_direction = 1;
 	(*game).ball.y_direction = 1;
+	(*game).ball.launch = False;
+	(*game).ball.launched = False;
+
+
 
 	(*game).lives.lives[0] = True;
 	(*game).lives.lives[1] = True;
@@ -54,8 +58,16 @@ void create_bricks(Brick bricks[BRICK_ROWS][BRICK_COLS])
 
 void move_ball(Ball *ball, Brick bricks[][], Paddle *paddle)
 {
+	if(ball->launched == True)
+	{
         ball->x += ball->x_speed * ball->x_direction;
         ball->y += ball->y_speed * ball->y_direction;
+	}
+	else
+	{
+		ball->x = paddle->x + (1.0/2.0) * paddle->width;
+		ball->y = paddle->y + ball->height;
+	}
 }
 
 bool ball_collides_left(Ball *ball)
@@ -153,8 +165,8 @@ void launch_ball(Paddle *paddle, Ball *ball)
     if (ball->launch == True && ball->launched == False)
     {
         int random = rand() % 2;
-        ball->x = paddle->x + (1.0/2.0) * paddle->width;
-        ball->y = paddle->y + ball->height;
+				if(random == 0)
+					random = -1;
         ball->x_speed = 10;
         ball->y_speed = 10;
         ball->y_direction = 1;

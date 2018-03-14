@@ -16,7 +16,10 @@ void asynch_events(Paddle *paddle, Ball *ball, long input)
 		paddle->direction = 1;
 
 	if (input == SPACE)
+	{
         ball->launch = True;
+				launch_ball(paddle, ball);
+	}
 }
 
 void synch_events(Paddle *paddle, Ball *ball, Brick bricks[][])
@@ -27,7 +30,7 @@ void synch_events(Paddle *paddle, Ball *ball, Brick bricks[][])
     paddle->direction = 0;
 }
 
-void condition_events(Paddle *paddle, Ball *ball, Brick bricks[][], Score *score)
+void condition_events(Paddle *paddle, Ball *ball, Brick bricks[][], Score *score, Lives *lives)
 {
 	char block_collision;
 
@@ -47,6 +50,7 @@ void condition_events(Paddle *paddle, Ball *ball, Brick bricks[][], Score *score
 	{
 		ball->y = 400 - ball->height;
 		ball->y_direction *= -1;
+		die(ball, lives);
 	}
 
   else if (ball_collides_left(ball))
@@ -72,5 +76,19 @@ void condition_events(Paddle *paddle, Ball *ball, Brick bricks[][], Score *score
 	else if (block_collision == 'y')
 	{
 		ball->y_direction *= -1;
+	}
+}
+
+void die(Ball *ball, Lives *lives)
+{
+	int i;
+	for(i = 0; i < 3; i++)
+	{
+		if(lives->lives[i] == True)
+		{
+			lives->lives[i] = False;
+			ball->launched = False;
+			break;
+		}
 	}
 }
