@@ -26,8 +26,13 @@ void render(UINT8 *base8, UINT32 *base32, Model *game)
 
 void start_render(UINT32 *base32, Model *game)
 {
+	int x;
 	clear_screen(base32);
 	render_bricks(base32, (*game).bricks);
+	for(x = 780; x < 800; x++)
+	{
+		*(base32 + (x)) = 0x00000000;
+	}
 }
 
 void render_clear(UINT8 *base8, UINT32 *base32, Model *game)
@@ -132,13 +137,13 @@ void render_hud(UINT8 *base8, Header *header, Lives *lives, Score *score)
 	plot_char(base8, 9, 16, (score->score[2]));
 	plot_char(base8, 10, 16, (score->score[1]));
 	plot_char(base8, 11, 16, (score->score[0]));
-	
+
 	plot_char(base8, 65, 16, 28);
 	plot_char(base8, 66, 16, 25);
 	plot_char(base8, 67, 16, 38);
 	plot_char(base8, 68, 16, 21);
 	plot_char(base8, 69, 16, 35);
-	
+
 	if(lives->lives[0] == True)
 	{
 		plot_char(base8, 71, 16, 40);

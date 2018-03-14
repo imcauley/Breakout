@@ -18,18 +18,18 @@ void start_game(Model *game)
 	(*game).ball.x = 200;
 	(*game).ball.y = 370;
 	(*game).ball.height = 8;
-	
+
 	(*game).score.score[0] = 0;
 	(*game).score.score[1] = 0;
 	(*game).score.score[2] = 0;
 	(*game).score.score[3] = 0;
-	
+
 	(*game).ball.width = 8;
 	(*game).ball.x_speed = 10;
 	(*game).ball.y_speed = 10;
 	(*game).ball.x_direction = 1;
 	(*game).ball.y_direction = 1;
-	
+
 	(*game).lives.lives[0] = True;
 	(*game).lives.lives[1] = True;
 	(*game).lives.lives[2] = True;
@@ -58,13 +58,24 @@ void move_ball(Ball *ball, Brick bricks[][], Paddle *paddle)
         ball->y += ball->y_speed * ball->y_direction;
 }
 
-bool ball_collides_walls(Ball *ball, Brick bricks[BRICK_ROWS][BRICK_COLS], Paddle *paddle)
+bool ball_collides_left(Ball *ball)
 {
-	if (ball->x <= 0 || ball->x + ball->width >= 640)
-        return True;
-	else
+	if(ball->x <= 0)
+	{
+		return True;
+	}
 		return False;
 }
+
+bool ball_collides_right(Ball *ball)
+{
+	if(ball->x >= 640)
+	{
+		return True;
+	}
+		return False;
+}
+
 
 bool ball_collides_top(Ball *ball, Brick bricks[BRICK_ROWS][BRICK_COLS], Paddle *paddle)
 {
@@ -104,11 +115,11 @@ char ball_collides_bricks(Ball *ball, Brick bricks[BRICK_ROWS][BRICK_COLS], Padd
         {
             bricks[y_pos][x_pos].broken = True;
 			add_score(score);
-			
+
             if (ball->y <= bricks[y_pos][x_pos].y + bricks[y_pos][x_pos].height ||
                 ball->y + ball->height >= bricks[y_pos][x_pos].y)
                 return 'y';
-				
+
             else
                 return 'x';
         }

@@ -173,42 +173,48 @@ _move_ball:
 	move.l	(a7)+,a3
 	unlk	a6
 	rts
-_ball_collides_walls:
+_ball_collides_left:
 	link	a6,#0
-	move.l	a3,-(a7)
-	move.l	8(a6),a3
 	;line	63
-	tst.w	(a3)
-	ble	L10
-	move.w	12(a3),d0
-	add.w	(a3),d0
-	cmp.w	#640,d0
-	bcs	L9
-L10:
-	;line	64
+	move.l	8(a6),a0
+	tst.w	(a0)
+	bgt	L9
+	;line	65
 	moveq	#1,d0
-	bra	L11
-	bra	L12
+	bra	L10
 L9:
-	;line	66
+	;line	67
+	moveq	#0,d0
+L10:
+	unlk	a6
+	rts
+_ball_collides_right:
+	link	a6,#0
+	;line	72
+	move.l	8(a6),a0
+	cmp.w	#640,(a0)
+	blt	L11
+	;line	74
+	moveq	#1,d0
+	bra	L12
+L11:
+	;line	76
 	moveq	#0,d0
 L12:
-L11:
-	move.l	(a7)+,a3
 	unlk	a6
 	rts
 _ball_collides_top:
 	link	a6,#0
-	;line	71
+	;line	82
 	move.l	8(a6),a0
 	cmp.w	#40,2(a0)
 	bgt	L13
-	;line	72
+	;line	83
 	moveq	#1,d0
 	bra	L14
 	bra	L15
 L13:
-	;line	74
+	;line	85
 	moveq	#0,d0
 L15:
 L14:
@@ -216,18 +222,18 @@ L14:
 	rts
 _ball_collides_bottom:
 	link	a6,#0
-	;line	79
+	;line	90
 	move.l	8(a6),a0
 	move.w	2(a0),d0
 	add.w	14(a0),d0
 	cmp.w	#400,d0
 	bcs	L16
-	;line	80
+	;line	91
 	moveq	#1,d0
 	bra	L17
 	bra	L18
 L16:
-	;line	82
+	;line	93
 	moveq	#0,d0
 L18:
 L17:
@@ -238,7 +244,7 @@ _ball_collides_paddle:
 	movem.l	a3/a4,-(a7)
 	move.l	8(a6),a3
 	move.l	16(a6),a4
-	;line	88
+	;line	99
 	move.w	2(a3),d0
 	add.w	14(a3),d0
 	cmp.w	2(a4),d0
@@ -252,12 +258,12 @@ _ball_collides_paddle:
 	move.w	(a3),d1
 	cmp.w	d0,d1
 	bhi	L19
-	;line	90
+	;line	101
 	moveq	#1,d0
 	bra	L20
 	bra	L21
 L19:
-	;line	92
+	;line	103
 	moveq	#0,d0
 L21:
 L20:
@@ -270,10 +276,10 @@ _ball_collides_bricks:
 	move.l	8(a6),a3
 	move.l	12(a6),a4
 	move.l	#200,d5
-	;line	98
+	;line	109
 	cmp.w	#120,2(a3)
 	bge	L22
-	;line	103
+	;line	114
 	move.w	(a3),d0
 	asr.w	#5,d0
 	move.w	d0,d4
@@ -281,7 +287,7 @@ _ball_collides_bricks:
 	sub.w	#40,d0
 	asr.w	#4,d0
 	move.w	d0,d3
-	;line	103
+	;line	114
 	move.w	d4,d0
 	muls	#10,d0
 	move.l	d0,a0
@@ -295,7 +301,7 @@ _ball_collides_bricks:
 	add.l	d0,a0
 	tst.w	4(a0)
 	bne	L23
-	;line	105
+	;line	116
 	move.w	d4,d0
 	muls	#10,d0
 	move.l	d0,a0
@@ -308,11 +314,11 @@ _ball_collides_bricks:
 	move.l	(a7)+,a0
 	add.l	d0,a0
 	move.w	#1,4(a0)
-	;line	106
+	;line	117
 	move.l	20(a6),-(a7)
 	jsr	_add_score
 	addq.l	#4,a7
-	;line	108
+	;line	119
 	move.w	d4,d0
 	muls	#10,d0
 	move.l	d0,a0
@@ -359,18 +365,18 @@ _ball_collides_bricks:
 	cmp.w	2(a0),d0
 	bcs	L24
 L25:
-	;line	110
+	;line	121
 	moveq	#121,d0
 	bra	L26
 	bra	L27
 L24:
-	;line	113
+	;line	124
 	moveq	#120,d0
 	bra	L26
 L27:
 L23:
 L22:
-	;line	117
+	;line	128
 	moveq	#48,d0
 L26:
 	movem.l	-24(a6),d3/d4/d5/a3/a4
@@ -380,7 +386,7 @@ _move_paddle:
 	link	a6,#0
 	move.l	a3,-(a7)
 	move.l	8(a6),a3
-	;line	121
+	;line	132
 	move.w	4(a3),d0
 	muls	6(a3),d0
 	add.w	d0,(a3)
@@ -391,31 +397,31 @@ _paddle_collides:
 	link	a6,#0
 	move.l	a3,-(a7)
 	move.l	8(a6),a3
-	;line	126
+	;line	137
 	tst.w	(a3)
 	bge	L28
-	;line	128
+	;line	139
 	clr.w	(a3)
-	;line	129
+	;line	140
 	moveq	#1,d0
 	bra	L29
 	bra	L30
 L28:
-	;line	132
+	;line	143
 	move.w	8(a3),d0
 	add.w	(a3),d0
 	cmp.w	#640,d0
 	bls	L31
-	;line	134
+	;line	145
 	move.w	#640,d0
 	sub.w	8(a3),d0
 	move.w	d0,(a3)
-	;line	135
+	;line	146
 	moveq	#1,d0
 	bra	L29
 L31:
 L30:
-	;line	137
+	;line	148
 	moveq	#0,d0
 L29:
 	move.l	(a7)+,a3
@@ -428,18 +434,18 @@ _launch_ball:
 	movem.l	a3/a4,-(a7)
 	move.l	12(a6),a3
 	move.l	8(a6),a4
-	;line	142
+	;line	153
 	cmp.w	#1,16(a3)
 	bne	L32
 	tst.w	18(a3)
 	bne	L32
-	;line	145
+	;line	156
 	jsr	_rand
 	ext.l	d0
 	divs	#2,d0
 	swap	d0
 	move.w	d0,-2(a6)
-	;line	145
+	;line	156
 	move.w	(a4),d0
 	ext.l	d0
 	move.l	d0,-(a7)
@@ -461,21 +467,21 @@ _launch_ball:
 	pea	-34(a6)
 	jsr	.Xdftol
 	move.w	d0,(a3)
-	;line	146
+	;line	157
 	move.w	2(a4),d0
 	add.w	14(a3),d0
 	move.w	d0,2(a3)
-	;line	147
+	;line	158
 	move.w	#10,4(a3)
-	;line	148
+	;line	159
 	move.w	#10,6(a3)
-	;line	149
+	;line	160
 	move.w	#1,10(a3)
-	;line	150
+	;line	161
 	move.w	-2(a6),8(a3)
-	;line	151
+	;line	162
 	clr.w	16(a3)
-	;line	152
+	;line	163
 	move.w	#1,18(a3)
 L32:
 	movem.l	-42(a6),a3/a4
@@ -485,31 +491,31 @@ _add_score:
 	link	a6,#-2
 	movem.l	d3/a3,-(a7)
 	move.l	8(a6),a3
-	;line	159
+	;line	170
 	moveq	#0,d3
 	bra	L35
 L34:
-	;line	161
+	;line	172
 	move.w	d3,a0
 	add.l	a0,a0
 	add.l	a3,a0
 	cmp.w	#9,4(a0)
 	bne	L38
-	;line	163
+	;line	174
 	move.w	d3,a0
 	add.l	a0,a0
 	add.l	a3,a0
 	clr.w	4(a0)
 	bra	L39
 L38:
-	;line	167
+	;line	178
 	move.w	d3,a0
 	add.l	a0,a0
 	moveq	#4,d0
 	add.l	a3,d0
 	add.l	d0,a0
 	addq.w	#1,(a0)
-	;line	168
+	;line	179
 	bra	L36
 L39:
 L37:
@@ -522,10 +528,11 @@ L36:
 	unlk	a6
 	rts
 	globl	_move_ball
-	globl	_ball_collides_walls
 	globl	_ball_collides_top
 	globl	_ball_collides_bottom
 	globl	_ball_collides_bricks
+	globl	_ball_collides_right
+	globl	_ball_collides_left
 	globl	_paddle_collides
 	globl	_move_paddle
 	globl	_launch_ball

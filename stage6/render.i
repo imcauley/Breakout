@@ -1,9 +1,9 @@
 # 1 "render.c" 1
-# 1 "C:/c68/include/osbind.h" 1
-# 1 "C:/c68/include/compiler.h" 1
-# 9 "C:/c68/include/osbind.h" 2
-# 1 "C:/c68/include/ostruct.h" 1
-# 22 "C:/c68/include/ostruct.h"
+# 1 "b:/c68/include/osbind.h" 1
+# 1 "b:/c68/include/compiler.h" 1
+# 9 "b:/c68/include/osbind.h" 2
+# 1 "b:/c68/include/ostruct.h" 1
+# 22 "b:/c68/include/ostruct.h"
 typedef struct {
     long b_free;
     long b_total;
@@ -24,7 +24,7 @@ typedef struct
         unsigned char actuallen;
         char    buffer[255];
 } _CCONLINE;
-# 48 "C:/c68/include/ostruct.h"
+# 48 "b:/c68/include/ostruct.h"
 typedef struct _dta {
     char 	    dta_buf[21];
     char            dta_attribute;
@@ -33,7 +33,7 @@ typedef struct _dta {
     long            dta_size;
     char            dta_name[14];
 } _DTA;
-# 98 "C:/c68/include/ostruct.h"
+# 98 "b:/c68/include/ostruct.h"
 typedef struct {
   short recsiz;
   short clsiz;
@@ -62,7 +62,7 @@ typedef struct {
     _MD *mp_used;
     _MD *mp_rover;
 } _MPB;
-# 141 "C:/c68/include/ostruct.h"
+# 141 "b:/c68/include/ostruct.h"
 typedef struct {
     char    *ibuf;
     short   ibufsiz;
@@ -121,8 +121,8 @@ typedef struct
         int     pb_prport;
         void    *pb_mask;
 } _PBDEF;
-# 17 "C:/c68/include/osbind.h" 2
-# 33 "C:/c68/include/osbind.h"
+# 17 "b:/c68/include/osbind.h" 2
+# 33 "b:/c68/include/osbind.h"
  long _trap_1_w		(short) ;
  long _trap_1_ww	(short,short) ;
  long _trap_1_wl	(short,long) ;
@@ -155,7 +155,7 @@ typedef struct
  long _trap_14_wwwwl	(short,short,short,short,long) ;
  long _trap_14_wwwl	(short,short,short,long) ;
  long _trap_14_wlwlw	(short,long,short,long,short) ;
-# 103 "C:/c68/include/osbind.h"
+# 103 "b:/c68/include/osbind.h"
  long _trap_1_ 	(short,...) ;
  long _trap_14_ 	(short,...) ;
  long _trap_13_ 	(short,...) ;
@@ -249,10 +249,11 @@ typedef struct Model
 } Model;
 
 void move_ball(Ball *ball, Brick bricks[][], Paddle *paddle);
-bool ball_collides_walls(Ball *ball, Brick bricks[5 ][20 ], Paddle *paddle);
 bool ball_collides_top(Ball *ball, Brick bricks[5 ][20 ], Paddle *paddle);
 bool ball_collides_bottom(Ball *ball, Brick bricks[5 ][20 ], Paddle *paddle);
 char ball_collides_bricks(Ball *ball, Brick bricks[5 ][20 ], Paddle *paddle, Score *score);
+bool ball_collides_right(Ball *ball);
+bool ball_collides_left(Ball *ball);
 bool paddle_collides(Paddle *paddle);
 void move_paddle(Paddle *paddle);
 void launch_ball(Paddle *paddle, Ball *ball);
@@ -292,8 +293,13 @@ void render(UINT8 *base8, UINT32 *base32, Model *game)
 
 void start_render(UINT32 *base32, Model *game)
 {
+	int x;
 	clear_screen(base32);
 	render_bricks(base32, (*game).bricks);
+	for(x = 780; x < 800; x++)
+	{
+		*(base32 + (x)) = 0x00000000;
+	}
 }
 
 void render_clear(UINT8 *base8, UINT32 *base32, Model *game)

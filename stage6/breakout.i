@@ -113,11 +113,11 @@ void render_clear(UINT8 *base8, UINT32 *base32, Model *game);
 void simple_render(UINT8 *base8, UINT32 *base32, Model *game);
 # 1 "breakout.c" 2
 # 1 "./input.c" 1
-# 1 "C:/c68/include/osbind.h" 1
-# 1 "C:/c68/include/compiler.h" 1
-# 9 "C:/c68/include/osbind.h" 2
-# 1 "C:/c68/include/ostruct.h" 1
-# 22 "C:/c68/include/ostruct.h"
+# 1 "b:/c68/include/osbind.h" 1
+# 1 "b:/c68/include/compiler.h" 1
+# 9 "b:/c68/include/osbind.h" 2
+# 1 "b:/c68/include/ostruct.h" 1
+# 22 "b:/c68/include/ostruct.h"
 typedef struct {
     long b_free;
     long b_total;
@@ -138,7 +138,7 @@ typedef struct
         unsigned char actuallen;
         char    buffer[255];
 } _CCONLINE;
-# 48 "C:/c68/include/ostruct.h"
+# 48 "b:/c68/include/ostruct.h"
 typedef struct _dta {
     char 	    dta_buf[21];
     char            dta_attribute;
@@ -147,7 +147,7 @@ typedef struct _dta {
     long            dta_size;
     char            dta_name[14];
 } _DTA;
-# 98 "C:/c68/include/ostruct.h"
+# 98 "b:/c68/include/ostruct.h"
 typedef struct {
   short recsiz;
   short clsiz;
@@ -176,7 +176,7 @@ typedef struct {
     _MD *mp_used;
     _MD *mp_rover;
 } _MPB;
-# 141 "C:/c68/include/ostruct.h"
+# 141 "b:/c68/include/ostruct.h"
 typedef struct {
     char    *ibuf;
     short   ibufsiz;
@@ -235,8 +235,8 @@ typedef struct
         int     pb_prport;
         void    *pb_mask;
 } _PBDEF;
-# 17 "C:/c68/include/osbind.h" 2
-# 33 "C:/c68/include/osbind.h"
+# 17 "b:/c68/include/osbind.h" 2
+# 33 "b:/c68/include/osbind.h"
  long _trap_1_w		(short) ;
  long _trap_1_ww	(short,short) ;
  long _trap_1_wl	(short,long) ;
@@ -269,15 +269,15 @@ typedef struct
  long _trap_14_wwwwl	(short,short,short,short,long) ;
  long _trap_14_wwwl	(short,short,short,long) ;
  long _trap_14_wlwlw	(short,long,short,long,short) ;
-# 103 "C:/c68/include/osbind.h"
+# 103 "b:/c68/include/osbind.h"
  long _trap_1_ 	(short,...) ;
  long _trap_14_ 	(short,...) ;
  long _trap_13_ 	(short,...) ;
 # 1 "./input.c" 2
-# 1 "C:/c68/include/stdio.h" 1
-# 20 "C:/c68/include/stdio.h"
+# 1 "b:/c68/include/stdio.h" 1
+# 20 "b:/c68/include/stdio.h"
 typedef unsigned long  size_t;
-# 69 "C:/c68/include/stdio.h"
+# 69 "b:/c68/include/stdio.h"
 typedef	struct
 	{
 	long		_cnt;
@@ -292,9 +292,9 @@ typedef	struct
 
 
 typedef unsigned long fpos_t;
-# 92 "C:/c68/include/stdio.h"
+# 92 "b:/c68/include/stdio.h"
 extern	FILE	_iob[];
-# 108 "C:/c68/include/stdio.h"
+# 108 "b:/c68/include/stdio.h"
  char *	ctermid	(char *) ;
 
 
@@ -313,7 +313,7 @@ extern	FILE	_iob[];
 
  void	setbuf	(FILE *, char *) ;
  int	setvbuf	(FILE *, char *, int, size_t) ;
-# 132 "C:/c68/include/stdio.h"
+# 132 "b:/c68/include/stdio.h"
  int  fscanf  (FILE *, const char *, ...) ;
  int  scanf   (const char *, ...) ;
  int  sscanf  (const char *, const char *, ...) ;
@@ -367,7 +367,7 @@ extern	FILE	_iob[];
  short 	getw	(FILE *) ;
  short 	putw	(short, FILE *) ;
  void	_getbuf	(FILE *fp) ;
-# 192 "C:/c68/include/stdio.h"
+# 192 "b:/c68/include/stdio.h"
  int	_filbuf	(FILE *) ;
 # 2 "./input.c" 2
 # 1 "./types.h" 1
@@ -399,12 +399,12 @@ void asynch_events(Paddle *paddle, Ball *ball, long input);
 void synch_events(Paddle *paddle, Ball *ball, Brick bricks[][]);
 void condition_events(Paddle *paddle, Ball *ball, Brick bricks[][], Score *score);
 # 3 "breakout.c" 2
-# 1 "C:/c68/include/osbind.h" 1
+# 1 "b:/c68/include/osbind.h" 1
 # 4 "breakout.c" 2
-# 1 "C:/c68/include/stdio.h" 1
+# 1 "b:/c68/include/stdio.h" 1
 # 5 "breakout.c" 2
-# 1 "C:/c68/include/string.h" 1
-# 25 "C:/c68/include/string.h"
+# 1 "b:/c68/include/string.h" 1
+# 25 "b:/c68/include/string.h"
  void *memcpy (void *dst, const void *src, size_t size) ;
  void *memmove (void *dst, const void *src, size_t size) ;
  int memcmp (const void *s1, const void *s2, size_t size) ;
@@ -428,7 +428,7 @@ void condition_events(Paddle *paddle, Ball *ball, Brick bricks[][], Score *score
  char *strtok (char *s, const char *delim) ;
  size_t strlen (const char *scan) ;
  char *strerror (int errnum) ;
-# 54 "C:/c68/include/string.h"
+# 54 "b:/c68/include/string.h"
  void *memccpy (void *dst, const void *src, int ucharstop, size_t size) ;
  char *strlwr (char *string) ;
  char *strupr (char *string) ;
@@ -530,10 +530,6 @@ int main()
 		if (timeElapsed > 0)
 		{
 			synch_events(&(game.paddle), &(game.ball), game.bricks);
-			if(game.ball.y >= 400)
-			{
-				input = 0x00100071;
-			}
 			condition_events(&(game.paddle), &(game.ball), game.bricks, &(game.score));
 			timeThen = timeNow;
 

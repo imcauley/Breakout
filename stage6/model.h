@@ -64,10 +64,11 @@ typedef struct Model
 } Model;
 
 void move_ball(Ball *ball, Brick bricks[][], Paddle *paddle);
-bool ball_collides_walls(Ball *ball, Brick bricks[BRICK_ROWS][BRICK_COLS], Paddle *paddle);
 bool ball_collides_top(Ball *ball, Brick bricks[BRICK_ROWS][BRICK_COLS], Paddle *paddle);
 bool ball_collides_bottom(Ball *ball, Brick bricks[BRICK_ROWS][BRICK_COLS], Paddle *paddle);
 char ball_collides_bricks(Ball *ball, Brick bricks[BRICK_ROWS][BRICK_COLS], Paddle *paddle, Score *score);
+bool ball_collides_right(Ball *ball);
+bool ball_collides_left(Ball *ball);
 bool paddle_collides(Paddle *paddle);
 void move_paddle(Paddle *paddle);
 void launch_ball(Paddle *paddle, Ball *ball);
@@ -75,4 +76,3 @@ void create_bricks(Brick bricks[BRICK_ROWS][BRICK_COLS]);
 void start_game(Model *game);
 bool ball_collides_paddle(Ball *ball, Brick bricks[BRICK_ROWS][BRICK_COLS], Paddle *paddle);
 void add_score(Score *score);
-
