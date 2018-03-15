@@ -1,9 +1,9 @@
 # 1 "render.c" 1
-# 1 "b:/c68/include/osbind.h" 1
-# 1 "b:/c68/include/compiler.h" 1
-# 9 "b:/c68/include/osbind.h" 2
-# 1 "b:/c68/include/ostruct.h" 1
-# 22 "b:/c68/include/ostruct.h"
+# 1 "C:/c68/include/osbind.h" 1
+# 1 "C:/c68/include/compiler.h" 1
+# 9 "C:/c68/include/osbind.h" 2
+# 1 "C:/c68/include/ostruct.h" 1
+# 22 "C:/c68/include/ostruct.h"
 typedef struct {
     long b_free;
     long b_total;
@@ -24,7 +24,7 @@ typedef struct
         unsigned char actuallen;
         char    buffer[255];
 } _CCONLINE;
-# 48 "b:/c68/include/ostruct.h"
+# 48 "C:/c68/include/ostruct.h"
 typedef struct _dta {
     char 	    dta_buf[21];
     char            dta_attribute;
@@ -33,7 +33,7 @@ typedef struct _dta {
     long            dta_size;
     char            dta_name[14];
 } _DTA;
-# 98 "b:/c68/include/ostruct.h"
+# 98 "C:/c68/include/ostruct.h"
 typedef struct {
   short recsiz;
   short clsiz;
@@ -62,7 +62,7 @@ typedef struct {
     _MD *mp_used;
     _MD *mp_rover;
 } _MPB;
-# 141 "b:/c68/include/ostruct.h"
+# 141 "C:/c68/include/ostruct.h"
 typedef struct {
     char    *ibuf;
     short   ibufsiz;
@@ -121,8 +121,8 @@ typedef struct
         int     pb_prport;
         void    *pb_mask;
 } _PBDEF;
-# 17 "b:/c68/include/osbind.h" 2
-# 33 "b:/c68/include/osbind.h"
+# 17 "C:/c68/include/osbind.h" 2
+# 33 "C:/c68/include/osbind.h"
  long _trap_1_w		(short) ;
  long _trap_1_ww	(short,short) ;
  long _trap_1_wl	(short,long) ;
@@ -155,7 +155,7 @@ typedef struct
  long _trap_14_wwwwl	(short,short,short,short,long) ;
  long _trap_14_wwwl	(short,short,short,long) ;
  long _trap_14_wlwlw	(short,long,short,long,short) ;
-# 103 "b:/c68/include/osbind.h"
+# 103 "C:/c68/include/osbind.h"
  long _trap_1_ 	(short,...) ;
  long _trap_14_ 	(short,...) ;
  long _trap_13_ 	(short,...) ;
@@ -230,6 +230,7 @@ typedef struct Lives
 {
     unsigned int x, y;
     bool lives[3];
+    bool game_over;
 } Lives;
 
 typedef struct Header
@@ -261,6 +262,7 @@ void create_bricks(Brick bricks[5 ][20 ]);
 void start_game(Model *game);
 bool ball_collides_paddle(Ball *ball, Brick bricks[5 ][20 ], Paddle *paddle);
 void add_score(Score *score);
+bool game_over(Lives *lives);
 # 5 "./render.h" 2
 
 
@@ -273,6 +275,7 @@ void remove_brick(UINT32 *base, int row, int col);
 void start_render(UINT32 *base32, Model *game);
 void render_clear(UINT8 *base8, UINT32 *base32, Model *game);
 void simple_render(UINT8 *base8, UINT32 *base32, Model *game);
+void render_game_over(UINT8 *base8, Score *score);
 # 2 "render.c" 2
 # 11 "render.c"
 void simple_render(UINT8 *base8, UINT32 *base32, Model *game)
@@ -286,9 +289,17 @@ void simple_render(UINT8 *base8, UINT32 *base32, Model *game)
 
 void render(UINT8 *base8, UINT32 *base32, Model *game)
 {
-	render_paddle(base32, &((*game).paddle));
-	render_ball(base8, &((*game).ball));
-	render_hud(base8, &((*game).header), &((*game).lives), &((*game).score));
+    if (game->lives.game_over == 1 )
+    {
+        clear_screen(base32);
+        render_game_over(base8, &(game->score));
+    }
+    else
+	{
+        render_paddle(base32, &((*game).paddle));
+        render_ball(base8, &((*game).ball));
+        render_hud(base8, &((*game).header), &((*game).lives), &((*game).score));
+    }
 }
 
 void start_render(UINT32 *base32, Model *game)
@@ -423,4 +434,35 @@ void render_hud(UINT8 *base8, Header *header, Lives *lives, Score *score)
 	{
 		plot_char(base8, 73, 16, 40);
 	}
+}
+
+void render_game_over(UINT8 *base8, Score *score)
+{
+    plot_char(base8, 36, 200, 23);
+    plot_char(base8, 37, 200, 17);
+    plot_char(base8, 38, 200, 29);
+    plot_char(base8, 39, 200, 21);
+
+    plot_char(base8, 41, 200, 31);
+    plot_char(base8, 42, 200, 38);
+    plot_char(base8, 43, 200, 21);
+    plot_char(base8, 44, 200, 34);
+
+    plot_char(base8, 35, 215, 22);
+    plot_char(base8, 36, 215, 25);
+    plot_char(base8, 37, 215, 30);
+    plot_char(base8, 38, 215, 17);
+    plot_char(base8, 39, 215, 28);
+
+    plot_char(base8, 41, 215, 35);
+	plot_char(base8, 42, 215, 19);
+	plot_char(base8, 43, 215, 31);
+	plot_char(base8, 44, 215, 34);
+	plot_char(base8, 45, 215, 21);
+    plot_char(base8, 46, 215, 10);
+
+    plot_char(base8, 38, 240, (score->score[3]));
+	plot_char(base8, 39, 240, (score->score[2]));
+	plot_char(base8, 40, 240, (score->score[1]));
+	plot_char(base8, 41, 240, (score->score[0]));
 }

@@ -45,6 +45,7 @@ typedef struct Lives
 {
     unsigned int x, y;
     bool lives[3];                      /* maybe just use 3 X's for lives? */
+    bool game_over;
 } Lives;
 
 typedef struct Header
@@ -76,3 +77,4 @@ void create_bricks(Brick bricks[BRICK_ROWS][BRICK_COLS]);
 void start_game(Model *game);
 bool ball_collides_paddle(Ball *ball, Brick bricks[BRICK_ROWS][BRICK_COLS], Paddle *paddle);
 void add_score(Score *score);
+bool game_over(Lives *lives);

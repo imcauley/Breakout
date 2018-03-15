@@ -48,12 +48,10 @@ void condition_events(Paddle *paddle, Ball *ball, Brick bricks[][], Score *score
 
 	else if (ball_collides_bottom(ball, bricks, paddle))
 	{
-		ball->y = 400 - ball->height;
-		ball->y_direction *= -1;
 		die(ball, lives);
 	}
 
-  else if (ball_collides_left(ball))
+    else if (ball_collides_left(ball))
 	{
 		ball->x = 0;
 		ball->x_direction *= -1;
@@ -77,6 +75,9 @@ void condition_events(Paddle *paddle, Ball *ball, Brick bricks[][], Score *score
 	{
 		ball->y_direction *= -1;
 	}
+    
+    if (game_over(lives))
+        lives->game_over = True;
 }
 
 void die(Ball *ball, Lives *lives)

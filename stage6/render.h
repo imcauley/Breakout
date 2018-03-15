@@ -13,4 +13,5 @@ void remove_brick(UINT32 *base, int row, int col);
 void start_render(UINT32 *base32, Model *game);
 void render_clear(UINT8 *base8, UINT32 *base32, Model *game);
 void simple_render(UINT8 *base8, UINT32 *base32, Model *game);
+void render_game_over(UINT8 *base8, Score *score);
 #endif

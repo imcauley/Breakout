@@ -2,8 +2,16 @@
 #include <stdio.h>
 #include "model.h"
 
-#define BRICK_ROWS 5
-#define BRICK_COLS 20
+#define BRICK_ROWS      5
+#define BRICK_COLS      20
+#define SCREEN_HEIGHT   400
+#define SCREEN_WIDTH    640
+#define SCREEN_START    0
+#define HEADER_HEIGHT   40
+#define NUM_LIVES       3
+#define BRICKS_START    120
+#define BRICK_WIDTH     32
+#define BRICK_HEIGHT    16
 
 void start_game(Model *game)
 {
@@ -31,12 +39,25 @@ void start_game(Model *game)
 	(*game).ball.y_direction = 1;
 	(*game).ball.launch = False;
 	(*game).ball.launched = False;
-
-
-
+    
+    (*game).lives.game_over = False;
 	(*game).lives.lives[0] = True;
 	(*game).lives.lives[1] = True;
 	(*game).lives.lives[2] = True;
+}
+
+bool game_over(Lives *lives)
+{
+    int i;
+    bool over = True;
+    
+    for(i = 0; i < NUM_LIVES; i++)
+	{
+		if(lives->lives[i] == True)
+			over = False;
+	}
+    
+    return over;
 }
 
 void create_bricks(Brick bricks[BRICK_ROWS][BRICK_COLS])
@@ -50,8 +71,8 @@ void create_bricks(Brick bricks[BRICK_ROWS][BRICK_COLS])
 			(bricks[r][c]).x = (r * 20);
 			(bricks[r][c]).y = c * BRICK_ROWS;
 			(bricks[r][c]).broken = False;
-			(bricks[r][c]).width = 32;
-			(bricks[r][c]).height = 16;
+			(bricks[r][c]).width = BRICK_WIDTH;
+			(bricks[r][c]).height = BRICK_HEIGHT;
 		}
 	}
 }
@@ -72,7 +93,7 @@ void move_ball(Ball *ball, Brick bricks[][], Paddle *paddle)
 
 bool ball_collides_left(Ball *ball)
 {
-	if(ball->x <= 0)
+	if(ball->x <= SCREEN_START)
 	{
 		return True;
 	}
@@ -81,7 +102,7 @@ bool ball_collides_left(Ball *ball)
 
 bool ball_collides_right(Ball *ball)
 {
-	if(ball->x >= 640)
+	if(ball->x >= SCREEN_WIDTH)
 	{
 		return True;
 	}
@@ -91,7 +112,7 @@ bool ball_collides_right(Ball *ball)
 
 bool ball_collides_top(Ball *ball, Brick bricks[BRICK_ROWS][BRICK_COLS], Paddle *paddle)
 {
-    if (ball->y <= 40)
+    if (ball->y <= HEADER_HEIGHT)
         return True;
 	else
 		return False;
@@ -99,7 +120,7 @@ bool ball_collides_top(Ball *ball, Brick bricks[BRICK_ROWS][BRICK_COLS], Paddle 
 
 bool ball_collides_bottom(Ball *ball, Brick bricks[BRICK_ROWS][BRICK_COLS], Paddle *paddle)
 {
-    if (ball->y + ball->height >= 400)      /* collision with top/bottom walls */
+    if (ball->y + ball->height >= SCREEN_HEIGHT)      /* collision with top/bottom walls */
 		return True;
 	else
 		return False;
@@ -118,10 +139,10 @@ bool ball_collides_paddle(Ball *ball, Brick bricks[BRICK_ROWS][BRICK_COLS], Padd
 
 char ball_collides_bricks(Ball *ball, Brick bricks[BRICK_ROWS][BRICK_COLS], Paddle *paddle, Score *score)
 {
-    if (ball->y < 120)
+    if (ball->y < BRICKS_START)
     {
-        int x_pos = ball-> x / 32;
-        int y_pos = (ball->y - 40)/ 16;
+        int x_pos = ball-> x / BRICK_WIDTH;
+        int y_pos = (ball->y - HEADER_HEIGHT)/ BRICK_HEIGHT;
 
         if (bricks[y_pos][x_pos].broken == False)
         {
@@ -146,15 +167,15 @@ void move_paddle(Paddle *paddle)
 
 bool paddle_collides(Paddle *paddle)
 {
-    if ((paddle->x) < 0)       /* collision with side walls */
+    if ((paddle->x) < SCREEN_START)       /* collision with side walls */
     {
-        (paddle->x) = 0;
+        (paddle->x) = SCREEN_START;
         return True;
     }
 
-	else if ((paddle->x + paddle->width) > 640)
+	else if ((paddle->x + paddle->width) > SCREEN_WIDTH)
 	{
-		paddle->x = (640 - paddle->width);
+		paddle->x = (SCREEN_WIDTH - paddle->width);
 		return True;
 	}
     return False;

@@ -5,6 +5,8 @@
 #include <stdio.h>
 #include <string.h>
 
+#define Q    0x00100071
+
 UINT8 buffer2[32256];
 UINT8 background[32256];
 
@@ -64,7 +66,7 @@ int main()
 	printf("\033f");
 	fflush(stdout);
 
-	while(input != 0x00100071)
+	while(input != Q)
 	{
 		if(key_pressed() == True)
 		{
