@@ -1,3 +1,20 @@
+/*=========================================
+
+Source File:
+raster.c
+
+Author(s):
+Daniel Jackins
+Isaac McAuley
+
+Date Last Changed:
+March 23 2018
+
+Class: COMP 2659 - 001
+Instructor: Paul Pospisil
+
+==========================================*/
+
 #include "raster.h"
 
 const UINT8 font[] =

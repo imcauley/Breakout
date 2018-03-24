@@ -1,3 +1,21 @@
+/*=========================================
+
+Source File:
+breakout.c
+
+Author(s):
+Daniel Jackins
+Isaac McAuley
+
+Date Last Changed:
+March 23 2018
+
+Class: COMP 2659 - 001
+Instructor: Paul Pospisil
+
+==========================================*/
+
+
 #include "render.h"
 #include "input.c"
 #include "events.h"

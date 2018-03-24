@@ -1,3 +1,21 @@
+/*=========================================
+
+Source File:
+render.c
+
+Author(s):
+Daniel Jackins
+Isaac McAuley
+
+Date Last Changed:
+March 23 2018
+
+Class: COMP 2659 - 001
+Instructor: Paul Pospisil
+
+==========================================*/
+
+
 #include <osbind.h>
 #include "render.h"
 
@@ -7,6 +25,22 @@
 #define SCREEN_WIDTH 640
 #define SCREEN_HEIGHT 400
 
+/*=== simple_render ===========================================================
+
+Purpose: renders an entire frame from a given model
+
+Inputs:
+	*base8 	 -	8 bit width of the frame buffer
+	*base 32 -  32 bit width of the frame buffer
+	*game	 - 	current model of game
+
+Outputs: 
+	None
+
+Limitations/Known bugs:
+	- Too slow to use for every frame
+	
+=============================================================================*/
 
 void simple_render(UINT8 *base8, UINT32 *base32, Model *game)
 {
@@ -16,6 +50,17 @@ void simple_render(UINT8 *base8, UINT32 *base32, Model *game)
 	render_ball(base8, &((*game).ball));
 	render_hud(base8, &((*game).header), &((*game).lives), &((*game).score));
 }
+
+/*=== title ===========================================================
+
+Purpose:
+
+Inputs:     
+
+Outputs:
+
+Limitations/Known bugs: N/A
+=============================================================================*/
 
 void render(UINT8 *base8, UINT32 *base32, Model *game)
 {
@@ -32,6 +77,17 @@ void render(UINT8 *base8, UINT32 *base32, Model *game)
     }
 }
 
+/*=== title ===========================================================
+
+Purpose:
+
+Inputs:     
+
+Outputs:
+
+Limitations/Known bugs: N/A
+=============================================================================*/
+
 void start_render(UINT32 *base32, Model *game)
 {
 	int x;
@@ -43,6 +99,17 @@ void start_render(UINT32 *base32, Model *game)
 	}
 }
 
+/*=== title ===========================================================
+
+Purpose:
+
+Inputs:     
+
+Outputs:
+
+Limitations/Known bugs: N/A
+=============================================================================*/
+
 void render_clear(UINT8 *base8, UINT32 *base32, Model *game)
 {
 	Paddle *paddle = &(game->paddle);
@@ -52,15 +119,49 @@ void render_clear(UINT8 *base8, UINT32 *base32, Model *game)
 	draw_8rect(base8, ball->x, ball->y, ball->height, True);
 }
 
+/*=== title ===========================================================
+
+Purpose:
+
+Inputs:     
+
+Outputs:
+
+Limitations/Known bugs: N/A
+=============================================================================*/
+
 void render_paddle(UINT32 *base, Paddle *paddle)
 {
 	draw_64rect(base, paddle->x, paddle->y, paddle->height, False);
 }
 
+/*=== title ===========================================================
+
+Purpose:
+
+Inputs:     
+
+Outputs:
+
+Limitations/Known bugs: N/A
+=============================================================================*/
+
 void render_ball(UINT8 *base, Ball *ball)
 {
 	draw_8rect(base, ball->x, ball->y, ball->height, False);
 }
+
+/*=== title ===========================================================
+
+Purpose:
+
+Inputs:     
+
+Outputs:
+
+Limitations/Known bugs: N/A
+=============================================================================*/
+
 
 void render_bricks(UINT32 *base, Brick bricks[BRICK_ROWS][BRICK_COLS])
 {
@@ -107,6 +208,18 @@ void render_bricks(UINT32 *base, Brick bricks[BRICK_ROWS][BRICK_COLS])
 
 }
 
+/*=== title ===========================================================
+
+Purpose:
+
+Inputs:     
+
+Outputs:
+
+Limitations/Known bugs: N/A
+=============================================================================*/
+
+
 void remove_brick(UINT32 *base, int row, int col)
 {
 	UINT32 clear_bitmap[BRICK_HEIGHT] =
@@ -132,6 +245,18 @@ void remove_brick(UINT32 *base, int row, int col)
 	plot_bitmap_32(base, (col*BRICK_WIDTH), ((row*BRICK_HEIGHT) + BOARD_START),
                     clear_bitmap, 16);
 }
+
+/*=== title ===========================================================
+
+Purpose:
+
+Inputs:     
+
+Outputs:
+
+Limitations/Known bugs: N/A
+=============================================================================*/
+
 
 void render_hud(UINT8 *base8, Header *header, Lives *lives, Score *score)
 {
@@ -165,6 +290,19 @@ void render_hud(UINT8 *base8, Header *header, Lives *lives, Score *score)
 		plot_char(base8, 73, 16, 40);
 	}
 }
+
+
+/*=== title ===========================================================
+
+Purpose:
+
+Inputs:     
+
+Outputs:
+
+Limitations/Known bugs: N/A
+=============================================================================*/
+
 
 void render_game_over(UINT8 *base8, Score *score)
 {

@@ -1,3 +1,21 @@
+/*=========================================
+
+Source File:
+events.c
+
+Author(s):
+Daniel Jackins
+Isaac McAuley
+
+Date Last Changed:
+March 23 2018
+
+Class: COMP 2659 - 001
+Instructor: Paul Pospisil
+
+==========================================*/
+
+
 #include "model.h"
 #include <osbind.h>
 #include <stdio.h>
@@ -6,6 +24,20 @@
 #define LEFT 	0x004b0000L
 #define RIGHT	0x004d0000L
 #define SPACE	0x00390020L
+
+/*=== asynch_events ===========================================================
+
+Purpose: process any asynchronous events
+
+Inputs:
+	*paddle  -  pointer to model paddle
+	*ball 	 -  pointer to model ball
+	input	 -  longword of keyboard input
+
+Outputs:
+
+Limitations/Known bugs: N/A
+=============================================================================*/
 
 void asynch_events(Paddle *paddle, Ball *ball, long input)
 {
@@ -22,6 +54,21 @@ void asynch_events(Paddle *paddle, Ball *ball, long input)
 	}
 }
 
+/*=== synch_events ===========================================================
+
+Purpose: process all syncronous events
+
+Inputs:     
+	*paddle  -  pointer to model paddle
+	*ball 	 -  pointer to model ball
+	bricks	 -  pointer to list of bricks
+
+Outputs:
+
+Limitations/Known bugs: N/A
+=============================================================================*/
+
+
 void synch_events(Paddle *paddle, Ball *ball, Brick bricks[][])
 {
     launch_ball(paddle,ball);
@@ -29,6 +76,17 @@ void synch_events(Paddle *paddle, Ball *ball, Brick bricks[][])
     move_paddle(paddle);
     paddle->direction = 0;
 }
+
+/*=== condition_events ===========================================================
+
+Purpose: process all cascading events
+
+Inputs:     
+
+Outputs:
+
+Limitations/Known bugs: N/A
+=============================================================================*/
 
 void condition_events(Paddle *paddle, Ball *ball, Brick bricks[][], Score *score, Lives *lives)
 {
@@ -79,6 +137,21 @@ void condition_events(Paddle *paddle, Ball *ball, Brick bricks[][], Score *score
     if (game_over(lives))
         lives->game_over = True;
 }
+
+/*=== die ===========================================================
+
+Purpose: removes a life in the model and resets ball
+
+Inputs:     
+	*ball	 -	pointer to ball
+	*lives	 -  pointer to models lives
+
+Outputs:
+	None
+
+Limitations/Known bugs: N/A
+=============================================================================*/
+
 
 void die(Ball *ball, Lives *lives)
 {

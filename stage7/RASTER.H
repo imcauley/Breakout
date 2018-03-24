@@ -1,3 +1,21 @@
+/*=========================================
+
+Source File:
+raster.h
+
+Author(s):
+Daniel Jackins
+Isaac McAuley
+
+Date Last Changed:
+March 23 2018
+
+Class: COMP 2659 - 001
+Instructor: Paul Pospisil
+
+==========================================*/
+
+
 #ifndef RASTER_H
 #define RASTER_H
 

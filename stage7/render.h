@@ -1,3 +1,21 @@
+/*=========================================
+
+Source File:
+render.h
+
+Author(s):
+Daniel Jackins
+Isaac McAuley
+
+Date Last Changed:
+March 23 2018
+
+Class: COMP 2659 - 001
+Instructor: Paul Pospisil
+
+==========================================*/
+
+
 #ifndef RENDER_H
 #define RENDER_H
 
