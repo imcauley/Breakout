@@ -8,7 +8,7 @@ Daniel Jackins
 Isaac McAuley
 
 Date Last Changed:
-March 23 2018
+March 24 2018
 
 Class: COMP 2659 - 001
 Instructor: Paul Pospisil
@@ -34,12 +34,12 @@ Inputs:
 	*base 32 -  32 bit width of the frame buffer
 	*game	 - 	current model of game
 
-Outputs: 
+Outputs:
 	None
 
 Limitations/Known bugs:
 	- Too slow to use for every frame
-	
+
 =============================================================================*/
 
 void simple_render(UINT8 *base8, UINT32 *base32, Model *game)
@@ -51,13 +51,16 @@ void simple_render(UINT8 *base8, UINT32 *base32, Model *game)
 	render_hud(base8, &((*game).header), &((*game).lives), &((*game).score));
 }
 
-/*=== title ===========================================================
+/*=== render ===========================================================
 
-Purpose:
+Purpose: Renders the paddle, ball, and header
 
-Inputs:     
+Inputs:
+	*base8   -   pointer to 8 bit screen base
+	*base32  -   pointer to 32 bit screen base
+	*game    -   pointer to current model
 
-Outputs:
+Outputs:  Prints to screen
 
 Limitations/Known bugs: N/A
 =============================================================================*/
@@ -77,13 +80,19 @@ void render(UINT8 *base8, UINT32 *base32, Model *game)
     }
 }
 
-/*=== title ===========================================================
+/*=== start_render ===========================================================
 
-Purpose:
+Purpose:  Renders the background for the model
+						Background includes items:
+							- black background
+							- initial bricks
+							- seperation line
 
-Inputs:     
+Inputs:
+	*base32  -   pointer to 32 bit screen base
+	*game    -   pointer to current model
 
-Outputs:
+Outputs: Prints to screen
 
 Limitations/Known bugs: N/A
 =============================================================================*/
@@ -99,13 +108,18 @@ void start_render(UINT32 *base32, Model *game)
 	}
 }
 
-/*=== title ===========================================================
 
-Purpose:
 
-Inputs:     
+/*=== render_clear ===========================================================
 
-Outputs:
+Purpose:  Removes the ball and paddle from the screen
+
+Inputs:
+	*base8   -   pointer to 8 bit screen base
+	*base32  -   pointer to 32 bit screen base
+	*game    -   pointer to current model
+
+Outputs:  Prints to screen
 
 Limitations/Known bugs: N/A
 =============================================================================*/
@@ -123,7 +137,7 @@ void render_clear(UINT8 *base8, UINT32 *base32, Model *game)
 
 Purpose:
 
-Inputs:     
+Inputs:
 
 Outputs:
 
@@ -139,7 +153,7 @@ void render_paddle(UINT32 *base, Paddle *paddle)
 
 Purpose:
 
-Inputs:     
+Inputs:
 
 Outputs:
 
@@ -155,7 +169,7 @@ void render_ball(UINT8 *base, Ball *ball)
 
 Purpose:
 
-Inputs:     
+Inputs:
 
 Outputs:
 
@@ -212,7 +226,7 @@ void render_bricks(UINT32 *base, Brick bricks[BRICK_ROWS][BRICK_COLS])
 
 Purpose:
 
-Inputs:     
+Inputs:
 
 Outputs:
 
@@ -250,7 +264,7 @@ void remove_brick(UINT32 *base, int row, int col)
 
 Purpose:
 
-Inputs:     
+Inputs:
 
 Outputs:
 
@@ -296,7 +310,7 @@ void render_hud(UINT8 *base8, Header *header, Lives *lives, Score *score)
 
 Purpose:
 
-Inputs:     
+Inputs:
 
 Outputs:
 
@@ -310,27 +324,27 @@ void render_game_over(UINT8 *base8, Score *score)
     plot_char(base8, 37, 200, 17);
     plot_char(base8, 38, 200, 29);
     plot_char(base8, 39, 200, 21);
-    
+
     plot_char(base8, 41, 200, 31);      /*over*/
     plot_char(base8, 42, 200, 38);
     plot_char(base8, 43, 200, 21);
     plot_char(base8, 44, 200, 34);
-    
+
     plot_char(base8, 35, 215, 22);      /*final*/
     plot_char(base8, 36, 215, 25);
     plot_char(base8, 37, 215, 30);
     plot_char(base8, 38, 215, 17);
     plot_char(base8, 39, 215, 28);
-    
+
     plot_char(base8, 41, 215, 35);        /*score:*/
 	plot_char(base8, 42, 215, 19);
 	plot_char(base8, 43, 215, 31);
 	plot_char(base8, 44, 215, 34);
 	plot_char(base8, 45, 215, 21);
     plot_char(base8, 46, 215, 10);
-    
+
     plot_char(base8, 38, 240, (score->score[3]));
 	plot_char(base8, 39, 240, (score->score[2]));
 	plot_char(base8, 40, 240, (score->score[1]));
 	plot_char(base8, 41, 240, (score->score[0]));
-}  
+}

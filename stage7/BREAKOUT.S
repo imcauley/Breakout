@@ -3,7 +3,7 @@
 	even
 _get_input:
 	link	a6,#0
-	;line	11
+	;line	29
 	move.w	#8,-(a7)
 	jsr	__trap_1_w
 L1:
@@ -11,21 +11,21 @@ L1:
 	rts
 _key_pressed:
 	link	a6,#-4
-	;line	17
+	;line	35
 	move.w	#11,-(a7)
 	jsr	__trap_1_w
 	addq.l	#2,a7
 	ext.l	d0
 	move.l	d0,-4(a6)
-	;line	17
+	;line	35
 	tst.l	-4(a6)
 	bne	L2
-	;line	19
+	;line	37
 	moveq	#0,d0
 	bra	L3
 	bra	L4
 L2:
-	;line	22
+	;line	40
 	moveq	#1,d0
 L4:
 L3:
@@ -33,22 +33,22 @@ L3:
 	rts
 _get_time:
 	link	a6,#-12
-	;line	18
+	;line	36
 	pea	0
 	move.w	#32,-(a7)
 	jsr	__trap_1_wl
 	addq.l	#6,a7
 	move.l	d0,-12(a6)
-	;line	19
+	;line	37
 	move.l	#1122,-4(a6)
-	;line	20
+	;line	38
 	move.l	-4(a6),a0
 	move.l	(a0),-8(a6)
-	;line	21
+	;line	39
 	move.l	-12(a6),-(a7)
 	move.w	#32,-(a7)
 	jsr	__trap_1_wl
-	;line	22
+	;line	40
 	move.l	-8(a6),d0
 L5:
 	unlk	a6
@@ -56,21 +56,21 @@ L5:
 _get_base:
 	link	a6,#-6
 	movem.l	d3/d4,-(a7)
-	;line	29
+	;line	47
 	move.l	8(a6),d4
-	;line	30
+	;line	48
 	move.w	d4,d3
-	;line	31
+	;line	49
 	clr.l	d0
 	move.w	d3,d0
 	divu	#256,d0
 	swap	d0
 	move.w	d0,d3
-	;line	32
+	;line	50
 	move.w	#256,d0
 	sub.w	d3,d0
 	move.w	d0,d3
-	;line	33
+	;line	51
 	move.l	d4,d0
 	clr.l	d1
 	move.w	d3,d1
@@ -90,7 +90,7 @@ _main:
 	lea	-2122(a6),a0
 	move.l	a0,d5
 	lea	__trap_14_w,a3
-	;line	59
+	;line	77
 	move.w	#2,-(a7)
 	jsr	(a3)
 	addq.l	#2,a7
@@ -116,69 +116,69 @@ _main:
 	jsr	_get_time
 	move.l	d0,-1052(a6)
 	sub.l	a5,a5
-	;line	59
+	;line	77
 	move.l	d5,-(a7)
 	jsr	_start_game
 	addq.l	#4,a7
-	;line	61
+	;line	79
 	pea	1000
 	move.l	d5,-(a7)
 	pea	-1036(a6)
 	jsr	_memcpy
 	lea	12(a7),a7
-	;line	63
+	;line	81
 	move.l	d5,-(a7)
 	move.l	-32(a6),-(a7)
 	jsr	_start_render
 	addq.l	#8,a7
-	;line	64
+	;line	82
 	move.l	d5,-(a7)
 	move.l	-8(a6),-(a7)
 	move.l	a4,-(a7)
 	jsr	_simple_render
 	lea	12(a7),a7
-	;line	66
+	;line	84
 	pea	L7
 	jsr	_printf
 	addq.l	#4,a7
-	;line	67
+	;line	85
 	pea	22+__iob
 	jsr	_fflush
 	addq.l	#4,a7
-	;line	69
+	;line	87
 	bra	L10
 L9:
-	;line	71
+	;line	89
 	jsr	_key_pressed
 	cmp.w	#1,d0
 	bne	L12
-	;line	73
+	;line	91
 	jsr	_get_input
 	move.l	d0,-1040(a6)
-	;line	74
+	;line	92
 	move.l	-1040(a6),-(a7)
 	pea	-1122(a6)
 	pea	-1102(a6)
 	jsr	_asynch_events
 	lea	12(a7),a7
 L12:
-	;line	77
+	;line	95
 	jsr	_get_time
 	move.l	d0,-1048(a6)
-	;line	78
+	;line	96
 	move.l	-1048(a6),d0
 	sub.l	-1044(a6),d0
 	move.l	d0,-1052(a6)
-	;line	79
+	;line	97
 	tst.l	-1052(a6)
 	bls	L13
-	;line	81
+	;line	99
 	move.l	d5,-(a7)
 	pea	-1122(a6)
 	pea	-1102(a6)
 	jsr	_synch_events
 	lea	12(a7),a7
-	;line	82
+	;line	100
 	pea	-1070(a6)
 	pea	-1082(a6)
 	move.l	d5,-(a7)
@@ -186,17 +186,17 @@ L12:
 	pea	-1102(a6)
 	jsr	_condition_events
 	lea	20(a7),a7
-	;line	83
+	;line	101
 	move.l	-1048(a6),-1044(a6)
-	;line	85
+	;line	103
 	moveq	#0,d4
 	bra	L15
 L14:
-	;line	87
+	;line	105
 	moveq	#0,d3
 	bra	L19
 L18:
-	;line	89
+	;line	107
 	move.w	d3,d0
 	muls	#10,d0
 	move.l	d0,a0
@@ -214,7 +214,7 @@ L18:
 	move.w	4(a1),d0
 	cmp.w	4(a0),d0
 	beq	L22
-	;line	91
+	;line	109
 	move.w	d3,-(a7)
 	move.w	d4,-(a7)
 	move.l	-32(a6),-(a7)
@@ -233,57 +233,57 @@ L15:
 	cmp.w	#5,d4
 	blt	L14
 L16:
-	;line	95
+	;line	113
 	pea	1000
 	move.l	d5,-(a7)
 	pea	-1036(a6)
 	jsr	_memcpy
 	lea	12(a7),a7
-	;line	97
+	;line	115
 	pea	32000
 	move.l	-28(a6),-(a7)
 	move.l	d6,-(a7)
 	jsr	_memcpy
 	lea	12(a7),a7
-	;line	98
+	;line	116
 	move.l	d5,-(a7)
 	move.l	-24(a6),-(a7)
 	move.l	d6,-(a7)
 	jsr	_render
 	lea	12(a7),a7
-	;line	100
+	;line	118
 	cmp.w	#1,a5
 	bne	L23
-	;line	102
+	;line	120
 	move.l	d7,d6
-	;line	103
+	;line	121
 	move.l	-16(a6),-24(a6)
-	;line	104
+	;line	122
 	move.w	#-1,-(a7)
 	move.l	a4,-(a7)
 	pea	-1
 	move.w	#5,-(a7)
 	jsr	__trap_14_wllw
 	lea	12(a7),a7
-	;line	105
+	;line	123
 	sub.l	a5,a5
 	bra	L24
 L23:
-	;line	109
+	;line	127
 	move.l	a4,d6
-	;line	110
+	;line	128
 	move.l	-8(a6),-24(a6)
-	;line	111
+	;line	129
 	move.w	#-1,-(a7)
 	move.l	d7,-(a7)
 	pea	-1
 	move.w	#5,-(a7)
 	jsr	__trap_14_wllw
 	lea	12(a7),a7
-	;line	112
+	;line	130
 	move.w	#1,a5
 L24:
-	;line	114
+	;line	132
 	move.w	#37,-(a7)
 	jsr	(a3)
 	addq.l	#2,a7
@@ -292,25 +292,25 @@ L10:
 	cmp.l	#1048689,-1040(a6)
 	bne	L9
 L11:
-	;line	118
+	;line	136
 	move.w	#-1,-(a7)
 	move.l	a4,-(a7)
 	pea	-1
 	move.w	#5,-(a7)
 	jsr	__trap_14_wllw
 	lea	12(a7),a7
-	;line	119
+	;line	137
 	move.w	#37,-(a7)
 	jsr	(a3)
 	addq.l	#2,a7
-	;line	120
+	;line	138
 	pea	L8
 	jsr	_printf
 	addq.l	#4,a7
-	;line	121
+	;line	139
 	pea	22+__iob
 	jsr	_fflush
-	;line	123
+	;line	141
 	moveq	#0,d0
 L25:
 	movem.l	-2154(a6),d3/d4/d5/d6/d7/a3/a4/a5

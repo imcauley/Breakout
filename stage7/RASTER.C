@@ -17,6 +17,9 @@ Instructor: Paul Pospisil
 
 #include "raster.h"
 
+#define SCREEN_WIDTH 640
+#define CLEAR 0xFFFFFFFF
+
 const UINT8 font[] =
 {
 0x00,0x78,0x8C,0x94,0xA4,0xC4,0x78,0x00,  /* 0 */
@@ -104,87 +107,47 @@ const UINT8 font[] =
 0x00,0x14,0x28,0x00,0x00,0x00,0x00,0x00  /* ~ */
 };
 
-/* HEADER BLOCK */
-
 
 /*=== plot_bitmap_8 ===========================================================
 
 Purpose: Plots bitmaps with widths of 8 bits to the given screen position.
 
-Inputs: 
+Inputs:
     *base - beginning of screen buffer
         x - x coordinate for beginning of image
         y - y coordinate for beginning of image
   *bitmap - image to be drawn
    height - height of image
-            
+
 
 Outputs: Draws the image to the screen.
 
 Limitations/Known bugs: N/A
 =============================================================================*/
 
-void plot_bitmap_8(UINT8 *base, int x, int y, const UINT8 *bitmap, unsigned int height)
+void plot_bitmap_8(UINT8 *base, int x, int y,
+  const UINT8 *bitmap, unsigned int height)
 {
     int i;
-    
+
     for (i = 0; i < height; i++)
     {
-        *(base + y * 80 + (x >> 3)) |= bitmap[i];
-        base += 80;
+        *(base + y * (SCREEN_WIDTH / 8) + (x >> 3)) |= bitmap[i];
+        base += (SCREEN_WIDTH / 8);
     }
-}
-
-/*=== plot_bitmap_16 ===========================================================
-
-Purpose: Plots bitmaps with widths of 16 bits to the given screen position.
-
-Inputs: 
-    *base - beginning of screen buffer
-        x - x coordinate for beginning of image
-        y - y coordinate for beginning of image
-  *bitmap - image to be drawn
-   height - height of image
-            
-
-Outputs: Draws the image to the screen.
-
-Limitations/Known bugs: N/A
-=============================================================================*/
-
-void plot_bitmap_16(UINT16 *base, int x, int y, const UINT16 *bitmap, 
-			unsigned int height)
-{
-    int i;
-    UINT16 offset = x % 16;
-
-    UINT16 extra_mask = 0xFFFF >> (16 - offset);
-    UINT16 extra = 0xFFFF;
-   
-    for (i = 0; i < height; i++)
-    {
-        extra = bitmap[i];
-	extra &= extra_mask;
-	extra = extra << (16 - offset);
-
-        *(base + y * 40 + (x >> 4)) |= (bitmap[i] >> offset);
-	*((base + y * 40 + ((x + 16) >> 4))) |= extra;
-        y++;
-    }
-
 }
 
 /*=== plot_bitmap_32 ===========================================================
 
 Purpose: Plots bitmaps with widths of 32 bits to the given screen position.
 
-Inputs: 
+Inputs:
     *base - beginning of screen buffer
         x - x coordinate for beginning of image
         y - y coordinate for beginning of image
   *bitmap - image to be drawn
    height - height of image
-            
+
 
 Outputs: Draws the image to the screen.
 
@@ -192,14 +155,15 @@ Limitations/Known bugs: N/A
 =============================================================================*/
 
 
-void plot_bitmap_32(UINT32 *base, int x, int y, const UINT32 *bitmap, unsigned int height)
+void plot_bitmap_32(UINT32 *base, int x, int y,
+  const UINT32 *bitmap, unsigned int height)
 {
     int i;
-    
+
     for (i = 0; i < height; i++)
     {
-        *(base + y * 20 + (x >> 5)) = bitmap[i];
-        base += 20;
+        *(base + y * (SCREEN_WIDTH / 32) + (x >> 5)) = bitmap[i];
+        base += (SCREEN_WIDTH / 32);
     }
 }
 
@@ -221,95 +185,50 @@ void clear_screen(UINT32 *base)
 	int x = 0;
 	while(x++ < 8000)
 	{
-		*(base++) = 0xFFFFFFFF;
+		*(base++) = CLEAR;
 	}
 }
 
-void draw_hori_line(UINT16 *base, int x, int y, int length)
-{
-    UINT16 start = 0xFFFF;
-    UINT16 end = 0xFFFF;
+/*=== draw_64rect ===========================================================
 
-    int start_word = x / 16;
-    int end_word = ((x + length) / 16) + 1;
+Purpose: Draws a recangle with a width of 64 bits
 
-    base += (y * 40);
+Inputs:
+  *base    -  pointer to screen base
+  x        -  x position on screen
+  y        -  y position on screen
+  height   -  desired height of recangle
+  clear    -  flag to write black or white
+                  True for black
+                  False for white
 
-    if((x && 16) != 0)
-    {
-	start = start >> (x % 16);
-	start = ~start;
-    }    
- 
-    if(((x + length) && 16) != 0)
-    {
-	end = end << (16 - ((x + length) % 16));
-        end = ~end;
-    }
+Outputs:  Draws to screen
 
-    *(base + start_word) &= start;
-    start_word++;
-
-    while(start_word < end_word)
-    {     
-	*(base + start_word) &= 0x0000;
-        start_word++;
-    }
-    
-    *(base + start_word) &= end;
-        
-}
-
-void draw_vert_line(UINT16 *base, int x, int y, int length)
-{
-    int i;
-    
-    for (i = 0; i < length; i++)
-    {
-        *(base + y * 40 + (x >> 4)) |= 1 << (15 - (x & 15));
-        base += 40;
-    }
-
-}
-
-void plot_pixel(UINT16 *base, int x, int y)
-{
-    *(base + (y * 40) + (x >> 4)) &= ~(0x8000 >> (x && 16));
-}
-
-void draw_rect(UINT16 *base, int x, int y, int length, int height)
-{
-    int i;
-    
-    for (i = 0; i < height; i++)
-    {    
-        draw_hori_line(base, x, y, length);
-        y++;
-    }
-}
+Limitations/Known bugs: N/A
+=============================================================================*/
 
 void draw_64rect(UINT32 *base, int x, int y, int height, bool clear)
 {
     int r;
     int offset = (x & 31);
     int c = (x >> 5);
-    
-    UINT32 start = 0xFFFFFFFF >> offset;
-    UINT32 mid = 0xFFFFFFFF;
-    UINT32 end = 0xFFFFFFFF << (32 - offset);
-    
+
+    UINT32 start = CLEAR >> offset;
+    UINT32 mid = CLEAR;
+    UINT32 end = CLEAR << (32 - offset);
+
     if(!clear)
     {
         start = ~start;
         mid = ~mid;
         end = ~end;
-        
+
         r = 0;
         while(r < height)
         {
-            *(base + (y * 20) + c) = start;
-            *(base + (y * 20) + (c + 1)) = mid;
-            *(base + (y * 20) + (c + 2)) = end;
+            *(base + (y * (SCREEN_WIDTH / 32)) + c) = start;
+            *(base + (y * (SCREEN_WIDTH / 32)) + (c + 1)) = mid;
+            *(base + (y * (SCREEN_WIDTH / 32)) + (c + 2)) = end;
             y++;
             r++;
         }
@@ -319,53 +238,86 @@ void draw_64rect(UINT32 *base, int x, int y, int height, bool clear)
         r = 0;
         while(r < height)
         {
-            *(base + (y * 20) + c) |= start;
-            *(base + (y * 20) + (c + 1)) |= mid;
-            *(base + (y * 20) + (c + 2)) |= end;
+            *(base + (y * (SCREEN_WIDTH / 32)) + c) |= start;
+            *(base + (y * (SCREEN_WIDTH / 32)) + (c + 1)) |= mid;
+            *(base + (y * (SCREEN_WIDTH / 32)) + (c + 2)) |= end;
             y++;
             r++;
         }
     }
 }
+
+/*=== draw_8rect ===========================================================
+
+Purpose: Draws a recangle with a width of 8 bits
+
+Inputs:
+  *base    -  pointer to screen base
+  x        -  x position on screen
+  y        -  y position on screen
+  height   -  desired height of recangle
+  clear    -  flag to write black or white
+                  True for black
+                  False for white
+
+Outputs:  Draws to screen
+
+Limitations/Known bugs: N/A
+=============================================================================*/
 
 void draw_8rect(UINT8 *base, int x, int y, int height, bool clear)
 {
     int r;
     int offset = (x & 7);
     int c = (x >> 3);
-    
+
     UINT8 start = 0xFF >> offset;
     UINT8 end = 0xFF << (8 - offset);
-    
+
     if(!clear)
     {
         start = ~start;
         end = ~end;
-        
+
         r = 0;
         while(r < height)
         {
-            *(base + (y * 80) + c) = start;
-            *(base + (y * 80) + (c+ 1)) = end;
+            *(base + (y * (SCREEN_WIDTH / 8)) + c) = start;
+            *(base + (y * (SCREEN_WIDTH / 8)) + (c+ 1)) = end;
             y++;
             r++;
         }
-        
+
     }
     else
     {
         r = 0;
         while(r < height)
         {
-            *(base + (y * 80) + c) |= start;
-            *(base + (y * 80) + (c+ 1)) |= end;
+            *(base + (y * (SCREEN_WIDTH / 8)) + c) |= start;
+            *(base + (y * (SCREEN_WIDTH / 8)) + (c+ 1)) |= end;
             y++;
             r++;
         }
-        
+
     }
 }
 
+
+/*=== plot_char ===========================================================
+
+Purpose: Writes a character from the constant font to the screen
+
+Inputs:
+  *base  -  pointer to screen base
+  x      -  x position on screen
+  y      -  y position on screen
+  character - character code coorosponding to the above font
+
+Outputs:  Draws to screen
+
+Limitations/Known bugs: N/A
+=============================================================================*/
 
 void plot_char(UINT8 *base, int x, int y, int character)
 {
@@ -375,8 +327,7 @@ void plot_char(UINT8 *base, int x, int y, int character)
 	for(r = 0; r < 8; r++)
 	{
 		letter = character + r;
-		*(base + (80*y) + x) = ~(font[letter]);
+		*(base + ((SCREEN_WIDTH / 8)*y) + x) = ~(font[letter]);
 		y++;
 	}
 }
-
