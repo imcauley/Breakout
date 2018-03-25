@@ -40,6 +40,17 @@ unsigned long get_time()
 	return timeNow;
 }
 
+/*=== get_base ===========================================================
+
+Purpose: offset the screen base to be 256 bit aligned
+
+Inputs: start of buffer
+
+Outputs:  new start of buffer
+
+Limitations/Known bugs: N/A
+=============================================================================*/
+
 UINT8 *get_base(UINT8 buffer[])
 {
 	UINT8 *base;
@@ -53,20 +64,25 @@ UINT8 *get_base(UINT8 buffer[])
 
 int main()
 {
+	/* buffer1: space in memory dedicated to the first screen buffer*/
 	UINT8 *buffer1_8 = (UINT8 *) Physbase();
 	UINT32 *buffer1_32 = (UINT32 *) Physbase();
 
+	/* buffer2: space in memory dedicated to the second screen buffer*/
 	UINT8 *buffer2_8 = get_base(buffer2);
 	UINT32 *buffer2_32 = (UINT32 *) buffer2_8;
 
+	/* background:  buffer specially dedicated to storing the background */
+	UINT8 *background_8 = get_base(background);
+	UINT32 *background_32 = (UINT32 *) background_8;
+
+	/* pointer to where the renderer is writing to */
 	UINT8 *render_base_8 = buffer2_8;
 	UINT32 *render_base_32 = buffer2_32;
 
-	UINT8 *background_8 = get_base(background);
-	UINT32 *background_32 = (UINT32 *) background_8;
-	int x,y = -1;
-
+	/* current:  what the bricks where last screenshot */
 	Brick current[5][20];
+	int x,y = -1;
 
 	long input = 0;
 	unsigned long timeThen, timeNow, timeElapsed = get_time();
@@ -78,11 +94,40 @@ int main()
 
 	memcpy(current, game.bricks, sizeof(current));
 
+
+
 	start_render(background_32, &game);
 	simple_render(buffer1_8, buffer1_32, &game);
 
 	printf("\033f");
 	fflush(stdout);
+
+/*
+	psudo-code game loop:
+
+	while(running):
+	
+		if(key_pressed):
+			process asynch_events
+
+		if(frame has changed):
+			process synch_events
+			process condition_events
+
+			if(any bricks have been removed):
+				remove bricks
+			copy current bricks to brick snapshot
+
+		if(buffer1_active):
+			write with buffer1
+			render with buffer2
+		else:
+			write with buffer2
+			redner with buffer1
+
+		wait until next frame
+*/
+
 
 	while(input != Q)
 	{
