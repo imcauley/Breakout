@@ -16,6 +16,8 @@ Instructor: Paul Pospisil
 ==========================================*/
 
 #include "raster.h"
+#include <osbind.h>
+#include <stdio.h>
 
 #define SCREEN_WIDTH 640
 #define CLEAR 0xFFFFFFFF
@@ -330,4 +332,24 @@ void plot_char(UINT8 *base, int x, int y, int character)
 		*(base + ((SCREEN_WIDTH / 8)*y) + x) = ~(font[letter]);
 		y++;
 	}
+}
+
+UINT16 *get_video_base()
+{
+	long old_ssp;
+	UINT8 *get_base;
+	UINT8 *low;
+	UINT8 *high;	
+	UINT8 *combined;
+
+	old_ssp = Super(0);
+	get_base = (UINT8 *) 0xFFFF8201;
+	low = *get_base;
+	high = *(get_base + 2);
+	Super(old_ssp);
+
+	combined = (UINT16 *) high;
+	printf("%p\n", combined);
+	
+	return (UINT16 *) low;
 }

@@ -94,14 +94,14 @@ int main()
 
 	memcpy(current, game.bricks, sizeof(current));
 
-
-
+	render_splash_screen(buffer1_32);
+	/*
 	start_render(background_32, &game);
 	simple_render(buffer1_8, buffer1_32, &game);
 
 	printf("\033f");
 	fflush(stdout);
-
+*/
 /*
 	psudo-code game loop:
 
@@ -128,7 +128,7 @@ int main()
 		wait until next frame
 */
 
-
+	/*
 	while(input != Q)
 	{
 		if(key_pressed() == True)
@@ -136,7 +136,8 @@ int main()
 			input = get_input();
 			asynch_events(&game.paddle, &game.ball, input);
 		}
-
+	render_splash_screen(buffer1_32);
+	
 		timeNow = get_time();
 		timeElapsed = timeNow - timeThen;
 		if (timeElapsed > 0)
@@ -176,12 +177,12 @@ int main()
 			}
 			Vsync();
 		}
-
+	
 	}
 	Setscreen(-1,buffer1_8,-1);
 	Vsync();
 	printf("\033e");
 	fflush(stdout);
-
+	*/
 	return 0;
 }
