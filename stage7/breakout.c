@@ -65,8 +65,9 @@ UINT8 *get_base(UINT8 buffer[])
 int main()
 {
 	/* buffer1: space in memory dedicated to the first screen buffer*/
-	UINT8 *buffer1_8 = (UINT8 *) Physbase();
-	UINT32 *buffer1_32 = (UINT32 *) Physbase();
+	UINT8 *buffer1_8 = (UINT8 *) get_video_base();
+	UINT32 *buffer1_32 = (UINT32 *) get_video_base();
+
 
 	/* buffer2: space in memory dedicated to the second screen buffer*/
 	UINT8 *buffer2_8 = get_base(buffer2);
@@ -92,6 +93,7 @@ int main()
 	Model game;
 	start_game(&game);
 
+
 	memcpy(current, game.bricks, sizeof(current));
 
 	render_splash_screen(buffer1_32);
@@ -106,7 +108,7 @@ int main()
 	psudo-code game loop:
 
 	while(running):
-	
+
 		if(key_pressed):
 			process asynch_events
 
@@ -137,7 +139,7 @@ int main()
 			asynch_events(&game.paddle, &game.ball, input);
 		}
 	render_splash_screen(buffer1_32);
-	
+
 		timeNow = get_time();
 		timeElapsed = timeNow - timeThen;
 		if (timeElapsed > 0)
@@ -177,7 +179,7 @@ int main()
 			}
 			Vsync();
 		}
-	
+
 	}
 	Setscreen(-1,buffer1_8,-1);
 	Vsync();

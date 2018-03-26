@@ -2,7 +2,6 @@
 
 int main()
 {
-	get_video_base();
-
+	printf("%p\n", get_video_base());
 	return 0;
 }

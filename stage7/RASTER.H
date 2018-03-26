@@ -26,5 +26,6 @@ void plot_char(UINT8 *base, int x, int y, int character);
 void plot_bitmap_32(UINT32 *base, int x, int y, const UINT32 *bitmap, unsigned int height);
 void draw_64rect(UINT32 *base, int x, int y, int height, bool clear);
 void draw_8rect(UINT8 *base, int x, int y, int height, bool clear);
+UINT16 *get_video_base();
 
 #endif

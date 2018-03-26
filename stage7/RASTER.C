@@ -338,18 +338,24 @@ UINT16 *get_video_base()
 {
 	long old_ssp;
 	UINT8 *get_base;
-	UINT8 *low;
-	UINT8 *high;	
-	UINT8 *combined;
+	UINT16 low;
+	UINT16 high;
+	UINT32 combined;
+  UINT16 *base;
 
 	old_ssp = Super(0);
 	get_base = (UINT8 *) 0xFFFF8201;
-	low = *get_base;
-	high = *(get_base + 2);
+	high = *get_base;
+	low = *(get_base + 2);
 	Super(old_ssp);
 
-	combined = (UINT16 *) high;
-	printf("%p\n", combined);
-	
-	return (UINT16 *) low;
+  combined = low;
+  high *= 0x100;
+  combined += high;
+  combined *= 0x100;
+
+  base = (UINT16 *) combined;
+  printf("%p\n", base);
+
+	return base;
 }

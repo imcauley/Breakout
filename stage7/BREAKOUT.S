@@ -82,14 +82,10 @@ L6:
 _main:
 	link	a6,#-2122
 	move.l	d3,-(a7)
-	;line	93
-	move.w	#2,-(a7)
-	jsr	__trap_14_w
-	addq.l	#2,a7
+	;line	94
+	jsr	_get_video_base
 	move.l	d0,-4(a6)
-	move.w	#2,-(a7)
-	jsr	__trap_14_w
-	addq.l	#2,a7
+	jsr	_get_video_base
 	move.l	d0,-8(a6)
 	pea	_buffer2
 	jsr	_get_base
@@ -108,20 +104,20 @@ _main:
 	jsr	_get_time
 	move.l	d0,-1052(a6)
 	clr.w	-1054(a6)
-	;line	93
+	;line	94
 	pea	-2122(a6)
 	jsr	_start_game
 	addq.l	#4,a7
-	;line	95
+	;line	97
 	pea	1000
 	pea	-2122(a6)
 	pea	-1032(a6)
 	jsr	_memcpy
 	lea	12(a7),a7
-	;line	97
+	;line	99
 	move.l	-8(a6),-(a7)
 	jsr	_render_splash_screen
-	;line	187
+	;line	189
 	moveq	#0,d0
 L7:
 	move.l	-2126(a6),d3
