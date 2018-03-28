@@ -50,7 +50,7 @@ void set_tone(int channel, int tuning)
 {
     if (tuning >= 0 && tuning <= 4095)  /* 12 bit value */
     {
-        int fine_mask = 0x000011111111;
+        int fine_mask = 0x0FF;
         int rough_mask = ~fine_mask;
         
         int fine = tuning & fine_mask;
@@ -92,25 +92,68 @@ void set_volume(int channel, int volume)
     }
     return;
 }
-/*
+
 void enable_channel(int channel, int tone_on, int noise_on)
 {
-    int enable_a = 0x110;
-    int enable_b = 0x101;
-    int enable_c = 0x011;
+    UINT8 mask = 0x00;
     
-    if (tone_on == 1)
-    {
-        
-    }
+    UINT8 enable_a_noise = 0x30;
+    UINT8 disable_a_noise = 0x08;
+    UINT8 enable_b_noise = 0x28;
+    UINT8 disable_b_noise = 0x10;
+    UINT8 enable_c_noise = 0x18;
+    UINT8 disable_c_noise = 0x20;
+    
+    UINT8 enable_a_tone = 0x06;
+    UINT8 disable_a_tone = 0x01;
+    UINT8 enable_b_tone = 0x05;
+    UINT8 disable_b_tone = 0x02;
+    UINT8 enable_c_tone = 0x03;
+    UINT8 disable_c_tone = 0x04;
+    
+    mask &= 0x00111111;
+    
     if (channel == A)
     {
         if (tone_on == 1)
-        {
-            
-        }
+            mask |= enable_a_tone;
+        else
+            mask |= disable_a_tone;
+        
+        if (noise_on == 1)
+            mask |= enable_a_noise;
+        else
+            mask |= disable_a_noise;
     }
-}*/
+    
+    if (channel == B)
+    {
+        if (tone_on == 1)
+            mask |= enable_b_tone;
+        else
+            mask |= disable_b_tone;
+        
+        if (noise_on == 1)
+            mask |= enable_b_noise;
+        else
+            mask |= disable_b_noise;
+    }
+    
+    if (channel == C)
+    {
+        if (tone_on == 1)
+            mask |= enable_c_tone;
+        else
+            mask |= disable_c_tone;
+        
+        if (noise_on == 1)
+            mask |= enable_c_noise;
+        else
+            mask |= disable_c_noise;
+    }
+    
+    write_psg(7, mask);
+}
 
 void stop_sound()
 {
@@ -119,42 +162,22 @@ void stop_sound()
     set_volume(C,0);
     return;
 }
-int main()
+
+/*int main()
 {
-    return 0;
-}
-/*
-int main()
-{
-	
 	long old_ssp = Super(0);
-    
-   
-
-	*PSG_reg_select = 0;		 set channel A fine tune = 248 
-	*PSG_reg_write  = 248;
-
-	*PSG_reg_select = 1;		 set channel A coarse tune = 0 
-	*PSG_reg_write  = 100;
-
-    *PSG_reg_select = 6;
-    *PSG_reg_write = 31;
-
-	*PSG_reg_select = 7;		 enable channel A on mixer 
-	*PSG_reg_write  = 0x3E;
-
-	*PSG_reg_select = 8;		 set channel A volume = 11 
-	*PSG_reg_write  = 11;
+	Super(old_ssp);
+    set_tone(A, 248);
+    enable_channel(A,1,1);
+    set_volume(A,11);
 
 
-	while (!Cconis())	     tone now playing, await key 
+	while (!Cconis())	     
 		;
 
-	*PSG_reg_select = 8;		 set channel A volume = 0 
-	*PSG_reg_write  = 0;
+	set_volume(A,0);
 
 	Cnecin();
-	Super(old_ssp);
+
 	return 0;
-}
-*/
+}*/
