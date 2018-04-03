@@ -19,6 +19,7 @@ Instructor: Paul Pospisil
 #include "render.h"
 #include "input.c"
 #include "events.h"
+#include "rast_asm.h"
 #include <osbind.h>
 #include <stdio.h>
 #include <string.h>
@@ -64,6 +65,7 @@ UINT8 *get_base(UINT8 buffer[])
 
 int main()
 {
+	long old_ssp;
 	/* buffer1: space in memory dedicated to the first screen buffer*/
 	UINT8 *buffer1_8 = (UINT8 *) get_video_base();
 	UINT32 *buffer1_32 = (UINT32 *) get_video_base();
@@ -95,16 +97,16 @@ int main()
 
 
 	memcpy(current, game.bricks, sizeof(current));
-
-	set_screen_base(buffer1_8);
 	
+
 	start_render(background_32, &game);
 	simple_render(buffer1_8, buffer1_32, &game);
 
 	printf("\033f");
 	fflush(stdout);
 
-/*
+
+	/*
 	psudo-code game loop:
 
 	while(running):
@@ -128,8 +130,8 @@ int main()
 			redner with buffer1
 
 		wait until next frame
-*/
 
+*/
 
 	while(input != Q)
 	{
@@ -144,7 +146,8 @@ int main()
 		if (timeElapsed > 0)
 		{
 			synch_events(&(game.paddle), &(game.ball), game.bricks);
-			condition_events(&(game.paddle), &(game.ball), game.bricks, &(game.score), &(game.lives));
+			condition_events(&(game.paddle), &(game.ball), 
+							 game.bricks, &(game.score), &(game.lives));
 			timeThen = timeNow;
 
 			for(x = 0; x < 5; x++)
@@ -166,21 +169,28 @@ int main()
 			{
 				render_base_8 = buffer2_8;
 				render_base_32 = buffer2_32;
-				Setscreen(-1,buffer1_8,-1);
+				old_ssp = Super(0);
+				set_screen_base(buffer1_8);
+				Super(old_ssp);
 				swap = False;
 			}
 			else
 			{
 				render_base_8 = buffer1_8;
 				render_base_32 = buffer1_32;
-				Setscreen(-1,buffer2_8,-1);
+				old_ssp = Super(0);
+				set_screen_base(buffer2_8);
+				Super(old_ssp);
 				swap = True;
 			}
 			Vsync();
 		}
 
 	}
-	Setscreen(-1,buffer1_8,-1);
+	old_ssp = Super(0);
+	set_screen_base(buffer1_8);
+	Super(old_ssp);
+	
 	Vsync();
 	printf("\033e");
 	fflush(stdout);

@@ -355,7 +355,6 @@ UINT16 *get_video_base()
   combined *= 0x100;
 
   base = (UINT16 *) combined;
-  printf("%p\n", base);
 
 	return base;
 }
