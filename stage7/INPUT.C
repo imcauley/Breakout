@@ -8,7 +8,7 @@ Daniel Jackins
 Isaac McAuley
 
 Date Last Changed:
-March 23 2018
+April 7 2018
 
 Class: COMP 2659 - 001
 Instructor: Paul Pospisil
@@ -19,23 +19,28 @@ Instructor: Paul Pospisil
 #include <osbind.h>
 #include <stdio.h>
 #include "types.h"
+#include "buffer.h"
 
-long get_input();
-bool key_pressed();
+volatile const UINT8 * const IKBD_RDR = 0xFFFFFC02;
 
-
-long get_input()
+UINT8 get_input()
 {
-	return Cnecin();
+	return deque();
 }
 
 bool key_pressed()
 {
-	long input = Cconis();
-	if(input == 0)
+	if(queue_is_empty() == True)
 	{
 		return False;
 	}
-	else
-		return True;
+	return True;
 }
+
+void key_press()
+{	
+	UINT8 data = (*IKBD_RDR);
+	enque(data);
+	return;
+}
+

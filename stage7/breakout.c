@@ -13,6 +13,17 @@ March 23 2018
 Class: COMP 2659 - 001
 Instructor: Paul Pospisil
 
+KNOWN BUGS:
+-When the ball is on the paddle and the paddle
+	is against a wall the ball will go into the
+	paddle
+-Occasionally when the ball touches the bottom
+	corner it will be drawn on the top of the
+	screen
+-If the ball hits the side of the paddle the 
+	direction of the ball will be changed in 
+	the y direction, not the x direction
+
 ==========================================*/
 
 
@@ -20,14 +31,19 @@ Instructor: Paul Pospisil
 #include "input.c"
 #include "events.h"
 #include "rast_asm.h"
+#include "in_asm.h"
 #include <osbind.h>
 #include <stdio.h>
 #include <string.h>
 
-#define Q    0x00100071
+typedef void (*Vector) ();
+
+#define Q    0x90
+#define KEY_ISR_NUM	70
 
 UINT8 buffer2[32256];
 UINT8 background[32256];
+
 
 unsigned long get_time()
 {
@@ -63,6 +79,24 @@ UINT8 *get_base(UINT8 buffer[])
 	return base + difference;
 }
 
+Vector install_vector(int num, Vector vector)
+{
+  Vector orig;
+  Vector *vectp = (Vector *) ((long) num << 2);
+  long old_ssp = Super(0);
+
+  orig = *vectp;
+  *vectp = vector;
+
+  Super(old_ssp);
+  return orig;
+}
+
+long goto_super()
+{
+	return Super(0); 
+}
+
 int main()
 {
 	long old_ssp;
@@ -86,65 +120,67 @@ int main()
 	/* current:  what the bricks where last screenshot */
 	Brick current[5][20];
 	int x,y = -1;
-
-	long input = 0;
+	bool hold = False;
+	UINT8 hold_mask;
+	UINT8 mouse_mask;
+	UINT8 input = 0;
 	unsigned long timeThen, timeNow, timeElapsed = get_time();
 	bool swap = False;
 
-
+	Vector orig_key = install_vector(KEY_ISR_NUM, key_isr);
 	Model game;
 	start_game(&game);
 
 
 	memcpy(current, game.bricks, sizeof(current));
 	
+	start_queue();
+	
 
 	start_render(background_32, &game);
 	simple_render(buffer1_8, buffer1_32, &game);
 
-	printf("\033f");
-	fflush(stdout);
 
-
-	/*
-	psudo-code game loop:
-
-	while(running):
-
-		if(key_pressed):
-			process asynch_events
-
-		if(frame has changed):
-			process synch_events
-			process condition_events
-
-			if(any bricks have been removed):
-				remove bricks
-			copy current bricks to brick snapshot
-
-		if(buffer1_active):
-			write with buffer1
-			render with buffer2
-		else:
-			write with buffer2
-			redner with buffer1
-
-		wait until next frame
-
-*/
 
 	while(input != Q)
 	{
-		if(key_pressed() == True)
+		if(queue_is_empty() == False)
 		{
 			input = get_input();
-			asynch_events(&game.paddle, &game.ball, input);
+			mouse_mask = input & 0xF8;
+			/* check for mouse input */
+			if(mouse_mask == 0xF8)
+			{
+				while(queue_is_empty() == False)
+				{
+					deque();
+				}
+			}
+			/* check for keyboard input */
+			else
+			{
+				hold_mask = input & 0x80;
+				if(hold_mask == 0x00)
+				{
+					hold = True;
+				}
+				else
+				{
+					hold = False;
+				}
+			}
 		}
+		
+		
 
 		timeNow = get_time();
 		timeElapsed = timeNow - timeThen;
 		if (timeElapsed > 0)
 		{
+			if(hold == True)
+			{
+				asynch_events(&game.paddle, &game.ball, input);
+			}
 			synch_events(&(game.paddle), &(game.ball), game.bricks);
 			condition_events(&(game.paddle), &(game.ball), 
 							 game.bricks, &(game.score), &(game.lives));
@@ -187,13 +223,14 @@ int main()
 		}
 
 	}
+	
+	
 	old_ssp = Super(0);
 	set_screen_base(buffer1_8);
 	Super(old_ssp);
 	
 	Vsync();
-	printf("\033e");
-	fflush(stdout);
-
+	
+	install_vector(KEY_ISR_NUM, orig_key);
 	return 0;
 }

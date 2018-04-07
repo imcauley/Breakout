@@ -110,7 +110,7 @@ void render_clear(UINT8 *base8, UINT32 *base32, Model *game);
 void simple_render(UINT8 *base8, UINT32 *base32, Model *game);
 void render_splash_screen(UINT32 *base32);
 void render_game_over(UINT8 *base8, Score *score);
-# 19 "breakout.c" 2
+# 30 "breakout.c" 2
 # 1 "./input.c" 1
 # 1 "C:/c68/include/osbind.h" 1
 # 1 "C:/c68/include/compiler.h" 1
@@ -371,45 +371,62 @@ extern	FILE	_iob[];
 # 20 "./input.c" 2
 # 1 "./types.h" 1
 # 21 "./input.c" 2
+# 1 "./buffer.h" 1
+# 1 "./types.h" 1
+# 1 "./buffer.h" 2
 
 
-long get_input();
-bool key_pressed();
+void start_queue();
+void enque(UINT8 code);
+UINT8 deque();
+bool queue_is_empty();
+void print_buffer();
+# 22 "./input.c" 2
 
 
-long get_input()
+volatile const UINT8 * const IKBD_RDR = 0xFFFFFC02;
+
+UINT8 get_input()
 {
-	return _trap_1_w((short)0x08) ;
+	return deque();
 }
 
 bool key_pressed()
 {
-	long input = (short)_trap_1_w((short)0x0B) ;
-	if(input == 0)
+	if(queue_is_empty() == 1 )
 	{
 		return 0 ;
 	}
-	else
-		return 1 ;
+	return 1 ;
 }
-# 20 "breakout.c" 2
+
+void key_press()
+{
+	UINT8 data = (*IKBD_RDR);
+	enque(data);
+	return;
+}
+# 31 "breakout.c" 2
 # 1 "./events.h" 1
 # 19 "./events.h"
-void asynch_events(Paddle *paddle, Ball *ball, long input);
+void asynch_events(Paddle *paddle, Ball *ball, UINT8 input);
 void synch_events(Paddle *paddle, Ball *ball, Brick bricks[][]);
 void condition_events(Paddle *paddle, Ball *ball, Brick bricks[][], Score *score, Lives *lives);
-void die(Lives *lives);
-# 21 "breakout.c" 2
+void die(Ball *ball, Lives *lives);
+# 32 "breakout.c" 2
 # 1 "./rast_asm.h" 1
 # 1 "./types.h" 1
-# 3 "./rast_asm.h" 2
-
+# 1 "./rast_asm.h" 2
+# 8 "./rast_asm.h"
 void set_screen_base(UINT8 *new_base);
-# 22 "breakout.c" 2
+# 33 "breakout.c" 2
+# 1 "./in_asm.h" 1
+void key_isr();
+# 34 "breakout.c" 2
 # 1 "C:/c68/include/osbind.h" 1
-# 23 "breakout.c" 2
+# 35 "breakout.c" 2
 # 1 "C:/c68/include/stdio.h" 1
-# 24 "breakout.c" 2
+# 36 "breakout.c" 2
 # 1 "C:/c68/include/string.h" 1
 # 25 "C:/c68/include/string.h"
  void *memcpy (void *dst, const void *src, size_t size) ;
@@ -462,13 +479,17 @@ void set_screen_base(UINT8 *new_base);
  int strnicmp ( const char *, const char *, size_t ) ;
  int strcmpi ( const char *, const char * ) ;
  int strncmpi ( const char *, const char *, size_t ) ;
-# 25 "breakout.c" 2
+# 37 "breakout.c" 2
+
+
+typedef void (*Vector) ();
 
 
 
 
 UINT8 buffer2[32256];
 UINT8 background[32256];
+
 
 unsigned long get_time()
 {
@@ -481,7 +502,7 @@ unsigned long get_time()
 	_trap_1_wl((short)0x20,(long)(old_ssp)) ;
 	return timeNow;
 }
-# 55 "breakout.c"
+# 71 "breakout.c"
 UINT8 *get_base(UINT8 buffer[])
 {
 	UINT8 *base;
@@ -491,6 +512,24 @@ UINT8 *get_base(UINT8 buffer[])
 	difference %= 0x100;
 	difference = 0x100 - difference;
 	return base + difference;
+}
+
+Vector install_vector(int num, Vector vector)
+{
+  Vector orig;
+  Vector *vectp = (Vector *) ((long) num << 2);
+  long old_ssp = _trap_1_wl((short)0x20,(long)(0)) ;
+
+  orig = *vectp;
+  *vectp = vector;
+
+  _trap_1_wl((short)0x20,(long)(old_ssp)) ;
+  return orig;
+}
+
+long goto_super()
+{
+	return _trap_1_wl((short)0x20,(long)(0)) ;
 }
 
 int main()
@@ -516,37 +555,67 @@ int main()
 
 	Brick current[5][20];
 	int x,y = -1;
-
-	long input = 0;
+	bool hold = 0 ;
+	UINT8 hold_mask;
+	UINT8 mouse_mask;
+	UINT8 input = 0;
 	unsigned long timeThen, timeNow, timeElapsed = get_time();
 	bool swap = 0 ;
 
-
+	Vector orig_key = install_vector(70 , key_isr);
 	Model game;
 	start_game(&game);
 
 
 	memcpy(current, game.bricks, sizeof(current));
 
+	start_queue();
+
 
 	start_render(background_32, &game);
 	simple_render(buffer1_8, buffer1_32, &game);
 
-	printf("\033f");
-	fflush((&_iob[1]) );
-# 136 "breakout.c"
-	while(input != 0x00100071 )
+
+
+	while(input != 0x90 )
 	{
-		if(key_pressed() == 1 )
+		if(queue_is_empty() == 0 )
 		{
 			input = get_input();
-			asynch_events(&game.paddle, &game.ball, input);
+			mouse_mask = input & 0xF8;
+
+			if(mouse_mask == 0xF8)
+			{
+				while(queue_is_empty() == 0 )
+				{
+					deque();
+				}
+			}
+
+			else
+			{
+				hold_mask = input & 0x80;
+				if(hold_mask == 0x00)
+				{
+					hold = 1 ;
+				}
+				else
+				{
+					hold = 0 ;
+				}
+			}
 		}
+
+
 
 		timeNow = get_time();
 		timeElapsed = timeNow - timeThen;
 		if (timeElapsed > 0)
 		{
+			if(hold == 1 )
+			{
+				asynch_events(&game.paddle, &game.ball, input);
+			}
 			synch_events(&(game.paddle), &(game.ball), game.bricks);
 			condition_events(&(game.paddle), &(game.ball),
 							 game.bricks, &(game.score), &(game.lives));
@@ -589,13 +658,14 @@ int main()
 		}
 
 	}
+
+
 	old_ssp = _trap_1_wl((short)0x20,(long)(0)) ;
 	set_screen_base(buffer1_8);
 	_trap_1_wl((short)0x20,(long)(old_ssp)) ;
 
 	(void)_trap_14_w((short)0x25) ;
-	printf("\033e");
-	fflush((&_iob[1]) );
 
+	install_vector(70 , orig_key);
 	return 0;
 }

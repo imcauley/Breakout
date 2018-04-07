@@ -15,15 +15,15 @@ Instructor: Paul Pospisil
 
 ==========================================*/
 
-
 #include "model.h"
+#include "events.h"
 #include <osbind.h>
 #include <stdio.h>
 
 #define RETURN	0x001C000DL
-#define LEFT 	0x004b0000L
-#define RIGHT	0x004d0000L
-#define SPACE	0x00390020L
+#define LEFT 	0x4b
+#define RIGHT	0x4d
+#define SPACE	0x39
 
 /*=== asynch_events ===========================================================
 
@@ -39,7 +39,7 @@ Outputs:
 Limitations/Known bugs: N/A
 =============================================================================*/
 
-void asynch_events(Paddle *paddle, Ball *ball, long input)
+void asynch_events(Paddle *paddle, Ball *ball, UINT8 input)
 {
 	if (input == LEFT)
 		paddle->direction = -1;
@@ -50,7 +50,7 @@ void asynch_events(Paddle *paddle, Ball *ball, long input)
 	if (input == SPACE)
 	{
         ball->launch = True;
-				launch_ball(paddle, ball);
+		launch_ball(paddle, ball);
 	}
 }
 
