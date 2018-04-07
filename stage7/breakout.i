@@ -479,10 +479,32 @@ void key_isr();
  int strnicmp ( const char *, const char *, size_t ) ;
  int strcmpi ( const char *, const char * ) ;
  int strncmpi ( const char *, const char *, size_t ) ;
+<<<<<<< HEAD
 # 37 "breakout.c" 2
 
 
 typedef void (*Vector) ();
+=======
+# 25 "breakout.c" 2
+# 1 "./psg.h" 1
+# 1 "./types.h" 1
+# 18 "./psg.h" 2
+
+
+void write_psg(int reg, UINT8 val);
+UINT8 read_psg(int reg);
+void set_tone(int channel, int tuning);
+void set_volume(int channel, int volume);
+void stop_sound();
+void enable_channel(int channel, int tone_on, int noise_on);
+void set_envelope(int shape, unsigned int sustain);
+void set_noise(int tuning);
+# 26 "breakout.c" 2
+# 1 "./music.h" 1
+void start_music();
+void update_music(UINT32 time_elapsed);
+# 27 "breakout.c" 2
+>>>>>>> db0707ff24a6ad4c0c43b52e77db7098558c5bad
 
 
 
@@ -502,7 +524,11 @@ unsigned long get_time()
 	_trap_1_wl((short)0x20,(long)(old_ssp)) ;
 	return timeNow;
 }
+<<<<<<< HEAD
 # 71 "breakout.c"
+=======
+# 57 "breakout.c"
+>>>>>>> db0707ff24a6ad4c0c43b52e77db7098558c5bad
 UINT8 *get_base(UINT8 buffer[])
 {
 	UINT8 *base;
@@ -555,11 +581,17 @@ int main()
 
 	Brick current[5][20];
 	int x,y = -1;
+<<<<<<< HEAD
 	bool hold = 0 ;
 	UINT8 hold_mask;
 	UINT8 mouse_mask;
 	UINT8 input = 0;
 	unsigned long timeThen, timeNow, timeElapsed = get_time();
+=======
+
+	long input = 0;
+	unsigned long timeThen, timeNow, timeElapsed;
+>>>>>>> db0707ff24a6ad4c0c43b52e77db7098558c5bad
 	bool swap = 0 ;
 
 	Vector orig_key = install_vector(70 , key_isr);
@@ -575,9 +607,17 @@ int main()
 	start_render(background_32, &game);
 	simple_render(buffer1_8, buffer1_32, &game);
 
+<<<<<<< HEAD
 
 
 	while(input != 0x90 )
+=======
+	printf("\033f");
+	fflush((&_iob[1]) );
+# 138 "breakout.c"
+	timeThen, timeNow = get_time();
+	while(input != 0x00100071 )
+>>>>>>> db0707ff24a6ad4c0c43b52e77db7098558c5bad
 	{
 		if(queue_is_empty() == 0 )
 		{
@@ -621,6 +661,7 @@ int main()
 							 game.bricks, &(game.score), &(game.lives));
 			timeThen = timeNow;
 
+
 			for(x = 0; x < 5; x++)
 			{
 				for(y = 0; y < 20; y++)
@@ -659,7 +700,11 @@ int main()
 
 	}
 
+<<<<<<< HEAD
 
+=======
+	stop_sound();
+>>>>>>> db0707ff24a6ad4c0c43b52e77db7098558c5bad
 	old_ssp = _trap_1_wl((short)0x20,(long)(0)) ;
 	set_screen_base(buffer1_8);
 	_trap_1_wl((short)0x20,(long)(old_ssp)) ;

@@ -35,6 +35,8 @@ KNOWN BUGS:
 #include <osbind.h>
 #include <stdio.h>
 #include <string.h>
+#include "psg.h"
+#include "music.h"
 
 typedef void (*Vector) ();
 
@@ -125,6 +127,8 @@ int main()
 	UINT8 mouse_mask;
 	UINT8 input = 0;
 	unsigned long timeThen, timeNow, timeElapsed = get_time();
+	long input = 0;
+	unsigned long timeThen, timeNow, timeElapsed;
 	bool swap = False;
 
 	Vector orig_key = install_vector(KEY_ISR_NUM, key_isr);
@@ -141,7 +145,19 @@ int main()
 	simple_render(buffer1_8, buffer1_32, &game);
 
 
+/*
+		if(buffer1_active):
+			write with buffer1
+			render with buffer2
+		else:
+			write with buffer2
+			redner with buffer1
 
+		wait until next frame
+
+*/
+	/*start_music();*/
+	timeThen, timeNow = get_time();
 	while(input != Q)
 	{
 		if(queue_is_empty() == False)
@@ -185,6 +201,7 @@ int main()
 			condition_events(&(game.paddle), &(game.ball), 
 							 game.bricks, &(game.score), &(game.lives));
 			timeThen = timeNow;
+			/*update_music(timeElapsed);*/
 
 			for(x = 0; x < 5; x++)
 			{
@@ -224,7 +241,7 @@ int main()
 
 	}
 	
-	
+	stop_sound();
 	old_ssp = Super(0);
 	set_screen_base(buffer1_8);
 	Super(old_ssp);

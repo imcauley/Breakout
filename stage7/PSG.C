@@ -19,30 +19,36 @@ Instructor: Paul Pospisil
 #include <osbind.h>
 #include "psg.h"
 
-#define A 1
-#define B 2
-#define C 3
+#define A 0
+#define B 1
+#define C 2
 
 volatile char *PSG_reg_select = 0xFF8800;
 volatile char *PSG_reg_write  = 0xFF8802;
 
 void write_psg(int reg, UINT8 val)
 {
+	long old_ssp = Super(0);
     if (reg >= 0 && reg <= 15 && val >= 0 && val <= 255)
     {
         *PSG_reg_select = reg;
         *PSG_reg_write = val;
     }
+	Super(old_ssp);
     return;
 }
 
 UINT8 read_psg(int reg)
 {
+	long old_ssp = Super(0);
+	UINT8 value;
     if (reg >= 0 && reg <= 15)
     {    
         *PSG_reg_select = reg;
-        return *PSG_reg_select;
+		value = *PSG_reg_select;
+        return value;
     }
+	Super(old_ssp);
     return -1;
 }
 
@@ -111,8 +117,8 @@ void enable_channel(int channel, int tone_on, int noise_on)
     UINT8 enable_c_tone = 0x03;
     UINT8 disable_c_tone = 0x04;
     
-    mask &= 0x00111111;
-    
+	UINT8 old_channels;
+	
     if (channel == A)
     {
         if (tone_on == 1)
@@ -151,8 +157,11 @@ void enable_channel(int channel, int tone_on, int noise_on)
         else
             mask |= disable_c_noise;
     }
-    
-    write_psg(7, mask);
+	
+	old_channels = read_psg(7);
+    write_psg(7, (mask & old_channels));
+	
+	
 }
 
 void stop_sound()
@@ -163,11 +172,31 @@ void stop_sound()
     return;
 }
 
+void set_noise(int tuning)
+{
+	if (tuning >= 0 && tuning <= 31)
+		write_psg(6,tuning);
+}
+
+void set_envelope(int shape, unsigned int sustain)
+{
+	if (shape >= 0 && shape <= 15)
+		write_psg(0xD,shape);
+	
+	if (sustain <= 65535)
+	{
+		unsigned int lower = sustain & 0xFF;
+		unsigned int upper = sustain & 0xFF00;
+		write_psg(0xC,upper);
+		write_psg(0xB,lower);
+	}
+}
+
 /*int main()
 {
 	long old_ssp = Super(0);
-	Super(old_ssp);
-    set_tone(A, 248);
+	
+    set_tone(A, 478);
     enable_channel(A,1,1);
     set_volume(A,11);
 
@@ -176,7 +205,7 @@ void stop_sound()
 		;
 
 	set_volume(A,0);
-
+	Super(old_ssp);
 	Cnecin();
 
 	return 0;
