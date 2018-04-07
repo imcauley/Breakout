@@ -19,6 +19,7 @@ Instructor: Paul Pospisil
 #include "model.h"
 #include <osbind.h>
 #include <stdio.h>
+#include "effects.h"
 
 #define RETURN	0x001C000DL
 #define LEFT 	0x004b0000L
@@ -102,6 +103,8 @@ void condition_events(Paddle *paddle, Ball *ball, Brick bricks[][], Score *score
 	{
 		ball->y_direction *= -1;
 		ball->y = (paddle->y - ball->height);
+		if (ball->launched)
+			play_bounce();
 	}
 
 	else if (ball_collides_bottom(ball, bricks, paddle))
@@ -113,25 +116,30 @@ void condition_events(Paddle *paddle, Ball *ball, Brick bricks[][], Score *score
 	{
 		ball->x = 0;
 		ball->x_direction *= -1;
+		play_bounce();
 	}
 	else if (ball_collides_right(ball))
 	{
 		ball->x = 638 - ball->width;
 		ball->x_direction *= -1;
+		play_bounce();
 	}
 	else if (ball_collides_top(ball, bricks, paddle))
 	{
 		ball->y = 41;
 		ball->y_direction *= -1;
+		play_bounce();
 	}
 	block_collision = ball_collides_bricks(ball, bricks, paddle, score);     /* x or y for collisions */
 	if (block_collision == 'x')
 	{
 		ball->x_direction *= -1;
+		play_brick_destroyed();
 	}
 	else if (block_collision == 'y')
 	{
 		ball->y_direction *= -1;
+		play_brick_destroyed();
 	}
     
     if (game_over(lives))

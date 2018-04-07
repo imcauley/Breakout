@@ -23,6 +23,8 @@ Instructor: Paul Pospisil
 #include <osbind.h>
 #include <stdio.h>
 #include <string.h>
+#include "psg.h"
+#include "music.h"
 
 #define Q    0x00100071
 
@@ -88,7 +90,7 @@ int main()
 	int x,y = -1;
 
 	long input = 0;
-	unsigned long timeThen, timeNow, timeElapsed = get_time();
+	unsigned long timeThen, timeNow, timeElapsed;
 	bool swap = False;
 
 
@@ -132,7 +134,8 @@ int main()
 		wait until next frame
 
 */
-
+	/*start_music();*/
+	timeThen, timeNow = get_time();
 	while(input != Q)
 	{
 		if(key_pressed() == True)
@@ -149,6 +152,7 @@ int main()
 			condition_events(&(game.paddle), &(game.ball), 
 							 game.bricks, &(game.score), &(game.lives));
 			timeThen = timeNow;
+			/*update_music(timeElapsed);*/
 
 			for(x = 0; x < 5; x++)
 			{
@@ -187,6 +191,8 @@ int main()
 		}
 
 	}
+	
+	stop_sound();
 	old_ssp = Super(0);
 	set_screen_base(buffer1_8);
 	Super(old_ssp);

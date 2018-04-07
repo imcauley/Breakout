@@ -463,6 +463,24 @@ void set_screen_base(UINT8 *new_base);
  int strcmpi ( const char *, const char * ) ;
  int strncmpi ( const char *, const char *, size_t ) ;
 # 25 "breakout.c" 2
+# 1 "./psg.h" 1
+# 1 "./types.h" 1
+# 18 "./psg.h" 2
+
+
+void write_psg(int reg, UINT8 val);
+UINT8 read_psg(int reg);
+void set_tone(int channel, int tuning);
+void set_volume(int channel, int volume);
+void stop_sound();
+void enable_channel(int channel, int tone_on, int noise_on);
+void set_envelope(int shape, unsigned int sustain);
+void set_noise(int tuning);
+# 26 "breakout.c" 2
+# 1 "./music.h" 1
+void start_music();
+void update_music(UINT32 time_elapsed);
+# 27 "breakout.c" 2
 
 
 
@@ -481,7 +499,7 @@ unsigned long get_time()
 	_trap_1_wl((short)0x20,(long)(old_ssp)) ;
 	return timeNow;
 }
-# 55 "breakout.c"
+# 57 "breakout.c"
 UINT8 *get_base(UINT8 buffer[])
 {
 	UINT8 *base;
@@ -518,7 +536,7 @@ int main()
 	int x,y = -1;
 
 	long input = 0;
-	unsigned long timeThen, timeNow, timeElapsed = get_time();
+	unsigned long timeThen, timeNow, timeElapsed;
 	bool swap = 0 ;
 
 
@@ -534,7 +552,8 @@ int main()
 
 	printf("\033f");
 	fflush((&_iob[1]) );
-# 136 "breakout.c"
+# 138 "breakout.c"
+	timeThen, timeNow = get_time();
 	while(input != 0x00100071 )
 	{
 		if(key_pressed() == 1 )
@@ -551,6 +570,7 @@ int main()
 			condition_events(&(game.paddle), &(game.ball),
 							 game.bricks, &(game.score), &(game.lives));
 			timeThen = timeNow;
+
 
 			for(x = 0; x < 5; x++)
 			{
@@ -589,6 +609,8 @@ int main()
 		}
 
 	}
+
+	stop_sound();
 	old_ssp = _trap_1_wl((short)0x20,(long)(0)) ;
 	set_screen_base(buffer1_8);
 	_trap_1_wl((short)0x20,(long)(old_ssp)) ;
