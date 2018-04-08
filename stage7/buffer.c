@@ -1,11 +1,39 @@
+/*=========================================
+
+Source File:
+buffer.c
+
+Author(s):
+Daniel Jackins
+Isaac McAuley
+
+Date Last Changed:
+April 8 2018
+
+Class: COMP 2659 - 001
+Instructor: Paul Pospisil
+
+==========================================*/
+
 #include "types.h"
 #include "buffer.h"
 #include <stdio.h>
-#define BUFFER_SZ 256
+#define BUFFER_SZ 255
 
 UINT8 IKDB_BUFFER[BUFFER_SZ];
 UINT8 front;
 UINT8 back;
+
+/*=== title ===========================================================
+
+Purpose:
+
+Inputs:
+
+Outputs:
+
+Limitations/Known bugs: N/A
+=============================================================================*/
 
 void start_queue()
 {
@@ -13,6 +41,18 @@ void start_queue()
 	back = 0;
 	return;
 }
+
+/*=== title ===========================================================
+
+Purpose:
+
+Inputs:
+
+Outputs:
+
+Limitations/Known bugs: N/A
+=============================================================================*/
+
 void enque(UINT8 code)
 {
 	if(front != back + 1)
@@ -27,6 +67,17 @@ void enque(UINT8 code)
 	
 	return;
 }
+
+/*=== title ===========================================================
+
+Purpose:
+
+Inputs:
+
+Outputs:
+
+Limitations/Known bugs: N/A
+=============================================================================*/
 
 UINT8 deque()
 {
@@ -45,6 +96,17 @@ UINT8 deque()
 	return 0x00;
 }
 
+/*=== title ===========================================================
+
+Purpose:
+
+Inputs:
+
+Outputs:
+
+Limitations/Known bugs: N/A
+=============================================================================*/
+
 bool queue_is_empty()
 {
 	if(front == back)
@@ -56,16 +118,4 @@ bool queue_is_empty()
 		return False;
 	}
 
-}
-
-void print_buffer()
-{
-	int i;
-	
-	for(i = 0; i < BUFFER_SZ; i++)
-	{
-		printf("%x, ",IKDB_BUFFER[i]);
-	}
-	printf("\n");
-	return;
 }

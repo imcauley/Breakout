@@ -1,7 +1,7 @@
 /*=========================================
 
 Source File:
-types.h
+psg.c
 
 Author(s):
 Daniel Jackins
@@ -15,19 +15,13 @@ Instructor: Paul Pospisil
 
 ==========================================*/
 
-
-#ifndef TYPES_H
-#define TYPES_H
-
-typedef unsigned char UINT8;
-typedef unsigned int  UINT16;
-typedef unsigned long UINT32;
-
-typedef int bool;
-
-#define True 1
-#define False 0
-
-int convertToSigned(UINT8 num);
-
-#endif
+int convertToSigned(UINT8 num)
+{
+	int sign = (int) num;
+	
+	if(num > 0x7F)
+	{
+		num |= 0xFF00;
+	}
+	return sign;
+}

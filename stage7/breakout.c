@@ -26,12 +26,12 @@ KNOWN BUGS:
 
 ==========================================*/
 
-
 #include "render.h"
 #include "input.c"
 #include "events.h"
 #include "rast_asm.h"
 #include "in_asm.h"
+#include "splash.h"
 #include <osbind.h>
 #include <stdio.h>
 #include <string.h>
@@ -42,22 +42,15 @@ typedef void (*Vector) ();
 
 #define Q    0x90
 #define KEY_ISR_NUM	70
+#define VBL_ISR_NUM 28
+
+void vert_sync();
 
 UINT8 buffer2[32256];
 UINT8 background[32256];
 
-
-unsigned long get_time()
-{
-	unsigned long *timer;	/* address of longword auto-inc’ed 70 x per s */
-	unsigned long timeNow;
-	long old_ssp;
-	old_ssp = Super(0);				/* enter privileged mode */
-	timer = (unsigned long *)0x462;
-	timeNow = *timer;
-	Super(old_ssp); 				/* exit privileged mode as soon as possible */
-	return timeNow;
-}
+bool render_request = True;
+Model game;
 
 /*=== get_base ===========================================================
 
@@ -94,11 +87,6 @@ Vector install_vector(int num, Vector vector)
   return orig;
 }
 
-long goto_super()
-{
-	return Super(0); 
-}
-
 int main()
 {
 	long old_ssp;
@@ -116,23 +104,25 @@ int main()
 	UINT32 *background_32 = (UINT32 *) background_8;
 
 	/* pointer to where the renderer is writing to */
-	UINT8 *render_base_8 = buffer2_8;
-	UINT32 *render_base_32 = buffer2_32;
+	UINT8 *render_base_8 = buffer1_8;
+	UINT32 *render_base_32 = buffer1_32;
 
-	/* current:  what the bricks where last screenshot */
+	/* current:  what the bricks were last screenshot */
 	Brick current[5][20];
 	int x,y = -1;
+	
 	bool hold = False;
 	UINT8 hold_mask;
 	UINT8 mouse_mask;
+
 	UINT8 input = 0;
-	unsigned long timeThen, timeNow, timeElapsed = get_time();
-	long input = 0;
-	unsigned long timeThen, timeNow, timeElapsed;
+		
 	bool swap = False;
 
 	Vector orig_key = install_vector(KEY_ISR_NUM, key_isr);
-	Model game;
+	Vector orig_vbl = install_vector(VBL_ISR_NUM, VBL_isr);
+	
+	start_queue();
 	start_game(&game);
 
 
@@ -140,31 +130,17 @@ int main()
 	
 	start_queue();
 	
-
+	
 	start_render(background_32, &game);
 	simple_render(buffer1_8, buffer1_32, &game);
 
-
-/*
-		if(buffer1_active):
-			write with buffer1
-			render with buffer2
-		else:
-			write with buffer2
-			redner with buffer1
-
-		wait until next frame
-
-*/
-	/*start_music();*/
-	timeThen, timeNow = get_time();
+	
 	while(input != Q)
 	{
 		if(queue_is_empty() == False)
 		{
 			input = get_input();
 			mouse_mask = input & 0xF8;
-			/* check for mouse input */
 			if(mouse_mask == 0xF8)
 			{
 				while(queue_is_empty() == False)
@@ -172,7 +148,6 @@ int main()
 					deque();
 				}
 			}
-			/* check for keyboard input */
 			else
 			{
 				hold_mask = input & 0x80;
@@ -187,22 +162,13 @@ int main()
 			}
 		}
 		
-		
-
-		timeNow = get_time();
-		timeElapsed = timeNow - timeThen;
-		if (timeElapsed > 0)
+		if(hold == True)
 		{
-			if(hold == True)
-			{
-				asynch_events(&game.paddle, &game.ball, input);
-			}
-			synch_events(&(game.paddle), &(game.ball), game.bricks);
-			condition_events(&(game.paddle), &(game.ball), 
-							 game.bricks, &(game.score), &(game.lives));
-			timeThen = timeNow;
-			/*update_music(timeElapsed);*/
+			asynch_events(&game.paddle, &game.ball, input);
+		}
 
+		if(render_request == True)
+		{
 			for(x = 0; x < 5; x++)
 			{
 				for(y = 0; y < 20; y++)
@@ -236,18 +202,33 @@ int main()
 				Super(old_ssp);
 				swap = True;
 			}
-			Vsync();
+			
+			render_request = False;
 		}
 
 	}
 	
 	stop_sound();
+
 	old_ssp = Super(0);
 	set_screen_base(buffer1_8);
 	Super(old_ssp);
-	
-	Vsync();
-	
+
 	install_vector(KEY_ISR_NUM, orig_key);
+	install_vector(VBL_ISR_NUM, orig_vbl);
+	
+	
 	return 0;
+}
+
+void vert_sync()
+{
+	if(render_request == False)
+	{
+		synch_events(&(game.paddle), &(game.ball), game.bricks);
+		condition_events(&(game.paddle), &(game.ball), 
+					game.bricks, &(game.score), &(game.lives));
+	}
+				
+	render_request = True;
 }

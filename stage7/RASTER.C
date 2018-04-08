@@ -131,12 +131,17 @@ void plot_bitmap_8(UINT8 *base, int x, int y,
   const UINT8 *bitmap, unsigned int height)
 {
     int i;
-
-    for (i = 0; i < height; i++)
-    {
-        *(base + y * (SCREEN_WIDTH / 8) + (x >> 3)) |= bitmap[i];
-        base += (SCREEN_WIDTH / 8);
-    }
+	UINT8 front;
+	UINT8 back;
+	UINT8 offset = x % 80;
+	
+    for(i = 0; i < height; i++)
+	{
+		front = bitmap[i] >> offset;
+		back = bitmap[i] << offset;
+		*(base + ((y + i) * 80) + (x/80)) = front;
+		*(base + ((y + i) * 80) + (x/80) + 1) = back;
+	}
 }
 
 /*=== plot_bitmap_32 ===========================================================
@@ -334,6 +339,17 @@ void plot_char(UINT8 *base, int x, int y, int character)
 	}
 }
 
+/*=== title ===========================================================
+
+Purpose:
+
+Inputs:
+
+Outputs:
+
+Limitations/Known bugs: N/A
+=============================================================================*/
+
 UINT16 *get_video_base()
 {
 	long old_ssp;
@@ -341,7 +357,7 @@ UINT16 *get_video_base()
 	UINT16 low;
 	UINT16 high;
 	UINT32 combined;
-  UINT16 *base;
+	UINT16 *base;
 
 	old_ssp = Super(0);
 	get_base = (UINT8 *) 0xFFFF8201;
@@ -349,12 +365,14 @@ UINT16 *get_video_base()
 	low = *(get_base + 2);
 	Super(old_ssp);
 
-  combined = low;
-  high *= 0x100;
-  combined += high;
-  combined *= 0x100;
+	combined = low;
+	high *= 0x100;
+	combined += high;
+	combined *= 0x100;
 
-  base = (UINT16 *) combined;
+	base = (UINT16 *) combined;
 
 	return base;
 }
+
+

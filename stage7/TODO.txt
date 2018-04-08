@@ -1,0 +1,10 @@
+Task				File
+
+-Make mouse go back		splash.c
+-Add empty queue		input.c
+-Put screen const somewher	render.c
+-Render mouse function		render.c
+-Document functions		model.c
+-convertToSign			types.c
+-Ball not go to other side	breakout.c?
+-Make correct dependencies	MAKEFILE

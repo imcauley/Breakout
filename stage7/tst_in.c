@@ -35,6 +35,16 @@ void mask_key(bool mask)
 	Super(old_ssp);
 }
 
+int convertToSigned(UINT8 num)
+{
+	int sign = (int) num;
+	if(num > 0x7F)
+	{
+		sign |= 0xFF00;
+	}
+	return sign;
+}
+
 int main()
 {
 	long old_ssp;
@@ -42,15 +52,79 @@ int main()
 	Vector orig_key;
 	UINT8 input = 0x00;
 	
-	orig_key = install_vector(KEY_ISR_NUM, key_isr);
 	
+	UINT8 mouse_mask;
+	UINT8 input;
+	UINT8 click = 0xf8;
+	UINT8 mouse_state = 0;
+	int select = 0;
+	
+	int x, y = 0;
+	int dx = 0;
+	int dy = 0;
+	
+	orig_key = install_vector(KEY_ISR_NUM, key_isr);
 	start_queue();
-	while(input != 0x90)
+	
+	while(click != 0xfa)
 	{
-		if(queue_is_empty() == False)
+		while(queue_is_empty() == False)
 		{
-			input = get_input();
-			printf("%x\n", input);
+			input = deque();
+			if(mouse_state == 0)
+			{
+				if(input == 0xf8 || input == 0xfa)
+				{
+					mouse_mask = input & 0xF8;
+					if(mouse_mask >= 0xF6)
+					{
+						click = input;
+						mouse_state += 1;
+					}
+				}
+				else
+				{
+					deque();
+					deque();
+				}
+				
+			}
+			else if(mouse_state == 1)
+			{
+				dx = convertToSigned(input);
+				if(dx > 15 || dx < -15)
+					dx = 0;
+				mouse_state += 1;
+			}
+			else if(mouse_state == 2)
+			{
+				dy = convertToSigned(input);
+				if(dy > 15 || dy < -15)
+					dy = 0;
+				mouse_state = 0;
+				x += dx;
+				y += dy;
+				dx = 0;
+				dy = 0; 	
+				
+				if(x < 0)
+				{
+					x = 0;
+				}
+				else if(x >= 632)
+				{
+					x = 632;
+				}
+				if(y < 0)
+				{
+					y = 0;
+				}
+				else if(y >= 392)
+				{
+					y = 392;
+				}
+				printf("%x, x: %i, y: %i\n", click, x, y);
+			}
 		}
 	}
 

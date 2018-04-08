@@ -1,6 +1,5 @@
-<<<<<<< HEAD
-game: render.o raster.o model.o input.o breakout.o events.o buffer.o rast_asm.o in_asm.o music.o psg.o effects.o
-	cc68x -g raster.o render.o model.o breakout.o events.o buffer.o rast_asm.o in_asm.o music.o psg.o effects.o -o game
+game: render.o raster.o model.o input.o breakout.o events.o buffer.o rast_asm.o in_asm.o music.o psg.o effects.o splash.o
+	cc68x -g raster.o render.o model.o breakout.o events.o buffer.o rast_asm.o in_asm.o music.o psg.o effects.o splash.o -o game
 
 tst: tst_in.o in_asm.o input.o buffer.o
 	cc68x tst_in.o in_asm.o input.o buffer.o -o tst
@@ -43,3 +42,6 @@ psg.o: psg.c psg.h
 
 effects.o: effects.c effects.h
 	cc68x -g -c effects.c
+	
+splash.o: splash.c render.o raster.o
+	cc68x -g -c splash.c

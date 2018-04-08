@@ -169,6 +169,7 @@ void die(Ball *ball, Lives *lives)
 		if(lives->lives[i] == True)
 		{
 			lives->lives[i] = False;
+			ball->launch = False;
 			ball->launched = False;
 			break;
 		}

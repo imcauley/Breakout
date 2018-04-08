@@ -37,7 +37,7 @@ void start_game(Model *game)
 	(*game).paddle.x = 200;
 	(*game).paddle.y = 380;
 	(*game).paddle.height = 16;
-	(*game).paddle.speed = 20;
+	(*game).paddle.speed = 16;
 	(*game).paddle.direction = 1;
 	(*game).paddle.width = 64;
 
@@ -51,8 +51,8 @@ void start_game(Model *game)
 	(*game).score.score[3] = 0;
 
 	(*game).ball.width = 8;
-	(*game).ball.x_speed = 10;
-	(*game).ball.y_speed = 10;
+	(*game).ball.x_speed = 7;
+	(*game).ball.y_speed = 7;
 	(*game).ball.x_direction = 1;
 	(*game).ball.y_direction = 1;
 	(*game).ball.launch = False;
@@ -204,8 +204,8 @@ void launch_ball(Paddle *paddle, Ball *ball)
     if (ball->launch == True && ball->launched == False)
     {
         int random = rand() % 2;
-				if(random == 0)
-					random = -1;
+		if(random == 0)
+			random = -1;
         ball->x_speed = 10;
         ball->y_speed = 10;
         ball->y_direction = 1;

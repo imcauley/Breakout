@@ -25,7 +25,18 @@ Instructor: Paul Pospisil
 #define SCREEN_WIDTH 640
 #define SCREEN_HEIGHT 400
 
-
+const UINT8 cursor[] =
+	{
+		0x00,
+		0x00,
+		0x00,
+		0x00,
+		0x00,
+		0x00,
+		0x00,
+		0x00
+	};
+	
 const UINT32 breakout [] = {
 0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF,
 0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF,
@@ -2029,7 +2040,6 @@ const UINT32 breakout [] = {
 0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF
 };
 
-
 void render_splash_screen(UINT32 *base32)
 {
 	int x;
@@ -2362,4 +2372,21 @@ void render_game_over(UINT8 *base8, Score *score)
 	plot_char(base8, 39, 240, (score->score[2]));
 	plot_char(base8, 40, 240, (score->score[1]));
 	plot_char(base8, 41, 240, (score->score[0]));
+}
+
+/*=== title ===========================================================
+
+Purpose:
+
+Inputs:
+
+Outputs:
+
+Limitations/Known bugs: N/A
+=============================================================================*/
+
+void render_mouse(UINT8 *base, int x, int y)
+{
+	draw_8rect(base, x, y, 8, False);
+
 }

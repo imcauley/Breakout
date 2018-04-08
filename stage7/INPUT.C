@@ -23,10 +23,32 @@ Instructor: Paul Pospisil
 
 volatile const UINT8 * const IKBD_RDR = 0xFFFFFC02;
 
+/*=== title ===========================================================
+
+Purpose:
+
+Inputs:
+
+Outputs:
+
+Limitations/Known bugs: N/A
+=============================================================================*/
+
 UINT8 get_input()
 {
 	return deque();
 }
+
+/*=== title ===========================================================
+
+Purpose:
+
+Inputs:
+
+Outputs:
+
+Limitations/Known bugs: N/A
+=============================================================================*/
 
 bool key_pressed()
 {
@@ -36,6 +58,17 @@ bool key_pressed()
 	}
 	return True;
 }
+
+/*=== title ===========================================================
+
+Purpose:
+
+Inputs:
+
+Outputs:
+
+Limitations/Known bugs: N/A
+=============================================================================*/
 
 void key_press()
 {	

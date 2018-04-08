@@ -15,7 +15,7 @@ _start_game:
 	;line	39
 	move.w	#16,1030(a3)
 	;line	40
-	move.w	#20,1024(a3)
+	move.w	#16,1024(a3)
 	;line	41
 	move.w	#1,1026(a3)
 	;line	42
@@ -37,9 +37,9 @@ _start_game:
 	;line	53
 	move.w	#8,1012(a3)
 	;line	54
-	move.w	#10,1004(a3)
+	move.w	#7,1004(a3)
 	;line	55
-	move.w	#10,1006(a3)
+	move.w	#7,1006(a3)
 	;line	56
 	move.w	#1,1008(a3)
 	;line	57

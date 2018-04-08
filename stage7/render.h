@@ -33,4 +33,5 @@ void render_clear(UINT8 *base8, UINT32 *base32, Model *game);
 void simple_render(UINT8 *base8, UINT32 *base32, Model *game);
 void render_splash_screen(UINT32 *base32); 
 void render_game_over(UINT8 *base8, Score *score);
+void render_mouse(UINT8 *base, int x, int y);
 #endif
