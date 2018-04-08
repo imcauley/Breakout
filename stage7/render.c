@@ -2387,6 +2387,7 @@ void render_mouse(UINT8 *base, int x, int y)
 		0x03
 	};
 	
+
 	plot_bitmap_8(base, x,y,cursor, 8);
 
 }

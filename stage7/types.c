@@ -20,10 +20,9 @@ Instructor: Paul Pospisil
 int convertToSigned(UINT8 num)
 {
 	int sign = (int) num;
-	
 	if(num > 0x7F)
 	{
-		num |= 0xFF00;
+		sign |= 0xFF00;
 	}
 	return sign;
 }

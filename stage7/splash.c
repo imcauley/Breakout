@@ -30,21 +30,24 @@ Instructor: Paul Pospisil
 #define CLICK_UP 0xF8
 #define CLICK_DOWN 0xFA
 
-void splash(UINT32 *base32, UINT8 *base8)
+UINT8 splash(UINT32 *base32, UINT8 *base8)
 {
+	UINT8 prev1[8] = {0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00};
+	UINT8 prev2[8] = {0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00};
+	
 	UINT8 input;
 	UINT8 click;
 	UINT8 mouse_state = 0;
-	int select = 0;
+	UINT8 select = 0;
 	
 	int x, y = 0;
 	
 	int dx = 0;
 	int dy = 0;
 	
-	clear_screen(base32);
 	
-	while(select != 3)
+	
+	while(select == 0)
 	{	
 		while(queue_is_empty() == False)
 		{
@@ -67,15 +70,11 @@ void splash(UINT32 *base32, UINT8 *base8)
 			else if(mouse_state == 1)
 			{
 				dx = convertToSigned(input);
-				if(dx > 15 && dx < -15)
-					dx = 0;
 				mouse_state += 1;
 			}
 			else if(mouse_state == 2)
 			{
 				dy = convertToSigned(input);
-				if(dy > 15 && dy < -15)
-					dy = 0;
 				
 				mouse_state = 0;
 				
@@ -83,17 +82,42 @@ void splash(UINT32 *base32, UINT8 *base8)
 				y += dy;
 				dx = 0;
 				dy = 0;
+				
+				if(x < 0)
+					x = 0;
+				if(x > 632)
+					x = 632;
+				if(y < 0)
+					y = 0;
+				if(y > 392)
+					y = 392;
 			}
 		}
 		
 		if(click == CLICK_DOWN)
 		{
-			select = 3;
+			if(x > 72 && x < 232)
+			{
+				if(y > 234 && y < 266)
+				{
+					select = 1;
+				}
+			}
+			
+			if(x > 72 && x < 232)
+			{
+				if(y > 340 && y < 376)
+				{
+					select = 3;
+				}
+			}
+			
 		}
 		
+		render_splash_screen(base32);
 		render_mouse(base8, x, y);
 		
 	}
 
-	return;
+	return select;
 }

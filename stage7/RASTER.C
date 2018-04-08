@@ -124,7 +124,9 @@ Inputs:
 
 Outputs: Draws the image to the screen.
 
-Limitations/Known bugs: N/A
+Limitations/Known bugs: 
+    -When the x is above 632 the back
+		renders on the other side of the screen
 =============================================================================*/
 
 void plot_bitmap_8(UINT8 *base, int x, int y,
@@ -142,8 +144,8 @@ void plot_bitmap_8(UINT8 *base, int x, int y,
 	{
 		front = bitmap[i] >> offset;
 		back = bitmap[i] << (8 - offset);
-		*(base + y + x) = ~front;
-		*(base + y + x + 1) = ~back;
+		*(base + y + x) &= ~front;
+		*(base + y + x + 1) &= ~back;
 		y += 80;
 	}
 }

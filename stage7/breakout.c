@@ -118,6 +118,8 @@ int main()
 	UINT8 input = 0;
 		
 	bool swap = False;
+	
+	UINT8 select = 0;
 
 	Vector orig_key = install_vector(KEY_ISR_NUM, key_isr);
 	Vector orig_vbl = install_vector(VBL_ISR_NUM, VBL_isr);
@@ -129,13 +131,13 @@ int main()
 	memcpy(current, game.bricks, sizeof(current));
 	
 	start_queue();
-	splash(buffer1_32, buffer1_8);
-	/*
+	select = splash(buffer1_32, buffer1_8);
+	
 	start_render(background_32, &game);
 	simple_render(buffer1_8, buffer1_32, &game);
 
 	
-	while(input != Q)
+	while(input != Q && select != 3)
 	{
 		if(queue_is_empty() == False)
 		{
@@ -209,7 +211,7 @@ int main()
 	}
 	
 	stop_sound();
-	*/
+	
 	old_ssp = Super(0);
 	set_screen_base(buffer1_8);
 	Super(old_ssp);
@@ -223,7 +225,6 @@ int main()
 
 void vert_sync()
 {
-	/*
 	if(render_request == False)
 	{
 		synch_events(&(game.paddle), &(game.ball), game.bricks);
@@ -232,5 +233,4 @@ void vert_sync()
 	}
 				
 	render_request = True;
-	*/
 }

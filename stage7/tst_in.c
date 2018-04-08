@@ -6,6 +6,9 @@
 typedef void (*Vector) ();
 #define KEY_ISR_NUM	70
 
+#define CLICK_UP 0xF8
+#define CLICK_DOWN 0xFA
+
 Vector install_vector(int num, Vector vector)
 {
   Vector orig;
@@ -73,17 +76,14 @@ int main()
 			input = deque();
 			if(mouse_state == 0)
 			{
-				if(input == 0xf8 || input == 0xfa)
+				if(input == CLICK_DOWN || input == CLICK_UP)
 				{
-					mouse_mask = input & 0xF8;
-					if(mouse_mask >= 0xF6)
-					{
-						click = input;
-						mouse_state += 1;
-					}
+					click = input;
+					mouse_state += 1;
 				}
 				else
 				{
+
 					deque();
 					deque();
 				}
@@ -92,42 +92,33 @@ int main()
 			else if(mouse_state == 1)
 			{
 				dx = convertToSigned(input);
-				if(dx > 15 || dx < -15)
-					dx = 0;
 				mouse_state += 1;
 			}
 			else if(mouse_state == 2)
 			{
 				dy = convertToSigned(input);
-				if(dy > 15 || dy < -15)
-					dy = 0;
+				
 				mouse_state = 0;
+				
 				x += dx;
 				y += dy;
 				dx = 0;
-				dy = 0; 	
+				dy = 0;
 				
 				if(x < 0)
-				{
 					x = 0;
-				}
-				else if(x >= 632)
-				{
+				if(x > 632)
 					x = 632;
-				}
 				if(y < 0)
-				{
 					y = 0;
-				}
-				else if(y >= 392)
-				{
+				if(y > 392)
 					y = 392;
-				}
+				
 				printf("%x, x: %i, y: %i\n", click, x, y);
 			}
 		}
 	}
-
+	
 	install_vector(KEY_ISR_NUM, orig_key);
 	
 	return 0;
