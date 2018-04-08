@@ -24,18 +24,6 @@ Instructor: Paul Pospisil
 #define BRICK_WIDTH 32
 #define SCREEN_WIDTH 640
 #define SCREEN_HEIGHT 400
-
-const UINT8 cursor[] =
-	{
-		0x00,
-		0x00,
-		0x00,
-		0x00,
-		0x00,
-		0x00,
-		0x00,
-		0x00
-	};
 	
 const UINT32 breakout [] = {
 0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF,
@@ -2387,6 +2375,18 @@ Limitations/Known bugs: N/A
 
 void render_mouse(UINT8 *base, int x, int y)
 {
-	draw_8rect(base, x, y, 8, False);
+	const UINT8 cursor[] =
+	{
+		0xFC,
+		0xF8,
+		0xF0,
+		0xF8,
+		0xDC,
+		0x8E,
+		0x07,
+		0x03
+	};
+	
+	plot_bitmap_8(base, x,y,cursor, 8);
 
 }

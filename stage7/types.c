@@ -15,6 +15,8 @@ Instructor: Paul Pospisil
 
 ==========================================*/
 
+#include "types.h"
+
 int convertToSigned(UINT8 num)
 {
 	int sign = (int) num;

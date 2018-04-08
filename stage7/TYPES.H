@@ -25,9 +25,9 @@ typedef unsigned long UINT32;
 
 typedef int bool;
 
+int convertToSigned(UINT8 num);
+
 #define True 1
 #define False 0
-
-int convertToSigned(UINT8 num);
 
 #endif

@@ -7,38 +7,38 @@ _IKBD_RDR:
 	even
 _get_input:
 	link	a6,#0
-	;line	28
+	;line	39
 	jsr	_deque
 L1:
 	unlk	a6
 	rts
 _key_pressed:
 	link	a6,#0
-	;line	33
+	;line	55
 	jsr	_queue_is_empty
 	cmp.w	#1,d0
 	bne	L2
-	;line	35
+	;line	57
 	moveq	#0,d0
 	bra	L3
 L2:
-	;line	37
+	;line	59
 	moveq	#1,d0
 L3:
 	unlk	a6
 	rts
 _key_press:
 	link	a6,#-2
-	;line	43
+	;line	76
 	move.l	_IKBD_RDR,a0
 	move.b	(a0),-1(a6)
-	;line	43
+	;line	76
 	clr.w	d0
 	move.b	-1(a6),d0
 	move.w	d0,-(a7)
 	jsr	_enque
 L4:
-	;line	44
+	;line	77
 	unlk	a6
 	rts
 	data
@@ -47,58 +47,36 @@ _render_request:
 	dc.w	1
 	text
 	even
-_get_time:
-	link	a6,#-12
-	;line	60
-	pea	0
-	move.w	#32,-(a7)
-	jsr	__trap_1_wl
-	addq.l	#6,a7
-	move.l	d0,-12(a6)
-	;line	61
-	move.l	#1122,-4(a6)
-	;line	62
-	move.l	-4(a6),a0
-	move.l	(a0),-8(a6)
-	;line	63
-	move.l	-12(a6),-(a7)
-	move.w	#32,-(a7)
-	jsr	__trap_1_wl
-	;line	64
-	move.l	-8(a6),d0
-L5:
-	unlk	a6
-	rts
 _get_base:
 	link	a6,#-6
 	movem.l	d3/d4,-(a7)
-	;line	82
+	;line	70
 	move.l	8(a6),d4
-	;line	83
+	;line	71
 	move.w	d4,d3
-	;line	84
+	;line	72
 	clr.l	d0
 	move.w	d3,d0
 	divu	#256,d0
 	swap	d0
 	move.w	d0,d3
-	;line	85
+	;line	73
 	move.w	#256,d0
 	sub.w	d3,d0
 	move.w	d0,d3
-	;line	86
+	;line	74
 	move.l	d4,d0
 	clr.l	d1
 	move.w	d3,d1
 	add.l	d1,d0
-L6:
+L5:
 	movem.l	(a7)+,d3/d4
 	unlk	a6
 	rts
 _install_vector:
 	link	a6,#-12
 	move.l	a3,-(a7)
-	;line	95
+	;line	83
 	move.w	8(a6),d0
 	ext.l	d0
 	asl.l	#2,d0
@@ -108,25 +86,25 @@ _install_vector:
 	jsr	__trap_1_wl
 	addq.l	#6,a7
 	move.l	d0,-12(a6)
-	;line	95
+	;line	83
 	move.l	(a3),-4(a6)
-	;line	96
+	;line	84
 	move.l	10(a6),(a3)
-	;line	98
+	;line	86
 	move.l	-12(a6),-(a7)
 	move.w	#32,-(a7)
 	jsr	__trap_1_wl
-	;line	99
+	;line	87
 	move.l	-4(a6),d0
-L7:
+L6:
 	move.l	-16(a6),a3
 	unlk	a6
 	rts
 _main:
-	link	a6,#-1068
+	link	a6,#-1056
 	movem.l	d3/d4/a3,-(a7)
 	lea	_install_vector,a3
-	;line	139
+	;line	125
 	jsr	_get_video_base
 	move.l	d0,d3
 	jsr	_get_video_base
@@ -146,104 +124,69 @@ _main:
 	move.w	#-1,-1040(a6)
 	clr.w	-1042(a6)
 	clr.b	-1045(a6)
-	jsr	_get_time
-	move.l	d0,-1058(a6)
-	clr.w	-1060(a6)
+	clr.w	-1048(a6)
 	pea	_key_isr
 	move.w	#70,-(a7)
 	jsr	(a3)
 	addq.l	#6,a7
-	move.l	d0,-1064(a6)
+	move.l	d0,-1052(a6)
 	pea	_VBL_isr
 	move.w	#28,-(a7)
 	jsr	(a3)
 	addq.l	#6,a7
-	move.l	d0,-1068(a6)
-	;line	139
+	move.l	d0,-1056(a6)
+	;line	125
 	jsr	_start_queue
-	;line	140
-	move.l	d3,-(a7)
-	move.l	d4,-(a7)
-	jsr	_splash
-	addq.l	#8,a7
-	;line	141
+	;line	126
 	pea	_game
 	jsr	_start_game
 	addq.l	#4,a7
-	;line	144
+	;line	129
 	pea	1000
 	pea	_game
 	pea	-1036(a6)
 	jsr	_memcpy
 	lea	12(a7),a7
-	;line	146
+	;line	131
 	jsr	_start_queue
-	;line	229
+	;line	132
+	move.l	d3,-(a7)
+	move.l	d4,-(a7)
+	jsr	_splash
+	addq.l	#8,a7
+	;line	213
 	pea	0
 	move.w	#32,-(a7)
 	jsr	__trap_1_wl
 	addq.l	#6,a7
 	move.l	d0,-4(a6)
-	;line	230
+	;line	214
 	move.l	d3,-(a7)
 	jsr	_set_screen_base
 	addq.l	#4,a7
-	;line	231
+	;line	215
 	move.l	-4(a6),-(a7)
 	move.w	#32,-(a7)
 	jsr	__trap_1_wl
 	addq.l	#6,a7
-	;line	233
-	move.l	-1064(a6),-(a7)
+	;line	217
+	move.l	-1052(a6),-(a7)
 	move.w	#70,-(a7)
 	jsr	(a3)
 	addq.l	#6,a7
-	;line	234
-	move.l	-1068(a6),-(a7)
+	;line	218
+	move.l	-1056(a6),-(a7)
 	move.w	#28,-(a7)
 	jsr	(a3)
-	;line	237
+	;line	221
 	moveq	#0,d0
-L8:
-	movem.l	-1080(a6),d3/d4/a3
+L7:
+	movem.l	-1068(a6),d3/d4/a3
 	unlk	a6
 	rts
 _vert_sync:
 	link	a6,#0
-	move.l	d3,-(a7)
-	move.l	#_game,d3
-	;line	242
-	tst.w	_render_request
-	bne	L9
-	;line	244
-	move.l	d3,-(a7)
-	lea	1000,a0
-	add.l	d3,a0
-	pea	(a0)
-	lea	1020,a0
-	add.l	d3,a0
-	pea	(a0)
-	jsr	_synch_events
-	lea	12(a7),a7
-	;line	245
-	lea	1052,a0
-	add.l	d3,a0
-	pea	(a0)
-	lea	1040,a0
-	add.l	d3,a0
-	pea	(a0)
-	move.l	d3,-(a7)
-	lea	1000,a0
-	add.l	d3,a0
-	pea	(a0)
-	lea	1020,a0
-	add.l	d3,a0
-	pea	(a0)
-	jsr	_condition_events
-L9:
-	;line	249
-	move.w	#1,_render_request
-	move.l	-4(a6),d3
+	;line	236
 	unlk	a6
 	rts
 	globl	_IKBD_RDR
@@ -263,7 +206,6 @@ _background:
 _game:
 	ds.b	1068
 	globl	_game
-	globl	_get_time
 	globl	_get_base
 	globl	_install_vector
 	globl	_main

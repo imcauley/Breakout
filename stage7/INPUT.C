@@ -77,3 +77,21 @@ void key_press()
 	return;
 }
 
+/*=== title ===========================================================
+
+Purpose:
+
+Inputs:
+
+Outputs:
+
+Limitations/Known bugs: N/A
+=============================================================================*/
+
+void empty_buffer()
+{
+	while(queue_is_empty == False)
+	{
+		deque();
+	}
+}

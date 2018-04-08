@@ -129,8 +129,8 @@ int main()
 	memcpy(current, game.bricks, sizeof(current));
 	
 	start_queue();
-	
-	
+	splash(buffer1_32, buffer1_8);
+	/*
 	start_render(background_32, &game);
 	simple_render(buffer1_8, buffer1_32, &game);
 
@@ -209,7 +209,7 @@ int main()
 	}
 	
 	stop_sound();
-
+	*/
 	old_ssp = Super(0);
 	set_screen_base(buffer1_8);
 	Super(old_ssp);
@@ -223,6 +223,7 @@ int main()
 
 void vert_sync()
 {
+	/*
 	if(render_request == False)
 	{
 		synch_events(&(game.paddle), &(game.ball), game.bricks);
@@ -231,4 +232,5 @@ void vert_sync()
 	}
 				
 	render_request = True;
+	*/
 }

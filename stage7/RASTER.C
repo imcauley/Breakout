@@ -133,14 +133,18 @@ void plot_bitmap_8(UINT8 *base, int x, int y,
     int i;
 	UINT8 front;
 	UINT8 back;
-	UINT8 offset = x % 80;
+	UINT8 offset = x % 8;
+
+	y *= 80;
+	x /= 8;
 	
     for(i = 0; i < height; i++)
 	{
 		front = bitmap[i] >> offset;
-		back = bitmap[i] << offset;
-		*(base + ((y + i) * 80) + (x/80)) = front;
-		*(base + ((y + i) * 80) + (x/80) + 1) = back;
+		back = bitmap[i] << (8 - offset);
+		*(base + y + x) = ~front;
+		*(base + y + x + 1) = ~back;
+		y += 80;
 	}
 }
 

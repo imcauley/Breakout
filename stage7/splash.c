@@ -44,11 +44,8 @@ void splash(UINT32 *base32, UINT8 *base8)
 	
 	clear_screen(base32);
 	
-
 	while(select != 3)
 	{	
-		render_mouse(base8, x, y);
-
 		while(queue_is_empty() == False)
 		{
 			input = deque();
@@ -61,9 +58,7 @@ void splash(UINT32 *base32, UINT8 *base8)
 				}
 				else
 				{
-					/*
-					TODO: Empty Buffer Function
-					*/
+
 					deque();
 					deque();
 				}
@@ -72,15 +67,16 @@ void splash(UINT32 *base32, UINT8 *base8)
 			else if(mouse_state == 1)
 			{
 				dx = convertToSigned(input);
-				if(dx > 15 || dx < -15)
+				if(dx > 15 && dx < -15)
 					dx = 0;
 				mouse_state += 1;
 			}
 			else if(mouse_state == 2)
 			{
 				dy = convertToSigned(input);
-				if(dy > 15 || dy < -15)
+				if(dy > 15 && dy < -15)
 					dy = 0;
+				
 				mouse_state = 0;
 				
 				x += dx;
@@ -95,7 +91,7 @@ void splash(UINT32 *base32, UINT8 *base8)
 			select = 3;
 		}
 		
-		
+		render_mouse(base8, x, y);
 		
 	}
 
