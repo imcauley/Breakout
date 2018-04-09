@@ -46,6 +46,7 @@ UINT8 read_psg(int reg)
     {    
         *PSG_reg_select = reg;
 		value = *PSG_reg_select;
+        Super(old_ssp);
         return value;
     }
 	Super(old_ssp);
@@ -101,7 +102,8 @@ void set_volume(int channel, int volume)
 
 void enable_channel(int channel, int tone_on, int noise_on)
 {
-    UINT8 mask = 0x00;
+    UINT8 disable_mask = 0x00;
+    UINT8 enable_mask = 0x3F;
     
     UINT8 enable_a_noise = 0x30;
     UINT8 disable_a_noise = 0x08;
@@ -117,51 +119,46 @@ void enable_channel(int channel, int tone_on, int noise_on)
     UINT8 enable_c_tone = 0x03;
     UINT8 disable_c_tone = 0x04;
     
-	UINT8 old_channels;
+	UINT8 old_channels = read_psg(7);
 	
     if (channel == A)
     {
         if (tone_on == 1)
-            mask |= enable_a_tone;
+            write_psg(7,old_channels & enable_a_tone);
         else
-            mask |= disable_a_tone;
+            write_psg(7,old_channels | disable_a_tone);
         
         if (noise_on == 1)
-            mask |= enable_a_noise;
+            write_psg(7,old_channels & enable_a_noise);
         else
-            mask |= disable_a_noise;
+            write_psg(7,old_channels | disable_a_noise);
     }
     
     if (channel == B)
     {
         if (tone_on == 1)
-            mask |= enable_b_tone;
+            write_psg(7,old_channels & enable_b_tone);
         else
-            mask |= disable_b_tone;
+            write_psg(7,old_channels | disable_b_tone);
         
         if (noise_on == 1)
-            mask |= enable_b_noise;
+            write_psg(7,old_channels & enable_b_noise);
         else
-            mask |= disable_b_noise;
+            write_psg(7,old_channels | disable_b_noise);
     }
     
     if (channel == C)
     {
         if (tone_on == 1)
-            mask |= enable_c_tone;
+            write_psg(7,old_channels & enable_c_tone);
         else
-            mask |= disable_c_tone;
+            write_psg(7,old_channels | disable_c_tone);
         
         if (noise_on == 1)
-            mask |= enable_c_noise;
+            write_psg(7,old_channels & enable_c_noise);
         else
-            mask |= disable_c_noise;
+            write_psg(7,old_channels | disable_c_noise);
     }
-	
-	old_channels = read_psg(7);
-    write_psg(7, (mask & old_channels));
-	
-	
 }
 
 void stop_sound()
@@ -187,26 +184,8 @@ void set_envelope(int shape, unsigned int sustain)
 	{
 		unsigned int lower = sustain & 0xFF;
 		unsigned int upper = sustain & 0xFF00;
+        upper >>= 8;
 		write_psg(0xC,upper);
 		write_psg(0xB,lower);
 	}
 }
-
-/*int main()
-{
-	long old_ssp = Super(0);
-	
-    set_tone(A, 478);
-    enable_channel(A,1,1);
-    set_volume(A,11);
-
-
-	while (!Cconis())	     
-		;
-
-	set_volume(A,0);
-	Super(old_ssp);
-	Cnecin();
-
-	return 0;
-}*/
