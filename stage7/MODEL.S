@@ -194,6 +194,7 @@ L9:
 	movem.l	(a7)+,d3/d4/d5/a3
 	unlk	a6
 	rts
+<<<<<<< HEAD
 L17:
 	dc.l	$3fe00000,$0
 _move_ball:
@@ -583,6 +584,8 @@ L45:
 	movem.l	(a7)+,d3/a3
 	unlk	a6
 	rts
+=======
+>>>>>>> ab357952b186a1b0fa17d3ece63f935beec7a05e
 	globl	_move_ball
 	globl	_ball_collides_top
 	globl	_ball_collides_bottom

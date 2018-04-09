@@ -22,9 +22,9 @@ Instructor: Paul Pospisil
 #define B_CHANNEL 1
 #define C_CHANNEL 2
 
-#define A 284
-#define A_S 268
-#define B 253
+#define A 284		/* A */
+#define A_S 268		/* A sharp */
+#define B 253		/* ... */
 #define C 478
 #define C_S 451
 #define D 426
@@ -34,13 +34,13 @@ Instructor: Paul Pospisil
 #define F_S 338
 #define G 319
 #define G_S 301
-#define REPEAT 1
-#define REST 0
+#define REPEAT 1    /* repeat a note */
+#define REST 0		/* rest note */
 
-#define QU 35
-#define EI 17
-#define HA 70
-#define WH 140
+#define QU 35		/* quarter note length */
+#define EI 17		/* eighth note length */
+#define HA 70		/* half note length */
+#define WH 140		/* whole note length */
 
 #define NEXT_NOTE 2
 

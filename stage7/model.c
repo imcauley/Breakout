@@ -31,6 +31,7 @@ Instructor: Paul Pospisil
 #define BRICKS_START    120
 #define BRICK_WIDTH     32
 #define BRICK_HEIGHT    16
+#define SCORE_DIGITS 	4
 
 void start_game(Model *game)
 {
@@ -112,7 +113,7 @@ void create_bricks(Brick bricks[BRICK_ROWS][BRICK_COLS])
 	{
 		for(c=0;c < BRICK_COLS; c++)
 		{
-			(bricks[r][c]).x = (r * 20);
+			(bricks[r][c]).x = (r * BRICK_COLS);
 			(bricks[r][c]).y = c * BRICK_ROWS;
 			(bricks[r][c]).broken = False;
 			(bricks[r][c]).width = BRICK_WIDTH;
@@ -362,7 +363,7 @@ Limitations/Known bugs: N/A
 
 void launch_ball(Paddle *paddle, Ball *ball)
 {
-	srand(time(NULL));
+	srand(paddle->x * paddle->y * ball->y);
     if (ball->launch == True && ball->launched == False)
     {
         int random = rand() % 2;
@@ -392,7 +393,7 @@ Limitations/Known bugs: N/A
 void add_score(Score *score)
 {
 	int x;
-	for(x = 0; x < 4; x++)
+	for(x = 0; x < SCORE_DIGITS; x++)
 	{
 		if(score->score[x] == 9)
 		{

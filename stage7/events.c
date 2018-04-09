@@ -26,6 +26,12 @@ Instructor: Paul Pospisil
 #define RIGHT	0x4d
 #define SPACE	0x39
 
+#define REVERSE	 -1
+#define NUM_LIVES 3
+
+#define SCREEN_WIDTH 640
+#define HEADER_HEIGHT 40
+
 /*=== asynch_events ===========================================================
 
 Purpose: process any asynchronous events
@@ -106,7 +112,7 @@ void condition_events(Paddle *paddle, Ball *ball, Brick bricks[][], Score *score
 
 	if (ball_collides_paddle(ball, paddle))
 	{
-		ball->y_direction *= -1;
+		ball->y_direction *= REVERSE;
 		ball->y = (paddle->y - ball->height);
 		if (ball->launched)
 			play_bounce();
@@ -120,30 +126,30 @@ void condition_events(Paddle *paddle, Ball *ball, Brick bricks[][], Score *score
     if (ball_collides_left(ball))
 	{
 		ball->x = 0;
-		ball->x_direction *= -1;
+		ball->x_direction *= REVERSE;
 		play_bounce();
 	}
 	if (ball_collides_right(ball))
 	{
-		ball->x = 638 - ball->width;
-		ball->x_direction *= -1;
+		ball->x = (SCREEN_WIDTH-2) - ball->width;
+		ball->x_direction *= REVERSE;
 		play_bounce();
 	}
 	if (ball_collides_top(ball))
 	{
-		ball->y = 41;
-		ball->y_direction *= -1;
+		ball->y = (HEADER_HEIGHT + 1);
+		ball->y_direction *= REVERSE;
 		play_bounce();
 	}
 	block_collision = ball_collides_bricks(ball, bricks, score);     /* x or y for collisions */
 	if (block_collision == 'x')
 	{
-		ball->x_direction *= -1;
+		ball->x_direction *= REVERSE;
 		play_brick_destroyed();
 	}
 	else if (block_collision == 'y')
 	{
-		ball->y_direction *= -1;
+		ball->y_direction *= REVERSE;
 		play_brick_destroyed();
 	}
     
@@ -169,7 +175,7 @@ Limitations/Known bugs: N/A
 void die(Ball *ball, Lives *lives)
 {
 	int i;
-	for(i = 0; i < 3; i++)
+	for(i = 0; i < NUM_LIVES; i++)
 	{
 		if(lives->lives[i] == True)
 		{
