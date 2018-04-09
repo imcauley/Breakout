@@ -15,6 +15,8 @@ Instructor: Paul Pospisil
 
 ==========================================*/
 
+#ifndef MODEL_H
+#define MODEL_H
 
 #include "types.h"
 
@@ -96,3 +98,5 @@ void start_game(Model *game);
 bool ball_collides_paddle(Ball *ball, Brick bricks[BRICK_ROWS][BRICK_COLS], Paddle *paddle);
 void add_score(Score *score);
 bool game_over(Lives *lives);
+
+#endif

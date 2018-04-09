@@ -18,6 +18,7 @@ Instructor: Paul Pospisil
 
 #include <stdlib.h>
 #include <stdio.h>
+#include <time.h>
 #include "model.h"
 
 #define BRICK_ROWS      5
@@ -64,6 +65,19 @@ void start_game(Model *game)
 	(*game).lives.lives[2] = True;
 }
 
+/*=== game_over ===========================================================
+
+Purpose: checks if the user has run out of lives
+
+Inputs:
+	lives: pointer array of lives
+
+Outputs:
+	over: bool of whether the game is over or not
+
+Limitations/Known bugs: N/A
+=============================================================================*/
+
 bool game_over(Lives *lives)
 {
     int i;
@@ -77,6 +91,18 @@ bool game_over(Lives *lives)
     
     return over;
 }
+
+/*=== create_bricks =========================================================
+
+Purpose: Initializes the array of bricks
+
+Inputs:
+	bricks: array of bricks
+
+Outputs: N/A
+
+Limitations/Known bugs: N/A
+=============================================================================*/
 
 void create_bricks(Brick bricks[BRICK_ROWS][BRICK_COLS])
 {
@@ -95,7 +121,21 @@ void create_bricks(Brick bricks[BRICK_ROWS][BRICK_COLS])
 	}
 }
 
-void move_ball(Ball *ball, Brick bricks[][], Paddle *paddle)
+/*=== move_ball ===========================================================
+
+Purpose: Updates the balls position based on its speed and direction,
+		 or along the paddle if the ball hasn't been launched yet.
+
+Inputs:
+	*ball: 		pointer to the ball
+	*paddle:	pointer to the paddle
+
+Outputs: N/A
+
+Limitations/Known bugs: N/A
+=============================================================================*/
+
+void move_ball(Ball *ball, Paddle *paddle)
 {
 	if(ball->launched == True)
 	{
@@ -109,6 +149,19 @@ void move_ball(Ball *ball, Brick bricks[][], Paddle *paddle)
 	}
 }
 
+/*=== ball_collides_left ======================================================
+
+Purpose: Checks if the ball has collided with the left wall.
+
+Inputs:
+	*ball: 	pointer to the ball
+
+Outputs:
+	True if it has collided, false otherwise.
+
+Limitations/Known bugs: N/A
+=============================================================================*/
+
 bool ball_collides_left(Ball *ball)
 {
 	if(ball->x <= SCREEN_START)
@@ -117,6 +170,19 @@ bool ball_collides_left(Ball *ball)
 	}
 		return False;
 }
+
+/*=== ball_collides_right =====================================================
+
+Purpose: Checks if the ball has collided with the right wall.
+
+Inputs:
+	*ball: pointer to the ball
+
+Outputs:
+	True if it has collided, false otherwise.
+
+Limitations/Known bugs: N/A
+=============================================================================*/
 
 bool ball_collides_right(Ball *ball)
 {
@@ -127,8 +193,21 @@ bool ball_collides_right(Ball *ball)
 		return False;
 }
 
+/*=== ball_collides_top =======================================================
 
-bool ball_collides_top(Ball *ball, Brick bricks[BRICK_ROWS][BRICK_COLS], Paddle *paddle)
+Purpose: Checks if the ball has collided with the top of the screen
+		 (Ie the header)
+
+Inputs: 
+	*ball: pointer to the ball
+
+Outputs:
+	True if it has collided, false otherwise.
+
+Limitations/Known bugs: N/A
+=============================================================================*/
+
+bool ball_collides_top(Ball *ball)
 {
     if (ball->y <= HEADER_HEIGHT)
         return True;
@@ -136,26 +215,68 @@ bool ball_collides_top(Ball *ball, Brick bricks[BRICK_ROWS][BRICK_COLS], Paddle 
 		return False;
 }
 
-bool ball_collides_bottom(Ball *ball, Brick bricks[BRICK_ROWS][BRICK_COLS], Paddle *paddle)
+/*=== ball_collides_bottom ====================================================
+
+Purpose: Checks if the ball has collided with the bottom of the screen
+
+Inputs:
+	*ball: pointer to the ball
+
+Outputs:
+	True if it collided, false otherwise.
+	
+Limitations/Known bugs: N/A
+=============================================================================*/
+
+bool ball_collides_bottom(Ball *ball)
 {
-    if (ball->y + ball->height >= SCREEN_HEIGHT)      /* collision with top/bottom walls */
+    if (ball->y + ball->height >= SCREEN_HEIGHT)
 		return True;
 	else
 		return False;
 }
 
+/*=== ball_collides_paddle ====================================================
 
-bool ball_collides_paddle(Ball *ball, Brick bricks[BRICK_ROWS][BRICK_COLS], Paddle *paddle)
+Purpose: Checks if the ball has collided with the paddle
+
+Inputs:
+	*ball: 		pointer to the ball
+	*paddle:	pointer to the paddle
+
+Outputs: N/A
+
+Limitations/Known bugs: N/A
+=============================================================================*/
+
+bool ball_collides_paddle(Ball *ball, Paddle *paddle)
 {
-	if (ball->y + ball->height >= paddle->y && (ball->x + ball->width) >= paddle->x
-													     && ball->x <= (paddle->x + paddle->width))
+	if (ball->y + ball->height >= paddle->y && 
+	   (ball->x + ball->width) >= paddle->x && 
+	    ball->x <= (paddle->x + paddle->width))
 		return True;
 	else
 		return False;
 }
 
+/*=== ball_collides_bricks ===================================================
 
-char ball_collides_bricks(Ball *ball, Brick bricks[BRICK_ROWS][BRICK_COLS], Paddle *paddle, Score *score)
+Purpose: Checks if the ball has collided with a brick, if it has the score is
+		 updated and the brick is set to broken.
+
+Inputs:
+	*ball: 		pointer to the ball
+   bricks:		the array of bricks
+   *score:		pointer to the score
+   
+Outputs:
+	Returns 'y' if it was a vertical collision, 'x' if it was a horizontal
+	collision, '0' if no collision.
+
+Limitations/Known bugs: N/A
+=============================================================================*/
+
+char ball_collides_bricks(Ball *ball, Brick bricks[BRICK_ROWS][BRICK_COLS], Score *score)
 {
     if (ball->y < BRICKS_START)
     {
@@ -178,10 +299,37 @@ char ball_collides_bricks(Ball *ball, Brick bricks[BRICK_ROWS][BRICK_COLS], Padd
 
     return '0';
 }
+
+/*=== move_paddle ===========================================================
+
+Purpose: Updates the paddles position based on its speed and direction
+
+Inputs:
+	*paddle: pointer to the paddle
+
+Outputs: N/A
+
+Limitations/Known bugs: N/A
+=============================================================================*/
+
 void move_paddle(Paddle *paddle)
 {
 	paddle->x += (paddle->speed * paddle->direction);
 }
+
+/*=== paddle_collides ===========================================================
+
+Purpose: Checks if the paddle has collided with a wall, if it has it moves the
+		 paddle back to before the wall.
+
+Inputs:
+	*paddle: pointer to the paddle
+
+Outputs:
+	True if the paddle collided, false otherwise.
+
+Limitations/Known bugs: N/A
+=============================================================================*/
 
 bool paddle_collides(Paddle *paddle)
 {
@@ -199,8 +347,22 @@ bool paddle_collides(Paddle *paddle)
     return False;
 }
 
+/*=== launch_ball ===========================================================
+
+Purpose: Launches the ball from the paddle if it wasn't already launched.
+
+Inputs:
+	*paddle: pointer to the paddle
+	*ball:   pointer to the ball
+
+Outputs: N/A
+
+Limitations/Known bugs: N/A
+=============================================================================*/
+
 void launch_ball(Paddle *paddle, Ball *ball)
 {
+	srand(time(NULL));
     if (ball->launch == True && ball->launched == False)
     {
         int random = rand() % 2;
@@ -214,6 +376,18 @@ void launch_ball(Paddle *paddle, Ball *ball)
         ball->launched = True;
     }
 }
+
+/*=== add_score ===========================================================
+
+Purpose: increments the score
+
+Inputs:
+	*score: pointer to the score
+
+Outputs: N/A
+
+Limitations/Known bugs: N/A
+=============================================================================*/
 
 void add_score(Score *score)
 {
