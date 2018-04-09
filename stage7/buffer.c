@@ -24,13 +24,15 @@ UINT8 IKDB_BUFFER[BUFFER_SZ];
 UINT8 front;
 UINT8 back;
 
-/*=== title ===========================================================
+/*=== start_queue ===========================================================
 
-Purpose:
+Purpose: set all the initial values of the input buffer
 
 Inputs:
+	N/A
 
 Outputs:
+	N/A
 
 Limitations/Known bugs: N/A
 =============================================================================*/
@@ -42,13 +44,15 @@ void start_queue()
 	return;
 }
 
-/*=== title ===========================================================
+/*=== enque ===========================================================
 
-Purpose:
+Purpose: put a object at the end of the buffer
 
 Inputs:
+	-code: object to be placed in the buffer
 
 Outputs:
+	N/A
 
 Limitations/Known bugs: N/A
 =============================================================================*/
@@ -68,13 +72,16 @@ void enque(UINT8 code)
 	return;
 }
 
-/*=== title ===========================================================
+/*=== deque ===========================================================
 
-Purpose:
+Purpose: returns the object at the front of the queue. If there is nothing
+			at the end of the buffer it returns 0x00.
 
 Inputs:
+	N/A
 
 Outputs:
+	-object at the end of the queue
 
 Limitations/Known bugs: N/A
 =============================================================================*/
@@ -96,13 +103,16 @@ UINT8 deque()
 	return 0x00;
 }
 
-/*=== title ===========================================================
+/*=== queue_is_empty ===========================================================
 
-Purpose:
+Purpose: boolean on if the queue is empty
 
 Inputs:
+	N/A
 
 Outputs:
+	-True if the buffer is empty
+	=False if the buffer is not
 
 Limitations/Known bugs: N/A
 =============================================================================*/

@@ -16,13 +16,15 @@ Instructor: Paul Pospisil
 ==========================================*/
 
 #include "types.h"
+#define NEGATIVE 0xFF00
+#define LAST_LSB 0x7F
 
 int convertToSigned(UINT8 num)
 {
 	int sign = (int) num;
-	if(num > 0x7F)
+	if(num > LAST_LSB)
 	{
-		sign |= 0xFF00;
+		sign |= NEGATIVE;
 	}
 	return sign;
 }

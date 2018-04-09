@@ -51,6 +51,11 @@ typedef void (*Vector) ();
 #define MOUSE_INPUT 0xF8
 #define SEVEN_LSB 0x7F
 
+#define NO_SELECT 0
+#define 1_PLAYER 1
+#define 2_PLAYER 2
+#define QUIT 3
+
 void vert_sync();
 
 UINT8 buffer2[32256];
@@ -81,6 +86,20 @@ UINT8 *get_base(UINT8 buffer[])
 	return base + difference;
 }
 
+/*=== install_vector ===========================================================
+
+Purpose: install a new system vector
+
+Inputs: 
+	-num: number of vector to replace
+	-vector: function to be placed in vector table
+
+Outputs: 
+	-orig: original function from the vector table
+
+Limitations/Known bugs: N/A
+=============================================================================*/
+
 Vector install_vector(int num, Vector vector)
 {
   Vector orig;
@@ -97,6 +116,7 @@ Vector install_vector(int num, Vector vector)
 int main()
 {
 	long old_ssp;
+	
 	/* buffer1: space in memory dedicated to the first screen buffer*/
 	UINT8 *buffer1_8 = (UINT8 *) get_video_base();
 	UINT32 *buffer1_32 = (UINT32 *) get_video_base();
@@ -119,8 +139,6 @@ int main()
 	int x,y = -1;
 	
 	bool hold = False;
-	UINT8 hold_mask;
-	UINT8 mouse_mask;
 	UINT8 held_key;
 
 	UINT8 input = 0;
@@ -132,96 +150,110 @@ int main()
 	Vector orig_key = install_vector(KEY_ISR_NUM, key_isr);
 	Vector orig_vbl = install_vector(VBL_ISR_NUM, VBL_isr);
 	
-	start_queue();
-	start_game(&game);
+	
 	old_ssp = Super(0);
 	start_music();
 	Super(old_ssp);
 
-	memcpy(current, game.bricks, sizeof(current));
 	
-	start_queue();
-	select = splash(buffer1_32, buffer1_8);
 	
-	if(select == 1)
+	
+	
+	
+	while(select != 3)
 	{
-		start_render(background_32, &game);
-	}
-	
-	while(input != Q && select == 1)
-	{
-		if(queue_is_empty() == False)
+		start_queue();
+		select = splash(buffer1_32, buffer1_8);
+		clear_input();
+		
+		if(select == 1)
 		{
-			input = get_input();
+			start_queue();
+			start_game(&game);
+			memcpy(current, game.bricks, sizeof(current));
 			
-			if(input != MOUSE_INPUT)
+			start_render(background_32, &game);
+
+			
+			/*MAIN GAME LOOP*/
+			while(input != Q)
 			{
-				if((input & RELEASE) == EMPTY_KEY)
+				if(queue_is_empty() == False)
 				{
-					hold = True;
-					held_key = input;
+					input = get_input();
+					
+					if(input != MOUSE_INPUT)
+					{
+						if((input & RELEASE) == EMPTY_KEY)
+						{
+							hold = True;
+							held_key = input;
+						}
+						else
+						{
+							if((input & SEVEN_LSB) == held_key)
+							{
+								hold = False;
+								held_key = EMPTY_KEY;
+							}
+						}
+					}
+						
 				}
 				else
 				{
-					if((input & SEVEN_LSB) == held_key)
-					{
-						hold = False;
-						held_key = EMPTY_KEY;
-					}
+					clear_input();
 				}
-			}
 				
-		}
-		else
-		{
-			clear_input();
-		}
-		
-		if(hold == True)
-		{
-			asynch_events(&game.paddle, &game.ball, held_key);
-		}
-
-		if(render_request == True)
-		{
-			for(x = 0; x < BRICK_ROWS; x++)
-			{
-				for(y = 0; y < BRICK_COLS; y++)
+				if(hold == True)
 				{
+					asynch_events(&game.paddle, &game.ball, held_key);
+				}
+
+				if(render_request == True)
+				{
+					for(x = 0; x < BRICK_ROWS; x++)
+					{
+					for(y = 0; y < BRICK_COLS; y++)
+					{
 					if(current[x][y].broken != ((game.bricks)[x][y]).broken)
 					{
 						remove_brick(background_32, x, y);
 					}
+					}
+					}
+					
+					memcpy(current, game.bricks, sizeof(current));
+
+					memcpy(render_base_8, background_8, BUFFER_SZ);
+					render(render_base_8, render_base_32, &game);
+
+					if(swap == True)
+					{
+						render_base_8 = buffer2_8;
+						render_base_32 = buffer2_32;
+						old_ssp = Super(0);
+						set_screen_base(buffer1_8);
+						Super(old_ssp);
+						swap = False;
+					}
+					else
+					{
+						render_base_8 = buffer1_8;
+						render_base_32 = buffer1_32;
+						old_ssp = Super(0);
+						set_screen_base(buffer2_8);
+						Super(old_ssp);
+						swap = True;
+					}
+					
+					render_request = False;
 				}
 			}
-			memcpy(current, game.bricks, sizeof(current));
-
-			memcpy(render_base_8, background_8, BUFFER_SZ);
-			render(render_base_8, render_base_32, &game);
-
-			if(swap == True)
-			{
-				render_base_8 = buffer2_8;
-				render_base_32 = buffer2_32;
-				old_ssp = Super(0);
-				set_screen_base(buffer1_8);
-				Super(old_ssp);
-				swap = False;
-			}
-			else
-			{
-				render_base_8 = buffer1_8;
-				render_base_32 = buffer1_32;
-				old_ssp = Super(0);
-				set_screen_base(buffer2_8);
-				Super(old_ssp);
-				swap = True;
-			}
-			
-			render_request = False;
 		}
-
 	}
+	
+	
 	
 
 	old_ssp = Super(0);

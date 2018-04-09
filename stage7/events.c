@@ -73,7 +73,7 @@ Limitations/Known bugs: N/A
 void synch_events(Paddle *paddle, Ball *ball, Brick bricks[][])
 {
     launch_ball(paddle,ball);
-    move_ball(ball, bricks, paddle);
+    move_ball(ball, paddle);
     move_paddle(paddle);
     paddle->direction = 0;
 }
@@ -82,9 +82,14 @@ void synch_events(Paddle *paddle, Ball *ball, Brick bricks[][])
 
 Purpose: process all cascading events
 
-Inputs:     
+Inputs:
+	*paddle: pointer to the paddle
+	*ball:   pointer to the ball
+	bricks:  the array of bricks
+	*score:  pointer to the score
+	*lives:  pointer to the lives
 
-Outputs:
+Outputs: N/A
 
 Limitations/Known bugs: N/A
 =============================================================================*/
@@ -99,7 +104,7 @@ void condition_events(Paddle *paddle, Ball *ball, Brick bricks[][], Score *score
 		move_paddle(paddle);
 	}
 
-	if (ball_collides_paddle(ball, bricks, paddle))
+	if (ball_collides_paddle(ball, paddle))
 	{
 		ball->y_direction *= -1;
 		ball->y = (paddle->y - ball->height);
@@ -107,7 +112,7 @@ void condition_events(Paddle *paddle, Ball *ball, Brick bricks[][], Score *score
 			play_bounce();
 	}
 
-	if (ball_collides_bottom(ball, bricks, paddle))
+	if (ball_collides_bottom(ball))
 	{
 		die(ball, lives);
 	}
@@ -124,13 +129,13 @@ void condition_events(Paddle *paddle, Ball *ball, Brick bricks[][], Score *score
 		ball->x_direction *= -1;
 		play_bounce();
 	}
-	if (ball_collides_top(ball, bricks, paddle))
+	if (ball_collides_top(ball))
 	{
 		ball->y = 41;
 		ball->y_direction *= -1;
 		play_bounce();
 	}
-	block_collision = ball_collides_bricks(ball, bricks, paddle, score);     /* x or y for collisions */
+	block_collision = ball_collides_bricks(ball, bricks, score);     /* x or y for collisions */
 	if (block_collision == 'x')
 	{
 		ball->x_direction *= -1;
