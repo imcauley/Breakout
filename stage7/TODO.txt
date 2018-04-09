@@ -1,8 +1,6 @@
 Task				File
 
--Make mouse move properly	splash.c
 -Put screen const somewhere	render.c
 -Document functions		model.c
 -Ball not go to other side	breakout.c?
 -Make correct dependencies	MAKEFILE
--Erase/Replace background	splash.o

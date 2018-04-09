@@ -44,6 +44,13 @@ typedef void (*Vector) ();
 #define KEY_ISR_NUM	70
 #define VBL_ISR_NUM 28
 
+#define BUFFER_SZ 32000
+
+#define EMPTY_KEY 0x00
+#define RELEASE	0x80
+#define MOUSE_INPUT 0xF8
+#define SEVEN_LSB 0x7F
+
 void vert_sync();
 
 UINT8 buffer2[32256];
@@ -114,6 +121,7 @@ int main()
 	bool hold = False;
 	UINT8 hold_mask;
 	UINT8 mouse_mask;
+	UINT8 held_key;
 
 	UINT8 input = 0;
 		
@@ -126,54 +134,59 @@ int main()
 	
 	start_queue();
 	start_game(&game);
-
+	old_ssp = Super(0);
+	start_music();
+	Super(old_ssp);
 
 	memcpy(current, game.bricks, sizeof(current));
 	
 	start_queue();
 	select = splash(buffer1_32, buffer1_8);
 	
-	start_render(background_32, &game);
-	simple_render(buffer1_8, buffer1_32, &game);
-
+	if(select == 1)
+	{
+		start_render(background_32, &game);
+	}
 	
-	while(input != Q && select != 3)
+	while(input != Q && select == 1)
 	{
 		if(queue_is_empty() == False)
 		{
 			input = get_input();
-			mouse_mask = input & 0xF8;
-			if(mouse_mask == 0xF8)
+			
+			if(input != MOUSE_INPUT)
 			{
-				while(queue_is_empty() == False)
-				{
-					deque();
-				}
-			}
-			else
-			{
-				hold_mask = input & 0x80;
-				if(hold_mask == 0x00)
+				if((input & RELEASE) == EMPTY_KEY)
 				{
 					hold = True;
+					held_key = input;
 				}
 				else
 				{
-					hold = False;
+					if((input & SEVEN_LSB) == held_key)
+					{
+						hold = False;
+						held_key = EMPTY_KEY;
+					}
 				}
 			}
+				
+		}
+		else
+		{
+			clear_input();
 		}
 		
 		if(hold == True)
 		{
-			asynch_events(&game.paddle, &game.ball, input);
+			asynch_events(&game.paddle, &game.ball, held_key);
 		}
 
 		if(render_request == True)
 		{
-			for(x = 0; x < 5; x++)
+			for(x = 0; x < BRICK_ROWS; x++)
 			{
-				for(y = 0; y < 20; y++)
+				for(y = 0; y < BRICK_COLS; y++)
 				{
 					if(current[x][y].broken != ((game.bricks)[x][y]).broken)
 					{
@@ -183,7 +196,7 @@ int main()
 			}
 			memcpy(current, game.bricks, sizeof(current));
 
-			memcpy(render_base_8, background_8, 32000);
+			memcpy(render_base_8, background_8, BUFFER_SZ);
 			render(render_base_8, render_base_32, &game);
 
 			if(swap == True)
@@ -210,9 +223,9 @@ int main()
 
 	}
 	
-	stop_sound();
-	
+
 	old_ssp = Super(0);
+	stop_sound();
 	set_screen_base(buffer1_8);
 	Super(old_ssp);
 
@@ -225,6 +238,7 @@ int main()
 
 void vert_sync()
 {
+	update_music(1);
 	if(render_request == False)
 	{
 		synch_events(&(game.paddle), &(game.ball), game.bricks);

@@ -88,7 +88,7 @@ Outputs:
 Limitations/Known bugs: N/A
 =============================================================================*/
 
-void empty_buffer()
+void clear_input()
 {
 	while(queue_is_empty == False)
 	{

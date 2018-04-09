@@ -191,9 +191,9 @@ bool paddle_collides(Paddle *paddle)
         return True;
     }
 
-	else if ((paddle->x + paddle->width) > SCREEN_WIDTH)
+	else if ((paddle->x + paddle->width) > SCREEN_WIDTH -1)
 	{
-		paddle->x = (SCREEN_WIDTH - paddle->width);
+		paddle->x = (SCREEN_WIDTH - paddle->width - 1);
 		return True;
 	}
     return False;
@@ -206,8 +206,8 @@ void launch_ball(Paddle *paddle, Ball *ball)
         int random = rand() % 2;
 		if(random == 0)
 			random = -1;
-        ball->x_speed = 10;
-        ball->y_speed = 10;
+        ball->x_speed = 7;
+        ball->y_speed = 7;
         ball->y_direction = 1;
         ball->x_direction = random;
         ball->launch = False;

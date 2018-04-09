@@ -481,11 +481,12 @@ L37:
 	;line	194
 	move.w	8(a3),d0
 	add.w	(a3),d0
-	cmp.w	#640,d0
+	cmp.w	#639,d0
 	bls	L40
 	;line	196
-	move.w	#640,d0
-	sub.w	8(a3),d0
+	move.w	8(a3),d0
+	neg.w	d0
+	sub.w	#-639,d0
 	move.w	d0,(a3)
 	;line	197
 	moveq	#1,d0
@@ -520,9 +521,9 @@ _launch_ball:
 	moveq	#-1,d3
 L42:
 	;line	209
-	move.w	#10,4(a3)
+	move.w	#7,4(a3)
 	;line	210
-	move.w	#10,6(a3)
+	move.w	#7,6(a3)
 	;line	211
 	move.w	#1,10(a3)
 	;line	212

@@ -8,7 +8,7 @@ Daniel Jackins
 Isaac McAuley
 
 Date Last Changed:
-March 23 2018
+April 8 2018
 
 Class: COMP 2659 - 001
 Instructor: Paul Pospisil
@@ -99,7 +99,7 @@ void condition_events(Paddle *paddle, Ball *ball, Brick bricks[][], Score *score
 		move_paddle(paddle);
 	}
 
-	else if (ball_collides_paddle(ball, bricks, paddle))
+	if (ball_collides_paddle(ball, bricks, paddle))
 	{
 		ball->y_direction *= -1;
 		ball->y = (paddle->y - ball->height);
@@ -107,24 +107,24 @@ void condition_events(Paddle *paddle, Ball *ball, Brick bricks[][], Score *score
 			play_bounce();
 	}
 
-	else if (ball_collides_bottom(ball, bricks, paddle))
+	if (ball_collides_bottom(ball, bricks, paddle))
 	{
 		die(ball, lives);
 	}
 
-    else if (ball_collides_left(ball))
+    if (ball_collides_left(ball))
 	{
 		ball->x = 0;
 		ball->x_direction *= -1;
 		play_bounce();
 	}
-	else if (ball_collides_right(ball))
+	if (ball_collides_right(ball))
 	{
 		ball->x = 638 - ball->width;
 		ball->x_direction *= -1;
 		play_bounce();
 	}
-	else if (ball_collides_top(ball, bricks, paddle))
+	if (ball_collides_top(ball, bricks, paddle))
 	{
 		ball->y = 41;
 		ball->y_direction *= -1;

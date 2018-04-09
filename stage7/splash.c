@@ -32,8 +32,8 @@ Instructor: Paul Pospisil
 
 UINT8 splash(UINT32 *base32, UINT8 *base8)
 {
-	UINT8 prev1[8] = {0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00};
-	UINT8 prev2[8] = {0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00};
+	UINT8 prev1[8] = {0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF};
+	UINT8 prev2[8] = {0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF};
 	
 	UINT8 input;
 	UINT8 click;
@@ -41,14 +41,16 @@ UINT8 splash(UINT32 *base32, UINT8 *base8)
 	UINT8 select = 0;
 	
 	int x, y = 0;
+	int prev_x, prev_y = 0;
 	
 	int dx = 0;
 	int dy = 0;
 	
-	
-	
+	render_splash_screen(base32);
+	render_mouse(base8, x, y, prev1, prev2);
 	while(select == 0)
 	{	
+		
 		while(queue_is_empty() == False)
 		{
 			input = deque();
@@ -61,9 +63,7 @@ UINT8 splash(UINT32 *base32, UINT8 *base8)
 				}
 				else
 				{
-
-					deque();
-					deque();
+					clear_input();
 				}
 				
 			}
@@ -80,8 +80,7 @@ UINT8 splash(UINT32 *base32, UINT8 *base8)
 				
 				x += dx;
 				y += dy;
-				dx = 0;
-				dy = 0;
+				dx,dy = 0;
 				
 				if(x < 0)
 					x = 0;
@@ -114,8 +113,14 @@ UINT8 splash(UINT32 *base32, UINT8 *base8)
 			
 		}
 		
-		render_splash_screen(base32);
-		render_mouse(base8, x, y);
+		if(prev_x != x || prev_y != y)
+		{
+			render_prev_background(base8, prev_x, prev_y, prev1, prev2);
+			render_mouse(base8, x, y, prev1, prev2);
+			prev_x = x;
+			prev_y = y;
+		}
+		
 		
 	}
 
